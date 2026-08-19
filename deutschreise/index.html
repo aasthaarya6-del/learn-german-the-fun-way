@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deutschreise — German Adventure</title>
+<title>Deutschreise — Learn German the Fun Way</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -71,12 +71,12 @@ body{
 .overallbar>div{height:100%;background:linear-gradient(90deg,var(--berry),var(--sun),var(--grass));transition:width .4s ease;}
 .progress-caption{font-size:14px;color:var(--ink-soft);font-weight:800;margin-bottom:8px;}
 
-.journey{display:flex;overflow-x:auto;gap:12px;padding:12px 4px 20px;margin-bottom:6px;scrollbar-width:thin;}
+.journey{display:flex;overflow-x:auto;gap:12px;padding:18px 4px 20px;margin-bottom:6px;scrollbar-width:thin;}
 .stamp{
   flex:0 0 auto;width:92px;height:92px;border-radius:50%;
   border:4px solid #cfc9e8;background:#fff;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;font-size:12px;font-weight:800;text-align:center;padding:6px;
+  cursor:pointer;font-size:12px;font-weight:800;text-align:center;padding:16px 6px 6px;
   color:var(--ink-soft); transition:transform .15s ease, border-color .15s ease, color .15s ease;
   position:relative;box-shadow:3px 3px 0 rgba(43,37,80,0.08);
 }
@@ -90,6 +90,37 @@ body{
   width:22px;height:22px;border-radius:50%;font-size:13px;display:flex;align-items:center;
   justify-content:center;border:2px solid var(--ink);
 }
+.stamp .lv{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  background:var(--grape);color:#fff;font-size:10px;font-weight:800;
+  padding:2px 7px;border-radius:999px;border:2px solid var(--ink);white-space:nowrap;
+}
+.stamp.locked{opacity:0.5;cursor:not-allowed;filter:grayscale(.35);}
+.stamp.locked:hover{transform:none;}
+.stamp.extra{border-style:dashed;}
+.levelchip{
+  display:inline-block;font-size:13px;font-weight:800;letter-spacing:0.02em;
+  background:var(--grape);color:#fff;border:2.5px solid var(--ink);border-radius:999px;
+  padding:4px 12px;margin-bottom:8px;
+}
+.levelchip.extra{background:var(--peach);}
+.lockhint{
+  background:#fff3d6;border:3px dashed var(--sun);border-radius:16px;
+  padding:10px 14px;margin:0 0 14px;font-weight:800;font-size:15px;
+}
+.level-up{
+  position:fixed;inset:0;background:rgba(43,37,80,0.5);z-index:80;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+}
+.level-up-card{
+  background:var(--card);border:4px solid var(--ink);border-radius:28px;
+  padding:28px 22px;max-width:420px;width:100%;text-align:center;
+  box-shadow:var(--shadow);animation:pop .35s ease;
+}
+.level-up-card .burst{font-size:52px;line-height:1;margin-bottom:8px;}
+.level-up-card h3{font-family:'Fredoka',sans-serif;font-size:28px;margin:0 0 6px;}
+.level-up-card p{font-weight:800;color:var(--ink-soft);margin:0 0 16px;line-height:1.45;}
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
 
 .card{
   background:var(--card);
@@ -200,11 +231,10 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .matchitem.paired{border-color:var(--grass);background:#d8ffef;color:#0f8f84;cursor:default;}
 .matchitem.wrongflash{border-color:var(--berry);background:#ffe0ea;}
 
-.examtimer{
-  font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;
+.challengetimer{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;
   background:var(--ink);color:#fff;padding:8px 16px;border-radius:16px;display:inline-block;
 }
-.examtimer.low{background:var(--berry);}
 
 .flashcard{
   background:linear-gradient(180deg,#fff 0%,#fff6d6 100%);
@@ -730,28 +760,90 @@ const GERMAN_LEXICON = (()=>{
 })();
 
 /* ===================== STATE ===================== */
-const MODULES=[
-  {id:'haben-sein', icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
-  {id:'farben', icon:'🎨', label:'Farben', en:'Colours'},
-  {id:'adjektive', icon:'⚖️', label:'Adjektive', en:'Adjectives'},
-  {id:'zahlen', icon:'🔢', label:'Zahlen', en:'Numbers'},
-  {id:'zahlen100', icon:'💯', label:'Zahlen 100+', en:'Numbers 100+'},
-  {id:'familie', icon:'👪', label:'Familie', en:'Family'},
-  {id:'pronomen', icon:'👤', label:'Pronomen', en:'Pronouns'},
-  {id:'verben', icon:'📖', label:'Verben', en:'Verbs'},
-  {id:'lesen', icon:'📄', label:'Lesetext', en:'Reading Text'},
-  {id:'exam', icon:'⏱️', label:'Prüfung', en:'Mock Exam'},
-  {id:'revision', icon:'🔁', label:'Wiederholen', en:'Revise'}
+const LEVELS=[
+  {id:'haben-sein', level:1, icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
+  {id:'farben', level:2, icon:'🎨', label:'Farben', en:'Colours'},
+  {id:'adjektive', level:3, icon:'⚖️', label:'Adjektive', en:'Adjectives'},
+  {id:'zahlen', level:4, icon:'🔢', label:'Zahlen', en:'Numbers'},
+  {id:'zahlen100', level:5, icon:'💯', label:'Zahlen 100+', en:'Bigger numbers'},
+  {id:'familie', level:6, icon:'👪', label:'Familie', en:'Family'},
+  {id:'pronomen', level:7, icon:'👤', label:'Pronomen', en:'Pronouns'},
+  {id:'verben', level:8, icon:'📖', label:'Verben', en:'Verbs'},
+  {id:'lesen', level:9, icon:'📄', label:'Lesetext', en:'A little story'},
+  {id:'challenge', level:10, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
+  {id:'revision', extra:true, icon:'🎮', label:'Spielplatz', en:'Practice park'}
 ];
+const MODULES=LEVELS;
+const SAVE_KEY='deutschreise-levels-v2';
+const STORY_LEVELS=LEVELS.filter(m=>m.level);
 
 const state = {
   current:'haben-sein',
   done:new Set(),
   rate:0.85,
+  justCleared:null,
+  lockHint:null,
 };
 
-function goTo(id){ state.current=id; render(); window.scrollTo({top:0,behavior:'smooth'}); }
-function markDone(id){ state.done.add(id); render(); }
+function loadProgress(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const d=JSON.parse(raw);
+    if(Array.isArray(d.done)){
+      state.done=new Set(d.done.map(id=>id==='exam'?'challenge':id));
+    }
+    if(d.current){
+      const cur=d.current==='exam'?'challenge':d.current;
+      if(LEVELS.some(m=>m.id===cur)) state.current=cur;
+    }
+  }catch(e){}
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current}));
+  }catch(e){}
+}
+function levelById(id){ return LEVELS.find(m=>m.id===id); }
+function isUnlocked(id){
+  const m=levelById(id);
+  if(!m) return false;
+  if(m.extra) return state.done.has('haben-sein');
+  if(m.level===1) return true;
+  const prev=LEVELS.find(x=>x.level===m.level-1);
+  return !!(prev && state.done.has(prev.id));
+}
+function nextStoryLevel(id){
+  const m=levelById(id);
+  if(!m || !m.level) return null;
+  return LEVELS.find(x=>x.level===m.level+1) || null;
+}
+function goTo(id){
+  if(!isUnlocked(id)){
+    const m=levelById(id);
+    const prev=m && m.level ? LEVELS.find(x=>x.level===m.level-1) : LEVELS.find(x=>x.id==='haben-sein');
+    state.lockHint=prev
+      ? `🔒 Level ${m.level} is sleeping. Clear Level ${prev.level} (${prev.en}) first — then Otto will open the gate.`
+      : '🔒 Finish Level 1 first. Otto is picky about queues.';
+    render();
+    return;
+  }
+  state.lockHint=null;
+  state.current=id;
+  saveProgress();
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function markDone(id){
+  const wasNew=!state.done.has(id);
+  state.done.add(id);
+  saveProgress();
+  if(wasNew && levelById(id) && levelById(id).level){
+    state.justCleared=id;
+  }
+  render();
+}
+loadProgress();
 
 /* ===================== GENERIC UI HELPERS ===================== */
 function speakerBtn(text, extraClass){
@@ -803,14 +895,14 @@ function renderQuiz(container, questions, onComplete){
     box.innerHTML='';
     if(idx>=questions.length){
       box.innerHTML=`<div class="qfeedback ok">${score===questions.length
-        ? 'Full marks! Otto is doing cartwheels (carefully). '+score+'/'+questions.length+' ✓'
-        : 'Quiz done — '+score+'/'+questions.length+' correct. Otto still likes you. 🎉'}</div>`;
+        ? 'Level check: full marks! Otto is doing cartwheels (carefully). '+score+'/'+questions.length+' ✓'
+        : 'Level check done — '+score+'/'+questions.length+' correct. Otto still likes you. 🎉'}</div>`;
       onComplete && onComplete(score, questions.length);
       return;
     }
     const item=questions[idx];
     const prog=document.createElement('div'); prog.className='progressline';
-    prog.innerHTML=`Star ${idx+1} of ${questions.length} · ${glossHTML('Frage','question')}`;
+    prog.innerHTML=`Check ${idx+1} of ${questions.length} · ${glossHTML('Frage','question')}`;
     box.appendChild(prog);
     const p=document.createElement('div'); p.className='qprompt';
     p.innerHTML = decorateQuotedGerman(item.q);
@@ -1177,7 +1269,11 @@ function renderWriteFromEnglish(card, items){
 
 function moduleShell(title, tagline){
   const card=document.createElement('div'); card.className='card';
-  card.innerHTML=`<h2>${title}</h2><div class="tagline">${tagline}</div>`;
+  const m=levelById(state.current);
+  const chip = (m && m.level)
+    ? `<div class="levelchip">Level ${m.level} of ${STORY_LEVELS.length}</div>`
+    : (m && m.extra ? `<div class="levelchip extra">Practice park</div>` : '');
+  card.innerHTML=`${chip}<h2>${title}</h2><div class="tagline">${tagline}</div>`;
   return card;
 }
 
@@ -1256,7 +1352,7 @@ function renderHabenSein(root){
   ]);
   renderWriteFromEnglish(card, WRITE_SENTENCES['haben-sein']);
 
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'"Er ___ zehn Jahre alt." (He is ten years old) — which verb form?', opts:['ist','hat','sind'], a:0},
     {q:'"Wir ___ einen Hund." (We have a dog) — which verb form?', opts:['sind','haben','bin'], a:1},
@@ -1294,7 +1390,7 @@ function renderFarben(root){
 
   phase(card,'W','4 ✍️ Write','Write the German colour words.');
   renderWriteFromEnglish(card, WRITE_SENTENCES.farben);
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'What colour is "blau"?', opts:['Red','Blue','Green'], a:1, audio:'blau'},
     {q:'How do you say "yellow" in German?', opts:['Gelb','Grün','Grau'], a:0},
@@ -1337,7 +1433,7 @@ function renderAdjektive(root){
     {prefix:'Das Gegenteil von "schnell" ist', gloss:'the opposite of “fast” is', answer:'langsam', suffix:'.', audioHint:'langsam'},
   ]);
   renderWriteFromEnglish(card, WRITE_SENTENCES.adjektive);
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'What is the opposite of "gut" (good)?', opts:['Schlecht','Schön','Kurz'], a:0, audio:'gut'},
     {q:'"Kurz" means...', opts:['Long','Short','Loud'], a:1, audio:'Kurz'},
@@ -1460,7 +1556,7 @@ function renderZahlen(root){
   listenWrap.appendChild(row);
   card.appendChild(listenWrap);
 
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'How do you say 21 in German?', opts:['zwanzigeins','einundzwanzig','zweiundzehn'], a:1},
     {q:'What number is "fünfzig"?', opts:['15','50','5'], a:1, audio:'fünfzig'},
@@ -1535,7 +1631,7 @@ function renderZahlen100(root){
     if(!isNaN(n) && n>=0 && n<=9999) speak(numberWordBig(n), 0.75);
   };
 
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'How do you say 200 in German?', opts:['zweihundert','zweizig','zweitausend'], a:0},
     {q:'What number is "fünfhundert"?', opts:['50','500','5000'], a:1, audio:'fünfhundert'},
@@ -1574,7 +1670,7 @@ function renderFamilie(root){
 
   phase(card,'W','4 ✍️ Write','Write the German family words.');
   renderWriteFromEnglish(card, WRITE_SENTENCES.familie);
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'What does "die Schwester" mean?', opts:['The brother','The sister','The mother'], a:1, audio:'die Schwester'},
     {q:'What does "der Großvater" mean?', opts:['The grandfather','The father','The uncle'], a:0, audio:'der Großvater'},
@@ -1672,7 +1768,7 @@ function renderVerben(root){
   ]);
   renderWriteFromEnglish(card, WRITE_SENTENCES.verben);
 
-  sectionLabel(card,'Quick quiz');
+  sectionLabel(card,'Level check ⭐');
   renderQuiz(card,[
     {q:'"Sie ___ aus Spanien." (formal “you come”)', opts:['kommst','kommen','kommt'], a:1},
     {q:'"Wir ___ in Hamburg." (we live)', opts:['wohnen','wohnt','wohne'], a:0},
@@ -1685,7 +1781,7 @@ function renderVerben(root){
 
 function renderLesen(root){
   renderRecap(root, 'lesen');
-  const card=moduleShell(`Unseen Passage — ${glossHTML('Lesetext','reading text')}`,'Practise reading comprehension the way it will appear in the exam.');
+  const card=moduleShell(`A little story — ${glossHTML('Lesetext','reading text')}`,'Read a short German story made from words you already know. No trick questions. Otto promises. (Mostly.)');
   lsrwRail(card);
   explainer(card, `<strong>Don't panic if you don't understand every word!</strong> This passage uses vocabulary you've already learned — colours, family words, numbers, and the verbs ${deHTML('sein')} / ${deHTML('haben')} / ${deHTML('wohnen')} / ${deHTML('kommen')}. Use LSRW: listen to the whole story first, speak the sentences, then read the text, then write the answers.`);
   ottoSays(card, 'Anna has a brother, a sister, a dog, and a favourite colour. That is a whole soap opera in six sentences. You can do this.');
@@ -1720,44 +1816,31 @@ function renderLesen(root){
   gbtn.onclick=()=>{ gloss.classList.toggle('show'); gbtn.textContent = gloss.classList.contains('show') ? 'Hide glossary ▴' : 'Show glossary ▾'; };
   card.appendChild(gbtn); card.appendChild(gloss);
 
-  phase(card,'W','4 ✍️ Write','Answer in your head, then tap. These are exam-style questions.');
+  phase(card,'W','4 ✍️ Write','Answer in your head, then tap. These questions are about the story you just heard.');
   sectionLabel(card,'Comprehension questions');
   renderQuiz(card, PASSAGE_Q, (score,total)=>{ if(score>=total-1) markDone('lesen'); });
 
   root.appendChild(card);
 }
 
-function renderExam(root){
-  const card=moduleShell(`Mock Exam Mode — ${glossHTML('Prüfung','exam')}`,'A 40-minute simulated Paper 1 — questions drawn from every topic plus the unseen passage. Otto will wait. Otto cannot sit the exam. He has paws.');
+function renderChallenge(root){
+  const card=moduleShell('Otto-Cup','Boss level! A mix of everything you have learned so far. No timer. No scary test. Just show Otto you remember.');
   const startWrap=document.createElement('div');
   const info=document.createElement('p'); info.className='note';
-  info.textContent='This mock exam is mainly Reading and Writing, timed at 40 minutes, like Paper 1. Use LSRW on the earlier topics first (Listen → Speak → Read → Write) so the German is already in your ears before you sit the test.';
+  info.textContent='This is a fun mix from every level. Take your time. If a bit feels wobbly, go back to that level in the Practice park afterwards.';
   startWrap.appendChild(info);
-  const startBtn=document.createElement('button'); startBtn.className='btn'; startBtn.textContent='Start Mock Exam (no fox helpers)';
+  const startBtn=document.createElement('button'); startBtn.className='btn'; startBtn.textContent='Start the Otto-Cup 🏆';
   startWrap.appendChild(startBtn);
   card.appendChild(startWrap);
   root.appendChild(card);
 
   startBtn.onclick=()=>{
     startWrap.remove();
-    runExam(card);
+    runChallenge(card);
   };
 }
 
-function runExam(card){
-  const timerEl=document.createElement('div'); timerEl.className='examtimer'; timerEl.style.marginBottom='16px';
-  card.appendChild(timerEl);
-  let seconds=40*60;
-  const timerId=setInterval(()=>{
-    seconds--;
-    const m=String(Math.floor(seconds/60)).padStart(2,'0'), s=String(seconds%60).padStart(2,'0');
-    timerEl.textContent=`⏱ ${m}:${s}`;
-    if(seconds<=60) timerEl.classList.add('low');
-    if(seconds<=0){ clearInterval(timerId); finishExam(); }
-  },1000);
-  const s0=Math.floor(seconds/60), s1=Math.floor(seconds%60);
-  timerEl.textContent=`⏱ ${String(s0).padStart(2,'0')}:${String(s1).padStart(2,'0')}`;
-
+function runChallenge(card){
   const examQs=[
     {topic:'Haben & Sein', q:'"Ich ___ zehn Jahre alt."', opts:['bin','habe','bist'], a:0},
     {topic:'Haben & Sein', q:'"Wir ___ einen Hund."', opts:['sind','haben','seid'], a:1},
@@ -1778,15 +1861,14 @@ function runExam(card){
   const topicScores={};
   const quizHost=document.createElement('div');
   card.appendChild(quizHost);
-  quizHost.innerHTML='';
   let idx=0, score=0;
   examQs.forEach(e=>{ if(!(e.topic in topicScores)) topicScores[e.topic]={correct:0,total:0}; });
   function showQ(){
     quizHost.innerHTML='';
-    if(idx>=examQs.length){ clearInterval(timerId); finishExam(); return; }
+    if(idx>=examQs.length){ finishChallenge(); return; }
     const item=examQs[idx];
     const box=document.createElement('div'); box.className='qwrap';
-    const prog=document.createElement('div'); prog.className='progressline'; prog.textContent=`Question ${idx+1} / ${examQs.length} — ${item.topic}`;
+    const prog=document.createElement('div'); prog.className='progressline'; prog.textContent=`Otto-Cup ${idx+1} / ${examQs.length} — ${item.topic}`;
     box.appendChild(prog);
     const p=document.createElement('div'); p.className='qprompt';
     p.innerHTML = decorateQuotedGerman(item.q);
@@ -1813,11 +1895,10 @@ function runExam(card){
   }
   showQ();
 
-  function finishExam(){
+  function finishChallenge(){
     quizHost.innerHTML='';
-    timerEl.textContent='⏱ Finished! Otto would clap, but: paws.';
     const summary=document.createElement('div'); summary.className='summarybox';
-    let html=`<div style="font-family:'Fredoka',sans-serif;font-size:22px;margin-bottom:8px;">Score: ${score} / ${examQs.length}</div>`;
+    let html=`<div style="font-family:'Fredoka',sans-serif;font-size:22px;margin-bottom:8px;">Otto-Cup score: ${score} / ${examQs.length}</div>`;
     Object.entries(topicScores).forEach(([topic,{correct,total}])=>{
       if(total===0) return;
       const pct=Math.round(100*correct/total);
@@ -1829,15 +1910,28 @@ function runExam(card){
     const weakTopics=Object.entries(topicScores).filter(([t,{correct,total}])=>total>0 && correct/total<0.5).map(([t])=>t);
     if(weakTopics.length){
       const w=document.createElement('p'); w.className='note'; w.style.marginTop='12px';
-      w.innerHTML=`<strong>Focus your revision on:</strong> ${weakTopics.join(', ')} — Otto’s homework list. (He will not do it for you.)`;
+      w.innerHTML=`<strong>Play these again in Practice park:</strong> ${weakTopics.join(', ')} — Otto’s gentle hint list.`;
+      card.appendChild(w);
+    } else {
+      const w=document.createElement('p'); w.className='note'; w.style.marginTop='12px';
+      w.textContent='Wow. Otto would give you a medal, but he already spent it on snacks.';
       card.appendChild(w);
     }
-    markDone('exam');
+    if(score>=examQs.length-2){
+      const claim=document.createElement('button'); claim.className='btn'; claim.style.marginTop='14px';
+      claim.textContent='Claim Level 10 star ⭐';
+      claim.onclick=()=>markDone('challenge');
+      card.appendChild(claim);
+    } else {
+      const again=document.createElement('p'); again.className='note'; again.style.marginTop='12px';
+      again.textContent='Almost! Play the wobbly topics again, then come back for the Otto-Cup.';
+      card.appendChild(again);
+    }
   }
 }
 
 function renderRevision(root){
-  const card=moduleShell('Quick Revision — Flashcards','LSRW mix: hear, say, read, then check. Say the German out loud before you flip. Whispering still counts. Dramatic whispering counts extra.');
+  const card=moduleShell('Practice park — Flashcards','A playground, not a test. Hear, say, read, then check. Say the German out loud before you flip. Whispering still counts. Dramatic whispering counts extra.');
   const allCards=[
     ...COLORS.map(([de,en])=>({front:de,back:en,type:'Farben'})),
     ...ADJ_PAIRS.flatMap(([a,ae,b,be])=>[{front:a,back:ae,type:'Adjektive'},{front:b,back:be,type:'Adjektive'}]),
@@ -1889,20 +1983,21 @@ function renderRevision(root){
 const RENDERERS={
   'haben-sein':renderHabenSein,'farben':renderFarben,'adjektive':renderAdjektive,
   'zahlen':renderZahlen,'zahlen100':renderZahlen100,'familie':renderFamilie,'pronomen':renderPronomen,
-  'verben':renderVerben,'lesen':renderLesen,'exam':renderExam,'revision':renderRevision
+  'verben':renderVerben,'lesen':renderLesen,'challenge':renderChallenge,'revision':renderRevision
 };
 
 function render(){
   const app=document.getElementById('app');
   app.innerHTML='';
   resetHeard();
+  if(!isUnlocked(state.current)) state.current='haben-sein';
 
   const masthead=document.createElement('div'); masthead.className='masthead';
   const left=document.createElement('div');
   left.innerHTML=`
       <div class="flagbar"><div class="b"></div><div class="r"></div><div class="g"></div></div>
       <h1>Deutsch<span>reise</span></h1>
-      <div class="sub">${glossHTML('Deutschreise','German journey')} · Listen · Speak · Read · Write · Paper 1</div>
+      <div class="sub">${glossHTML('Deutschreise','German journey')} · Learn German the fun way · Levels 1–${STORY_LEVELS.length}</div>
   `;
   left.querySelector('h1').appendChild(speakerBtn('Deutschreise'));
   const tools=document.createElement('div');
@@ -1928,20 +2023,30 @@ function render(){
   app.appendChild(masthead);
 
   const welcome=document.createElement('div'); welcome.className='welcomebox';
-  welcome.innerHTML=`<strong>We learn with LSRW.</strong> Every topic follows the same four steps: <strong>Listen</strong> (ears only) → <strong>Speak</strong> (your voice) → <strong>Read</strong> (letters) → <strong>Write</strong> (spelling). Do not skip ahead to writing — hearing and saying first is what makes German stick. Work through the stamps in order (start at Haben &amp; Sein). A glowing 🔊 marks a new German word. Use <strong>Slow</strong> at the top if speech feels fast. Later topics start with a short recap. Each topic ends with a quiz; scoring well stars it as mastered. You can revisit any topic as many times as you like.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (he has a very small vocabulary and a very big opinion).`;
+  const mapDone=STORY_LEVELS.every(m=>state.done.has(m.id));
+  welcome.innerHTML= mapDone
+    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, and watch this space — new levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
+    : `<strong>A beginner German adventure.</strong> Play one <strong>level</strong> at a time. Finish the level check ⭐ to unlock the next — that is how Otto knows you are ready. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Later we will add more levels as you get stronger.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
   app.appendChild(welcome);
 
   const overall=document.createElement('div');
-  const coreModules=MODULES.filter(m=>m.id!=='revision');
-  const pct=Math.round(100*state.done.size/coreModules.length);
-  overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div><div class="progress-caption">⭐ ${state.done.size}/${coreModules.length} stops starred</div>`;
+  const cleared=STORY_LEVELS.filter(m=>state.done.has(m.id)).length;
+  const pct=Math.round(100*cleared/STORY_LEVELS.length);
+  overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div><div class="progress-caption">${mapDone ? '🏆 Beginner map cleared!' : `⭐ Level ${Math.min(cleared+1, STORY_LEVELS.length)} of ${STORY_LEVELS.length} · ${cleared} cleared`}</div>`;
   app.appendChild(overall);
 
+  if(state.lockHint){
+    const hint=document.createElement('div'); hint.className='lockhint'; hint.textContent=state.lockHint;
+    app.appendChild(hint);
+  }
+
   const journey=document.createElement('div'); journey.className='journey';
-  MODULES.forEach(m=>{
+  LEVELS.forEach(m=>{
+    const unlocked=isUnlocked(m.id);
     const s=document.createElement('div');
-    s.className='stamp'+(m.id===state.current?' active':'')+(state.done.has(m.id)?' done':'');
-    s.innerHTML=`<div class="icon">${m.icon}</div><div>${m.label}</div><div class="stampen">${m.en}</div>`;
+    s.className='stamp'+(m.id===state.current?' active':'')+(state.done.has(m.id)?' done':'')+(!unlocked?' locked':'')+(m.extra?' extra':'');
+    const lv = m.level ? `<div class="lv">Lv ${m.level}</div>` : `<div class="lv">Play</div>`;
+    s.innerHTML=`${lv}<div class="icon">${unlocked?m.icon:'🔒'}</div><div>${m.label}</div><div class="stampen">${m.en}</div>`;
     s.onclick=()=>goTo(m.id);
     journey.appendChild(s);
   });
@@ -1951,16 +2056,68 @@ function render(){
   RENDERERS[state.current](moduleRoot);
   app.appendChild(moduleRoot);
 
-  if(state.done.has(state.current) && state.current!=='exam' && state.current!=='revision'){
-    const b=document.createElement('div'); b.className='badge'; b.innerHTML='★ You starred this stop! Otto is proud. (Quietly. He is a fox.)';
+  const cur=levelById(state.current);
+  if(state.done.has(state.current) && cur && cur.level){
+    const b=document.createElement('div'); b.className='badge';
+    b.innerHTML= cur.level===STORY_LEVELS.length
+      ? '★ Boss level cleared! Otto is proud. (Quietly. He is a fox.)'
+      : `★ Level ${cur.level} cleared! Otto is proud. (Quietly. He is a fox.)`;
     moduleRoot.appendChild(b);
   }
 
-  const idx=MODULES.findIndex(m=>m.id===state.current);
+  const idx=LEVELS.findIndex(m=>m.id===state.current);
   const nav=document.createElement('div'); nav.className='btnrow';
-  if(idx>0){ const pb=document.createElement('button'); pb.className='btn ghost'; pb.textContent='← '+MODULES[idx-1].label+' ('+MODULES[idx-1].en+')'; pb.onclick=()=>goTo(MODULES[idx-1].id); nav.appendChild(pb); }
-  if(idx<MODULES.length-1){ const nb=document.createElement('button'); nb.className='btn'; nb.textContent=MODULES[idx+1].label+' ('+MODULES[idx+1].en+') →'; nb.onclick=()=>goTo(MODULES[idx+1].id); nav.appendChild(nb); }
+  if(idx>0 && isUnlocked(LEVELS[idx-1].id)){
+    const pb=document.createElement('button'); pb.className='btn ghost';
+    const prev=LEVELS[idx-1];
+    pb.textContent='← '+(prev.level?('Level '+prev.level+' · '):'')+prev.label;
+    pb.onclick=()=>goTo(prev.id); nav.appendChild(pb);
+  }
+  const nxt=LEVELS[idx+1];
+  if(nxt){
+    if(isUnlocked(nxt.id)){
+      const nb=document.createElement('button'); nb.className='btn';
+      nb.textContent=(nxt.level?('Level '+nxt.level+' unlocked · '):'')+nxt.label+' →';
+      nb.onclick=()=>goTo(nxt.id); nav.appendChild(nb);
+    } else if(cur && cur.level && !state.done.has(cur.id)){
+      const wait=document.createElement('span'); wait.className='note'; wait.style.margin='8px 0 0';
+      wait.textContent='Finish this level check ⭐ to unlock Level '+(cur.level+1)+'.';
+      nav.appendChild(wait);
+    }
+  }
   app.appendChild(nav);
+
+  if(state.justCleared){
+    const clearedLv=levelById(state.justCleared);
+    const nxtLv=nextStoryLevel(state.justCleared);
+    const overlay=document.createElement('div'); overlay.className='level-up';
+    const box=document.createElement('div'); box.className='level-up-card';
+    const finishedAll=clearedLv && clearedLv.level===STORY_LEVELS.length;
+    box.innerHTML=`<div class="burst">${finishedAll?'🏆':'🎉'}</div>
+      <h3>${finishedAll?'Beginner map complete!':'Level '+clearedLv.level+' cleared!'}</h3>
+      <p>${finishedAll
+        ? 'You finished every beginner level. More levels will appear as you grow. Otto packed a tiny suitcase of pride.'
+        : (clearedLv.label+' is yours. '+clearedLv.en+'. The next gate just opened.')}</p>`;
+    const row=document.createElement('div'); row.className='btnrow'; row.style.justifyContent='center';
+    const stay=document.createElement('button'); stay.className='btn ghost'; stay.textContent='Stay here';
+    stay.onclick=()=>{ state.justCleared=null; overlay.remove(); };
+    row.appendChild(stay);
+    if(nxtLv){
+      const go=document.createElement('button'); go.className='btn';
+      go.textContent='Next: Level '+nxtLv.level+' · '+nxtLv.label+' →';
+      go.onclick=()=>{ state.justCleared=null; goTo(nxtLv.id); };
+      row.appendChild(go);
+    } else {
+      const park=document.createElement('button'); park.className='btn';
+      park.textContent='Visit Practice park →';
+      park.onclick=()=>{ state.justCleared=null; goTo('revision'); };
+      row.appendChild(park);
+    }
+    box.appendChild(row);
+    overlay.appendChild(box);
+    app.appendChild(overlay);
+    speak('Super!');
+  }
 }
 
 render();
