@@ -8,17 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#2b2550;
-  --ink-soft:#5b5680;
-  --card:#fffdf9;
-  --sky:#6ec6ff;
-  --sun:#ffd166;
-  --peach:#ff8a6b;
-  --berry:#ff5d8f;
-  --grass:#2ec4b6;
-  --grape:#7b6cff;
-  --leaf:#7bd97b;
-  --shadow: 6px 6px 0 rgba(43,37,80,0.12);
+  --ink:#2f2854;
+  --ink-soft:#5c5478;
+  --card:#fffdf8;
+  --sky:#7ec8ef;
+  --sun:#ffd45c;
+  --peach:#f08a72;
+  --berry:#e85a9a;
+  --grass:#3db89a;
+  --grape:#6d5ce0;
+  --leaf:#6fcf7a;
+  --shadow: 4px 4px 0 rgba(47,40,84,0.16);
+  --rainbow:linear-gradient(90deg,#ff7eab 0%,#ffb15c 16%,#ffe14a 33%,#6edc9c 50%,#5cc4f0 66%,#8a6ef0 83%,#f07ac4 100%);
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -27,17 +28,35 @@ body{
   color:var(--ink);
   font-family:'Nunito',sans-serif;
   background:
-    radial-gradient(circle at 12% 8%, #fff7c2 0 70px, transparent 71px),
-    radial-gradient(circle at 88% 14%, #ffd6ea 0 90px, transparent 91px),
-    radial-gradient(circle at 80% 90%, #c9f4ff 0 120px, transparent 121px),
-    radial-gradient(circle at 8% 78%, #d8ffd4 0 80px, transparent 81px),
-    linear-gradient(180deg,#c9eaff 0%,#fff6d8 42%,#ffe8f3 100%);
+    linear-gradient(180deg, rgba(255,126,171,0.22) 0%, rgba(255,225,74,0.18) 18%, transparent 36%),
+    radial-gradient(ellipse at 18% 8%, rgba(255,236,210,0.95) 0 180px, transparent 181px),
+    radial-gradient(ellipse at 88% 12%, rgba(255,214,232,0.7) 0 200px, transparent 201px),
+    linear-gradient(180deg,#f4ecff 0%,#fff6e8 42%,#eaf6ff 100%);
 }
-.wrap{max-width:920px;margin:0 auto;padding:22px 16px 80px;}
+body::before,body::after{
+  position:fixed;pointer-events:none;z-index:0;line-height:1;
+}
+body::before{
+  content:"🦄";
+  top:14px;left:12px;font-size:44px;opacity:0.28;
+}
+body::after{
+  content:"🌈";
+  bottom:16px;right:12px;font-size:48px;opacity:0.3;
+}
+.wrap{max-width:920px;margin:0 auto;padding:22px 16px 80px;position:relative;z-index:1;}
+.wrap::before{
+  content:"✨  🦄  🌈  ✨";
+  display:block;text-align:center;letter-spacing:0.55em;
+  font-size:16px;margin:0 0 12px;opacity:0.72;
+}
 
 .masthead{
   display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  background:var(--card);border:4px solid var(--ink);border-radius:28px;
+  background:
+    linear-gradient(var(--card),var(--card)) padding-box,
+    var(--rainbow) border-box;
+  border:4px solid transparent;border-radius:28px;
   padding:16px 20px;box-shadow:var(--shadow);margin-bottom:16px;
 }
 .masthead h1{
@@ -47,28 +66,52 @@ body{
 .masthead h1 span{color:var(--berry);}
 .masthead .sub{font-size:15px;color:var(--ink-soft);font-weight:700;margin-top:4px;}
 .otto{
-  margin:8px 0 16px;padding:10px 14px;background:#fff;
-  border:3px dashed var(--peach);border-radius:18px;
+  margin:8px 0 16px;padding:10px 14px;background:#fff8ef;
+  border:2px dashed #e8c9a8;border-radius:18px;
   font-size:15px;font-weight:700;line-height:1.45;
 }
-.otto strong{color:#e07a2c;}
+.otto strong{color:#c47a3a;}
 .buddy{
   font-size:52px;line-height:1;filter:drop-shadow(3px 3px 0 rgba(43,37,80,0.12));
   animation:bob 2.8s ease-in-out infinite;cursor:pointer;
 }
+.buddies{display:flex;align-items:flex-end;gap:4px;}
+.buddy.unicorn{font-size:58px;animation-delay:.4s;}
+.float-notes{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+body.music-on .float-notes{display:block;}
+.float-notes i{
+  position:absolute;bottom:-40px;font-style:normal;font-size:22px;opacity:0.38;
+  animation:riseNote 10s linear infinite;color:var(--grape);
+}
+.float-notes i:nth-child(1){left:6%; animation-duration:11s;}
+.float-notes i:nth-child(2){left:22%; animation-duration:8s; animation-delay:1.2s; font-size:18px;}
+.float-notes i:nth-child(3){left:40%; animation-duration:12s; animation-delay:2s;}
+.float-notes i:nth-child(4){left:58%; animation-duration:9s; animation-delay:.6s; font-size:26px;}
+.float-notes i:nth-child(5){left:74%; animation-duration:10s; animation-delay:1.8s;}
+.float-notes i:nth-child(6){left:88%; animation-duration:13s; animation-delay:2.4s; font-size:16px;}
+@keyframes riseNote{
+  0%{transform:translateY(0) rotate(0deg);opacity:0;}
+  12%{opacity:0.4;}
+  100%{transform:translateY(-110vh) rotate(18deg);opacity:0;}
+}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.rainbowbar{
+  height:10px;width:128px;border-radius:999px;overflow:hidden;margin-bottom:8px;
+  border:2px solid var(--ink);
+  background:var(--rainbow);
+}
 .flagbar{display:flex;height:10px;width:78px;border-radius:999px;overflow:hidden;margin-bottom:8px;border:2px solid var(--ink);}
 .flagbar div{flex:1;}
-.flagbar .b{background:#111;} .flagbar .r{background:#e63946;} .flagbar .g{background:#ffd166;}
+.flagbar .b{background:#111;} .flagbar .r{background:#ff2a3a;} .flagbar .g{background:#ffe033;}
 
 .welcomebox{
-  background:#fff;border:3px dashed var(--grape);border-radius:22px;
+  background:#f3edff;border:3px solid var(--grape);border-radius:22px;
   padding:14px 18px;margin-bottom:16px;font-size:16px;line-height:1.55;font-weight:700;
 }
 .welcomebox strong{color:var(--grape);}
 
 .overallbar{height:14px;background:#fff;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin-bottom:6px;}
-.overallbar>div{height:100%;background:linear-gradient(90deg,var(--berry),var(--sun),var(--grass));transition:width .4s ease;}
+.overallbar>div{height:100%;background:var(--rainbow);transition:width .4s ease;}
 .progress-caption{font-size:14px;color:var(--ink-soft);font-weight:800;margin-bottom:0;}
 .progress-tools{
   display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
@@ -76,24 +119,44 @@ body{
 }
 .progress-tools .btn{padding:7px 14px;font-size:13px;}
 
-.journey{display:flex;overflow-x:auto;gap:12px;padding:18px 4px 20px;margin-bottom:6px;scrollbar-width:thin;}
-.stamp{
-  flex:0 0 auto;width:92px;height:92px;border-radius:50%;
-  border:4px solid #cfc9e8;background:#fff;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;font-size:12px;font-weight:800;text-align:center;padding:16px 6px 6px;
-  color:var(--ink-soft); transition:transform .15s ease, border-color .15s ease, color .15s ease;
-  position:relative;box-shadow:3px 3px 0 rgba(43,37,80,0.08);
+.journey{
+  display:flex;overflow-x:auto;gap:12px;padding:18px 10px 22px;margin-bottom:6px;scrollbar-width:thin;
+  background:#fff;
+  border:3px solid var(--ink);border-radius:28px;
+  box-shadow:var(--shadow);
+  position:relative;
 }
+.journey::before{
+  content:"";position:absolute;left:10px;right:10px;top:50%;height:10px;
+  transform:translateY(-50%);border-radius:999px;background:var(--rainbow);opacity:0.95;
+  pointer-events:none;
+}
+.stamp{
+  flex:0 0 auto;width:102px;height:118px;
+  border-radius:22px 22px 48px 48px;
+  border:3px solid var(--ink);
+  background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;font-size:12px;font-weight:800;text-align:center;padding:18px 6px 10px;
+  color:var(--ink); transition:transform .15s ease, border-color .15s ease, color .15s ease;
+  position:relative;z-index:1;box-shadow:var(--shadow);
+}
+.stamp:nth-child(7n+1){background:#ffe4f0;}
+.stamp:nth-child(7n+2){background:#ffe8cc;}
+.stamp:nth-child(7n+3){background:#fff4b0;}
+.stamp:nth-child(7n+4){background:#d4f8e4;}
+.stamp:nth-child(7n+5){background:#d0f0ff;}
+.stamp:nth-child(7n+6){background:#e6dcff;}
+.stamp:nth-child(7n+7){background:#ffd8ee;}
 .stamp:hover{transform:translateY(-4px) scale(1.04);}
 .stamp .icon{font-size:26px;margin-bottom:2px;}
 .stamp .stampen{font-size:10px;font-weight:700;color:inherit;opacity:0.8;margin-top:1px;}
-.stamp.active{border-color:var(--berry);color:var(--berry);background:#fff0f6;}
-.stamp.done{border-color:var(--grass);color:#0f8f84;background:#edfffb;}
+.stamp.active{border-color:var(--berry);color:var(--berry);box-shadow:0 0 0 4px rgba(232,90,154,0.28);}
+.stamp.done{color:#1f8a72;}
 .stamp.done::after{
-  content:"★";position:absolute;top:-4px;right:2px;background:var(--sun);color:var(--ink);
-  width:22px;height:22px;border-radius:50%;font-size:13px;display:flex;align-items:center;
-  justify-content:center;border:2px solid var(--ink);
+  content:"🦄";position:absolute;top:-10px;right:-4px;
+  width:26px;height:26px;font-size:18px;display:flex;align-items:center;
+  justify-content:center;
 }
 .stamp .lv{
   position:absolute;top:-8px;left:50%;transform:translateX(-50%);
@@ -102,7 +165,7 @@ body{
 }
 .stamp.locked{opacity:0.5;cursor:not-allowed;filter:grayscale(.35);}
 .stamp.locked:hover{transform:none;}
-.stamp.extra{border-style:dashed;}
+.stamp.extra{border-style:dashed;background:#fff;}
 .levelchip{
   display:inline-block;font-size:13px;font-weight:800;letter-spacing:0.02em;
   background:var(--grape);color:#fff;border:2.5px solid var(--ink);border-radius:999px;
@@ -128,8 +191,10 @@ body{
 @keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
 
 .card{
-  background:var(--card);
-  border:4px solid var(--ink);
+  background:
+    linear-gradient(var(--card),var(--card)) padding-box,
+    var(--rainbow) border-box;
+  border:4px solid transparent;
   border-radius:28px;
   padding:24px 24px 26px;
   box-shadow:var(--shadow);
@@ -169,27 +234,27 @@ table.conj tr:hover td{background:#fff8e8;}
 .audio-td{cursor:pointer;width:44px;}
 
 button.btn{
-  font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;
   background:var(--grape);color:#fff;border:3px solid var(--ink);border-radius:999px;
-  padding:10px 18px;cursor:pointer;
-  box-shadow:3px 3px 0 rgba(43,37,80,0.15);
+  padding:11px 20px;cursor:pointer;
+  box-shadow:4px 4px 0 rgba(47,40,84,0.18);
 }
 button.btn:hover{background:var(--berry);transform:translateY(-1px);}
-button.btn.ghost{background:#fff;color:var(--ink);}
+button.btn.ghost{background:#fff;color:var(--ink);border:3px solid var(--ink);}
 button.btn.ghost:hover{background:var(--sun);color:var(--ink);}
 button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
 
 .spk{
   display:inline-flex;align-items:center;justify-content:center;
-  width:30px;height:30px;border-radius:50%;border:2.5px solid var(--ink);
-  background:var(--sun);cursor:pointer;font-size:13px;flex:0 0 auto;
-  vertical-align:middle;margin-left:4px;box-shadow:2px 2px 0 rgba(43,37,80,0.12);
+  width:34px;height:34px;border-radius:50%;border:2.5px solid var(--ink);
+  background:var(--sun);cursor:pointer;font-size:15px;flex:0 0 auto;
+  vertical-align:middle;margin-left:4px;box-shadow:3px 3px 0 rgba(47,40,84,0.14);
 }
-.spk:hover{background:#ffe08a;transform:scale(1.08);}
+.spk:hover{background:#ffe27a;transform:scale(1.08);}
 .spk.first-spk{
   animation:pulse 1.6s ease-in-out infinite;
-  background:#fff36b;
+  background:#ffe14a;
 }
 @keyframes pulse{
   0%,100%{box-shadow:0 0 0 0 rgba(255,209,102,0.7)}
@@ -199,7 +264,7 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .deword .de{color:var(--grape);}
 .gloss{color:var(--ink-soft);font-weight:700;font-size:0.92em;white-space:normal;}
 
-.qwrap{background:#fff;border:3px dashed var(--peach);border-radius:20px;padding:16px 18px;margin-top:10px;}
+.qwrap{background:#fbf4ee;border:2px dashed #e8c9b8;border-radius:20px;padding:16px 18px;margin-top:10px;}
 .qprompt{font-weight:800;font-size:18px;margin-bottom:12px;line-height:1.45;}
 .qopt{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -242,7 +307,7 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 }
 
 .flashcard{
-  background:linear-gradient(180deg,#fff 0%,#fff6d6 100%);
+  background:linear-gradient(180deg,#fffefb 0%,#f6ecd4 100%);
   border:4px solid var(--ink);border-radius:28px;
   min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;
   cursor:pointer;font-family:'Fredoka',sans-serif;font-size:32px;text-align:center;padding:20px;
@@ -252,7 +317,7 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .flashnav{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--ink-soft);font-weight:800;}
 
 .passage{
-  background:#fff;border:3px solid var(--sun);border-radius:20px;
+  background:#fffdf8;border:2px solid #eadfc8;border-radius:20px;
   padding:22px 24px;font-size:20px;line-height:1.85;margin-bottom:12px;font-weight:600;
   text-align:justify;hyphens:auto;
 }
@@ -275,12 +340,23 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
   font-family:'Nunito',sans-serif;
   box-shadow:3px 3px 0 rgba(43,37,80,0.08);
 }
-.story-card:hover{background:#fff6d6;transform:translateY(-2px);}
-.story-card.on{border-color:var(--berry);background:#fff0f6;}
+.story-card:nth-child(6n+1){background:#fff3b8;}
+.story-card:nth-child(6n+2){background:#ffd6ea;}
+.story-card:nth-child(6n+3){background:#c8f5dc;}
+.story-card:nth-child(6n+4){background:#c8ecff;}
+.story-card:nth-child(6n+5){background:#ffe0c4;}
+.story-card:nth-child(6n+6){background:#e0d4ff;}
+.story-card:hover{filter:brightness(1.03);transform:translateY(-2px);}
+.story-card.on{border-color:var(--berry);box-shadow:0 0 0 4px rgba(232,90,154,0.25);}
 .story-card .st{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:700;display:block;margin-bottom:4px;}
 .story-card .sb{font-size:13px;font-weight:700;color:var(--ink-soft);line-height:1.35;display:block;}
+.songbox{
+  background:#f7f1e8;border:2px dashed #e5d7b4;border-radius:20px;
+  padding:16px 18px;margin:0 0 16px;white-space:pre-line;
+  font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;line-height:1.7;
+}
 .glossary-panel{
-  background:#f4f0ff;border:3px solid var(--ink);border-radius:20px;
+  background:#f4f0f8;border:2px solid #e2d8c8;border-radius:20px;
   padding:14px 16px;margin:0 0 16px;
 }
 .glossary-panel h3{
@@ -312,26 +388,26 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 }
 
 .explainer{
-  background:#e8fff8;border:3px solid var(--grass);padding:14px 16px;border-radius:18px;
+  background:#eef6f2;border:2px solid #c9dfd4;padding:14px 16px;border-radius:18px;
   font-size:16px;color:var(--ink);margin-bottom:16px;line-height:1.55;font-weight:700;
 }
-.explainer strong{color:#0f8f84;}
+.explainer strong{color:#4f8f7e;}
 .tipbox{
-  background:#fff6d6;border:3px solid var(--sun);border-radius:18px;
+  background:#f7f1e0;border:2px solid #e5d7b4;border-radius:18px;
   padding:14px 16px;margin-bottom:16px;font-size:16px;line-height:1.55;font-weight:700;
 }
-.tipbox strong{color:#c47b00;}
+.tipbox strong{color:#9a4b00;}
 .note{font-size:15px;color:var(--ink-soft);margin:0 0 10px;font-weight:700;line-height:1.5;}
 .summarybox{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:16px 18px;margin-top:14px;}
 .summaryrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid #f0ecff;font-size:15px;font-weight:800;}
 .summaryrow:last-child{border-bottom:none;}
 .weak{color:var(--berry);font-weight:800;}
-.strong{color:#0f8f84;font-weight:800;}
+.strong{color:#007a62;font-weight:800;}
 
 .speedbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
 .speedbar .lbl{font-size:12px;font-weight:800;color:var(--ink-soft);}
 .speedbar .btn{padding:7px 12px;font-size:13px;}
-.recapcard{border-color:var(--peach);background:#fff8f2;}
+.recapcard{border-color:#e8c9b8;background:#fbf4ee;}
 .speaklist{display:flex;flex-direction:column;gap:10px;}
 .speakrow{
   background:#fff;border:3px solid var(--ink);border-radius:18px;padding:12px 14px;
@@ -346,26 +422,28 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
   font-size:13px;font-weight:800;padding:7px 12px;border-radius:999px;
   border:2.5px solid var(--ink);box-shadow:2px 2px 0 rgba(43,37,80,0.08);
 }
-.lsrw-pill.L{background:#bfe9ff;}
-.lsrw-pill.S{background:#ffe08a;}
-.lsrw-pill.R{background:#c8f7c8;}
-.lsrw-pill.W{background:#ffc4a8;}
+.lsrw-pill.L{background:#8fd6ff;}
+.lsrw-pill.S{background:#ffe14a;}
+.lsrw-pill.R{background:#7ee8a8;}
+.lsrw-pill.W{background:#ffb089;}
 .phase{
   margin:22px 0 12px;padding:12px 14px;border-radius:16px;border:3px solid var(--ink);
   font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;
 }
 .phase .phase-blurb{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--ink-soft);margin-top:4px;}
-.phase.L{background:#e3f6ff;}
-.phase.S{background:#fff6d6;}
-.phase.R{background:#e8fff8;}
-.phase.W{background:#ffe8dc;}
+.phase.L{background:#eaf4f8;}
+.phase.S{background:#f8f3e6;}
+.phase.R{background:#eaf5ef;}
+.phase.W{background:#f8eee8;}
 
 @media (prefers-reduced-motion: reduce){
-  .buddy,.spk.first-spk{animation:none;}
+  .buddy,.spk.first-spk,body::before,.float-notes i{animation:none;}
+  .float-notes{display:none !important;}
 }
 </style>
 </head>
 <body>
+<div class="float-notes" aria-hidden="true"><i>♪</i><i>♫</i><i>🎵</i><i>♪</i><i>🌈</i><i>🦄</i></div>
 <div class="wrap" id="app"></div>
 
 <script>
@@ -520,33 +598,33 @@ Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien. Unser Haus 
   },
   {
     id:'kuchen',
-    title:'Otto and the cake',
-    blurb:'A hungry fox, a big cake, a terrible plan.',
-    text:`Otto ist ein kleiner oranger Fuchs. Heute hat Otto sehr großen Hunger. Auf dem Tisch ist ein Kuchen. Der Kuchen ist groß, braun und sehr schön. Otto schaut und schaut. Dann hat er eine Idee. Otto sagt: „Hallo, Kuchen! Ich heiße Otto. Bist du mein Kuchen?“ Der Kuchen sagt nichts. Kuchen sprechen nicht. Das ist gut für den Kuchen und schlecht für Otto.
+    title:'Simba and the cake',
+    blurb:'A hungry lion, a big cake, a terrible plan.',
+    text:`Simba ist ein kleiner gelber Löwe. Heute hat Simba sehr großen Hunger. Auf dem Tisch ist ein Kuchen. Der Kuchen ist groß, braun und sehr schön. Simba schaut und schaut. Dann hat er eine Idee. Simba sagt: „Hallo, Kuchen! Ich heiße Simba. Bist du mein Kuchen?“ Der Kuchen sagt nichts. Kuchen sprechen nicht. Das ist gut für den Kuchen und schlecht für Simba.
 
-Anna kommt. Sie ist zwölf Jahre alt und sie ist nicht langsam. „Otto! Das ist mein Kuchen!“ Otto macht große Augen. Er sagt: „Ich bin ein Hund. Hunde essen Kuchen. Das ist die Regel.“ Anna lacht. „Du bist kein Hund. Du bist ein Fuchs. Füchse sind orange. Hunde sind nicht orange.“ Otto sagt: „Bitte, ein kleines Stück!“ Anna sagt: „Ja. Nur ein kleines Stück.“ Jetzt ist Otto glücklich. Der Kuchen ist nicht mehr groß. Anna auch nicht. Sie haben Hunger. Sie essen. Das ist gut.`,
+Anna kommt. Sie ist zwölf Jahre alt und sie ist nicht langsam. „Simba! Das ist mein Kuchen!“ Simba macht große Augen. Er sagt: „Ich bin ein Hund. Hunde essen Kuchen. Das ist die Regel.“ Anna lacht. „Du bist kein Hund. Du bist ein Löwe. Löwen sind gelb. Hunde sind nicht gelb.“ Simba sagt: „Bitte, ein kleines Stück!“ Anna sagt: „Ja. Nur ein kleines Stück.“ Jetzt ist Simba glücklich. Der Kuchen ist nicht mehr groß. Anna auch nicht. Sie haben Hunger. Sie essen. Das ist gut.`,
     lines:[
-      {de:"Otto ist ein kleiner oranger Fuchs.", en:"Otto is a small orange fox."},
-      {de:"Heute hat Otto sehr großen Hunger.", en:"Today Otto is very hungry."},
+      {de:"Simba ist ein kleiner gelber Löwe.", en:"Simba is a small yellow lion."},
+      {de:"Heute hat Simba sehr großen Hunger.", en:"Today Simba is very hungry."},
       {de:"Auf dem Tisch ist ein Kuchen.", en:"On the table there is a cake."},
-      {de:"Otto sagt: Hallo, Kuchen! Bist du mein Kuchen?", en:"Otto says: Hello, cake! Are you my cake?"},
+      {de:"Simba sagt: Hallo, Kuchen! Bist du mein Kuchen?", en:"Simba says: Hello, cake! Are you my cake?"},
       {de:"Der Kuchen sagt nichts. Kuchen sprechen nicht.", en:"The cake says nothing. Cakes do not speak."},
-      {de:"Anna kommt. Otto! Das ist mein Kuchen!", en:"Anna comes. Otto! That is my cake!"},
-      {de:"Otto sagt: Ich bin ein Hund. Hunde essen Kuchen.", en:"Otto says: I am a dog. Dogs eat cake."},
-      {de:"Anna lacht. Du bist kein Hund. Du bist ein Fuchs.", en:"Anna laughs. You are not a dog. You are a fox."},
-      {de:"Otto sagt bitte. Anna sagt ja. Nur ein kleines Stück.", en:"Otto says please. Anna says yes. Only a little piece."},
-      {de:"Jetzt ist Otto glücklich. Sie essen. Das ist gut.", en:"Now Otto is happy. They eat. That is good."}
+      {de:"Anna kommt. Simba! Das ist mein Kuchen!", en:"Anna comes. Simba! That is my cake!"},
+      {de:"Simba sagt: Ich bin ein Hund. Hunde essen Kuchen.", en:"Simba says: I am a dog. Dogs eat cake."},
+      {de:"Anna lacht. Du bist kein Hund. Du bist ein Löwe.", en:"Anna laughs. You are not a dog. You are a lion."},
+      {de:"Simba sagt bitte. Anna sagt ja. Nur ein kleines Stück.", en:"Simba says please. Anna says yes. Only a little piece."},
+      {de:"Jetzt ist Simba glücklich. Sie essen. Das ist gut.", en:"Now Simba is happy. They eat. That is good."}
     ],
-    glossary:[["Fuchs","fox"],["heute","today"],["Hunger","hunger"],["Tisch","table"],["Kuchen","cake"],["schaut","looks"],["Idee","idea"],["sagt","says"],["nichts","nothing"],["sprechen","speak"],["schlecht","bad"],["langsam","slow"],["Augen","eyes"],["Regel","rule"],["essen","eat"],["lacht","laughs"],["kein","not a / no"],["Bitte","please"],["Stück","piece"],["jetzt","now"],["glücklich","happy"],["orange","orange"],["groß","big"],["braun","brown"],["schön","beautiful"],["klein","small"],["Hund","dog"],["nicht","not"]],
+    glossary:[["Löwe","lion"],["heute","today"],["Hunger","hunger"],["Tisch","table"],["Kuchen","cake"],["schaut","looks"],["Idee","idea"],["sagt","says"],["nichts","nothing"],["sprechen","speak"],["schlecht","bad"],["langsam","slow"],["Augen","eyes"],["Regel","rule"],["essen","eat"],["lacht","laughs"],["kein","not a / no"],["Bitte","please"],["Stück","piece"],["jetzt","now"],["glücklich","happy"],["gelb","yellow"],["groß","big"],["braun","brown"],["schön","beautiful"],["klein","small"],["Hund","dog"],["nicht","not"]],
     questions:[
-      {q:"Was ist Otto?",opts:["Ein Hund","Ein Fuchs","Ein Kuchen"],a:1, audio:"Was ist Otto?"},
+      {q:"Was ist Simba?",opts:["Ein Hund","Ein Löwe","Ein Kuchen"],a:1, audio:"Was ist Simba?"},
       {q:"Was ist auf dem Tisch?",opts:["Ein Hund","Ein Haus","Ein Kuchen"],a:2, audio:"Was ist auf dem Tisch?"},
-      {q:"Welche Farbe hat Otto?",opts:["Blau","Orange","Grün"],a:1, audio:"Welche Farbe hat Otto?"},
-      {q:"Was sagt Otto? „Ich bin ein ___ .“",opts:["Fuchs","Kuchen","Hund"],a:2, audio:"Ich bin ein Hund"},
-      {q:"Gibt Anna Otto ein Stück Kuchen?",opts:["Ja","Nein","Der Kuchen spricht"],a:0, audio:"Ein kleines Stück"},
-      {q:"Wie ist Otto am Ende?",opts:["Traurig","Glücklich","Langsam"],a:1, audio:"Jetzt ist Otto glücklich"}
+      {q:"Welche Farbe hat Simba?",opts:["Blau","Gelb","Grün"],a:1, audio:"Welche Farbe hat Simba?"},
+      {q:"Was sagt Simba? „Ich bin ein ___ .“",opts:["Löwe","Kuchen","Hund"],a:2, audio:"Ich bin ein Hund"},
+      {q:"Gibt Anna Simba ein Stück Kuchen?",opts:["Ja","Nein","Der Kuchen spricht"],a:0, audio:"Ein kleines Stück"},
+      {q:"Wie ist Simba am Ende?",opts:["Traurig","Glücklich","Langsam"],a:1, audio:"Jetzt ist Simba glücklich"}
     ],
-    otto:'Otto tries to be a dog so he can eat cake. Dogs did not write this rule. Cakes did not vote. Anna is the government.'
+    otto:'Simba tries to be a dog so he can eat cake. Dogs did not write this rule. Cakes did not vote. Anna is the government.'
   },
   {
     id:'hut',
@@ -567,7 +645,7 @@ Der Hund mag den Hut. Mia sagt: „Das ist mein Hut, nicht dein Hut!“ Der Hund
     glossary:[["Hut","hat"],["sucht","looks for"],["wo","where"],["etwas","something"],["Rotes","red thing"],["gibt","gives"],["spielen","play"],["rot","red"],["Hund","dog"],["glücklich","happy"]],
     questions:[
       {q:"Welche Farbe hat der Hut?",opts:["Blau","Rot","Grün"],a:1, audio:"Welche Farbe hat der Hut?"},
-      {q:"Wer sucht den Hut?",opts:["Otto","Mia und Paul","Der Mond"],a:1, audio:"Mia sucht und sucht"},
+      {q:"Wer sucht den Hut?",opts:["Simba","Mia und Paul","Der Mond"],a:1, audio:"Mia sucht und sucht"},
       {q:"Wer hat den Hut?",opts:["Der Hund","Der Vogel","Der Kuchen"],a:0, audio:"Der Hund hat den Hut"},
       {q:"Gibt der Hund den Hut?",opts:["Ja","Nein","Der Hut spricht"],a:0, audio:"Der Hund gibt den Hut"}
     ],
@@ -604,22 +682,22 @@ Luna sitzt. Der Vogel kommt. „Hallo, Luna! Du bist eine Katze. Das ist gut.“
     blurb:'No football today. Paintbrushes save the afternoon.',
     text:`Heute ist es kalt. Der Himmel ist grau. Es ist Regen. Anna, Paul und Mia wollen Fußball spielen. Fußball im Regen ist nicht gut. Die Mutter sagt: „Malt ein Bild!“
 
-Anna malt ein blaues Haus. Paul malt einen grünen Baum. Mia malt einen orangen Fuchs. Der Fuchs sieht aus wie Otto. Otto kommt. „Das bin ich! Ich bin schön!“ Alle lachen. Der Regen ist lang. Das Bild ist gut.`,
+Anna malt ein blaues Haus. Paul malt einen grünen Baum. Mia malt einen gelben Löwen. Der Löwe sieht aus wie Simba. Simba kommt. „Das bin ich! Ich bin schön!“ Alle lachen. Der Regen ist lang. Das Bild ist gut.`,
     lines:[
       {de:"Heute ist es kalt. Der Himmel ist grau.", en:"Today it is cold. The sky is grey."},
       {de:"Es ist Regen. Fußball im Regen ist nicht gut.", en:"It is rain. Football in the rain is not good."},
       {de:"Die Mutter sagt: Malt ein Bild!", en:"Mum says: Paint a picture!"},
       {de:"Anna malt ein blaues Haus.", en:"Anna paints a blue house."},
       {de:"Paul malt einen grünen Baum.", en:"Paul paints a green tree."},
-      {de:"Mia malt einen orangen Fuchs.", en:"Mia paints an orange fox."},
-      {de:"Otto sagt: Das bin ich! Ich bin schön!", en:"Otto says: That is me! I am beautiful!"}
+      {de:"Mia malt einen gelben Löwen.", en:"Mia paints a yellow lion."},
+      {de:"Simba sagt: Das bin ich! Ich bin schön!", en:"Simba says: That is me! I am beautiful!"}
     ],
     glossary:[["Himmel","sky"],["Regen","rain"],["kalt","cold"],["wollen","want"],["Fußball","football"],["malt","paints"],["Bild","picture"],["Baum","tree"],["sieht aus wie","looks like"],["lachen","laugh"],["lang","long"]],
     questions:[
       {q:"Wie ist das Wetter?",opts:["Heiß","Regen und kalt","Schnee"],a:1, audio:"Es ist Regen"},
       {q:"Was malt Anna?",opts:["Ein Haus","Einen Hund","Einen Ball"],a:0, audio:"Anna malt ein blaues Haus"},
-      {q:"Was malt Mia?",opts:["Einen Baum","Einen Fuchs","Einen Hut"],a:1, audio:"Mia malt einen orangen Fuchs"},
-      {q:"Ist Otto schön? (Otto sagt…)",opts:["Ja","Nein","Otto malt"],a:0, audio:"Ich bin schön"}
+      {q:"Was malt Mia?",opts:["Einen Baum","Einen Löwen","Einen Hut"],a:1, audio:"Mia malt einen gelben Löwen"},
+      {q:"Ist Simba schön? (Simba sagt…)",opts:["Ja","Nein","Simba malt"],a:0, audio:"Ich bin schön"}
     ],
     otto:'Mia painted me. The ears are perfect. The cake is missing. I forgive the artist.'
   },
@@ -641,7 +719,7 @@ Der Hase läuft sehr schnell. Dann sitzt er. Er hat Hunger. Die Schildkröte lä
     glossary:[["Hase","rabbit"],["Schildkröte","tortoise"],["schnell","fast"],["langsam","slow"],["laufen","run"],["Spiel","game"],["Hunger","hunger"],["zusammen","together"],["Freunde","friends"]],
     questions:[
       {q:"Wer ist schnell?",opts:["Die Schildkröte","Der Hase","Der Hut"],a:1, audio:"Ein Hase ist schnell"},
-      {q:"Wer ist langsam?",opts:["Der Hase","Die Schildkröte","Otto"],a:1, audio:"Eine Schildkröte ist langsam"},
+      {q:"Wer ist langsam?",opts:["Der Hase","Die Schildkröte","Simba"],a:1, audio:"Eine Schildkröte ist langsam"},
       {q:"Was ist das? Ein ___ .",opts:["Kuchen","Spiel","Haus"],a:1, audio:"Das ist ein Spiel"},
       {q:"Sind sie Freunde am Ende?",opts:["Ja","Nein","Nur der Hase"],a:0, audio:"Sie sind Freunde"}
     ],
@@ -650,24 +728,24 @@ Der Hase läuft sehr schnell. Dann sitzt er. Er hat Hunger. Die Schildkröte lä
   {
     id:'apfel',
     title:'Ten apples',
-    blurb:'Grandma’s tree, ten apples, one very fast fox.',
+    blurb:'Grandma’s tree, ten apples, one very fast lion.',
     text:`Die Großmutter hat einen Baum. Der Baum ist groß und grün. An dem Baum sind Äpfel. Die Äpfel sind rot und gelb. Anna zählt: eins, zwei, drei, vier, fünf. Paul zählt: sechs, sieben, acht, neun, zehn. Zehn Äpfel!
 
-Die Großmutter sagt: „Ein Apfel für Anna. Ein Apfel für Paul. Ein Apfel für Mia. Ein Apfel für Otto.“ Otto isst schnell. Die Großmutter lacht. „Otto, du bist ein Fuchs, kein Kind. Aber heute ja.“`,
+Die Großmutter sagt: „Ein Apfel für Anna. Ein Apfel für Paul. Ein Apfel für Mia. Ein Apfel für Simba.“ Simba isst schnell. Die Großmutter lacht. „Simba, du bist ein Löwe, kein Kind. Aber heute ja.“`,
     lines:[
       {de:"Die Großmutter hat einen Baum. Der Baum ist groß und grün.", en:"Grandma has a tree. The tree is big and green."},
       {de:"An dem Baum sind Äpfel. Die Äpfel sind rot und gelb.", en:"On the tree there are apples. The apples are red and yellow."},
       {de:"Anna zählt: eins, zwei, drei, vier, fünf.", en:"Anna counts: one, two, three, four, five."},
       {de:"Paul zählt: sechs, sieben, acht, neun, zehn.", en:"Paul counts: six, seven, eight, nine, ten."},
       {de:"Zehn Äpfel!", en:"Ten apples!"},
-      {de:"Ein Apfel für Otto. Otto isst schnell.", en:"An apple for Otto. Otto eats quickly."}
+      {de:"Ein Apfel für Simba. Simba isst schnell.", en:"An apple for Simba. Simba eats quickly."}
     ],
     glossary:[["Großmutter","grandmother"],["Baum","tree"],["Äpfel","apples"],["Apfel","apple"],["zählt","counts"],["zehn","ten"],["isst","eats"],["Kind","child"],["heute","today"]],
     questions:[
       {q:"Wie viele Äpfel sind da?",opts:["Fünf","Zehn","Zwölf"],a:1, audio:"Zehn Äpfel"},
       {q:"Welche Farben haben die Äpfel?",opts:["Blau und schwarz","Rot und gelb","Lila"],a:1, audio:"Die Äpfel sind rot und gelb"},
-      {q:"Wer zählt eins bis fünf?",opts:["Paul","Anna","Otto"],a:1, audio:"Anna zählt"},
-      {q:"Isst Otto einen Apfel?",opts:["Ja","Nein","Otto zählt"],a:0, audio:"Otto isst schnell"}
+      {q:"Wer zählt eins bis fünf?",opts:["Paul","Anna","Simba"],a:1, audio:"Anna zählt"},
+      {q:"Isst Simba einen Apfel?",opts:["Ja","Nein","Simba zählt"],a:0, audio:"Simba isst schnell"}
     ],
     otto:'I am not a child. Grandma still gave me an apple. Grandmas see the truth and ignore it on purpose.'
   },
@@ -691,21 +769,21 @@ Der Ballon ist in einem Baum. Der Baum ist hoch. Der Vater ist groß. Der Vater 
       {q:"Welche Farbe hat der Ballon?",opts:["Rot","Gelb","Grün"],a:1, audio:"Mia hat einen gelben Ballon"},
       {q:"Was kommt?",opts:["Ein Hund","Ein Wind","Ein Kuchen"],a:1, audio:"Ein Wind kommt"},
       {q:"Wo ist der Ballon?",opts:["Im Haus","In einem Baum","Im Mond"],a:1, audio:"Der Ballon ist in einem Baum"},
-      {q:"Wer holt den Ballon?",opts:["Otto","Der Vater","Der Vogel"],a:1, audio:"Der Vater kommt"}
+      {q:"Wer holt den Ballon?",opts:["Simba","Der Vater","Der Vogel"],a:1, audio:"Der Vater kommt"}
     ],
     otto:'I cannot climb trees. I can climb onto sofas. Sofas never have balloons. Life is unfair, but soft.'
   },
   {
     id:'mond',
-    title:'Otto and the moon',
-    blurb:'The moon is yellow. Otto has a theory. Anna has facts.',
-    text:`Es ist Nacht. Der Himmel ist schwarz. Die Sterne sind weiß. Der Mond ist groß und gelb. Otto schaut und schaut. „Hallo, Mond! Bist du ein Kuchen?“ Der Mond sagt nichts. Monde sprechen nicht.
+    title:'Simba and the moon',
+    blurb:'The moon is yellow. Simba has a theory. Anna has facts.',
+    text:`Es ist Nacht. Der Himmel ist schwarz. Die Sterne sind weiß. Der Mond ist groß und gelb. Simba schaut und schaut. „Hallo, Mond! Bist du ein Kuchen?“ Der Mond sagt nichts. Monde sprechen nicht.
 
-Anna sagt: „Otto, der Mond ist kein Kuchen. Der Mond ist der Mond.“ Otto sagt: „Schade. Aber er ist schön.“ Sie zählen Sterne: eins, zwei, drei. Otto ist glücklich. Der Mond auch. Monde essen nicht. Das ist okay.`,
+Anna sagt: „Simba, der Mond ist kein Kuchen. Der Mond ist der Mond.“ Simba sagt: „Schade. Aber er ist schön.“ Sie zählen Sterne: eins, zwei, drei. Simba ist glücklich. Der Mond auch. Monde essen nicht. Das ist okay.`,
     lines:[
       {de:"Es ist Nacht. Der Himmel ist schwarz.", en:"It is night. The sky is black."},
       {de:"Die Sterne sind weiß. Der Mond ist groß und gelb.", en:"The stars are white. The moon is big and yellow."},
-      {de:"Otto sagt: Hallo, Mond! Bist du ein Kuchen?", en:"Otto says: Hello, moon! Are you a cake?"},
+      {de:"Simba sagt: Hallo, Mond! Bist du ein Kuchen?", en:"Simba says: Hello, moon! Are you a cake?"},
       {de:"Der Mond sagt nichts. Monde sprechen nicht.", en:"The moon says nothing. Moons do not speak."},
       {de:"Anna sagt: Der Mond ist kein Kuchen.", en:"Anna says: The moon is not a cake."},
       {de:"Sie zählen Sterne: eins, zwei, drei.", en:"They count stars: one, two, three."}
@@ -715,7 +793,7 @@ Anna sagt: „Otto, der Mond ist kein Kuchen. Der Mond ist der Mond.“ Otto sag
       {q:"Was ist groß und gelb?",opts:["Der Hund","Der Mond","Der Hut"],a:1, audio:"Der Mond ist groß und gelb"},
       {q:"Welche Farbe haben die Sterne?",opts:["Weiß","Grün","Braun"],a:0, audio:"Die Sterne sind weiß"},
       {q:"Ist der Mond ein Kuchen?",opts:["Ja","Nein","Manchmal"],a:1, audio:"Der Mond ist kein Kuchen"},
-      {q:"Was zählen Anna und Otto?",opts:["Äpfel","Sterne","Hüte"],a:1, audio:"Sie zählen Sterne"}
+      {q:"Was zählen Anna und Simba?",opts:["Äpfel","Sterne","Hüte"],a:1, audio:"Sie zählen Sterne"}
     ],
     otto:'I asked the moon if it was cake. The moon said nothing. Anna translated: that means no.'
   },
@@ -739,31 +817,31 @@ Anna öffnet die Tasche. Das Buch ist nicht da. Das Buch von Paul ist da. Paul �
       {q:"Welche Farbe hat Annas Tasche?",opts:["Grün","Blau","Gelb"],a:1, audio:"Die Tasche ist blau"},
       {q:"Welche Farbe hat Pauls Tasche?",opts:["Grün","Rot","Schwarz"],a:0, audio:"Die Tasche ist grün"},
       {q:"Was will die Lehrerin?",opts:["Einen Hund","Ein Buch","Einen Ballon"],a:1, audio:"Bitte, ein Buch"},
-      {q:"Lachen Anna und Paul?",opts:["Ja","Nein","Nur Otto"],a:0, audio:"Sie lachen"}
+      {q:"Lachen Anna und Paul?",opts:["Ja","Nein","Nur Simba"],a:0, audio:"Sie lachen"}
     ],
-    otto:'I once put a cake in a school bag. That was not mixed up. That was a plan. The teacher was not a fox.'
+    otto:'I once put a cake in a school bag. That was not mixed up. That was a plan. The teacher was not a lion.'
   },
   {
     id:'schnee',
     title:'The snowman',
-    blurb:'A carrot nose, a fox with questions, an apple for Otto.',
+    blurb:'A carrot nose, a lion with questions, an apple for Simba.',
     text:`Heute ist es kalt. Alles ist weiß. Die Kinder machen einen Schneemann. Der Schneemann ist groß. Er hat eine orange Nase. Die Nase ist eine Karotte.
 
-Otto kommt. „Ist die Nase ein Kuchen?“ „Nein, Otto. Es ist eine Karotte. Karotten sind für den Schneemann.“ Otto sagt: „Okay.“ Er hat einen Apfel. Äpfel sind für Füchse. Der Schneemann hat die Nase. Otto hat den Apfel. Alle sind glücklich.`,
+Simba kommt. „Ist die Nase ein Kuchen?“ „Nein, Simba. Es ist eine Karotte. Karotten sind für den Schneemann.“ Simba sagt: „Okay.“ Er hat einen Apfel. Äpfel sind für Löwen. Der Schneemann hat die Nase. Simba hat den Apfel. Alle sind glücklich.`,
     lines:[
       {de:"Heute ist es kalt. Alles ist weiß.", en:"Today it is cold. Everything is white."},
       {de:"Die Kinder machen einen Schneemann.", en:"The children make a snowman."},
       {de:"Er hat eine orange Nase. Die Nase ist eine Karotte.", en:"He has an orange nose. The nose is a carrot."},
-      {de:"Otto sagt: Ist die Nase ein Kuchen?", en:"Otto says: Is the nose a cake?"},
-      {de:"Nein, Otto. Es ist eine Karotte.", en:"No, Otto. It is a carrot."},
-      {de:"Otto hat einen Apfel. Alle sind glücklich.", en:"Otto has an apple. Everyone is happy."}
+      {de:"Simba sagt: Ist die Nase ein Kuchen?", en:"Simba says: Is the nose a cake?"},
+      {de:"Nein, Simba. Es ist eine Karotte.", en:"No, Simba. It is a carrot."},
+      {de:"Simba hat einen Apfel. Alle sind glücklich.", en:"Simba has an apple. Everyone is happy."}
     ],
-    glossary:[["kalt","cold"],["weiß","white"],["Kinder","children"],["Schneemann","snowman"],["Nase","nose"],["Karotte","carrot"],["okay","okay"],["Apfel","apple"],["Füchse","foxes"],["glücklich","happy"]],
+    glossary:[["kalt","cold"],["weiß","white"],["Kinder","children"],["Schneemann","snowman"],["Nase","nose"],["Karotte","carrot"],["okay","okay"],["Apfel","apple"],["Löwen","lions"],["glücklich","happy"]],
     questions:[
       {q:"Was machen die Kinder?",opts:["Einen Kuchen","Einen Schneemann","Einen Hut"],a:1, audio:"Die Kinder machen einen Schneemann"},
       {q:"Was ist die Nase?",opts:["Ein Apfel","Eine Karotte","Ein Buch"],a:1, audio:"Die Nase ist eine Karotte"},
-      {q:"Isst Otto die Nase?",opts:["Ja","Nein","Die Nase lacht"],a:1, audio:"Karotten sind für den Schneemann"},
-      {q:"Was hat Otto?",opts:["Einen Apfel","Einen Ballon","Einen Mond"],a:0, audio:"Otto hat einen Apfel"}
+      {q:"Isst Simba die Nase?",opts:["Ja","Nein","Die Nase lacht"],a:1, audio:"Karotten sind für den Schneemann"},
+      {q:"Was hat Simba?",opts:["Einen Apfel","Einen Ballon","Einen Mond"],a:0, audio:"Simba hat einen Apfel"}
     ],
     otto:'Carrot noses are not cake. I accepted this with an apple. Personal growth. Crunchy personal growth.'
   },
@@ -773,12 +851,12 @@ Otto kommt. „Ist die Nase ein Kuchen?“ „Nein, Otto. Es ist eine Karotte. K
     blurb:'Cricket, football, and one round apple join the game.',
     text:`Paul mag Cricket. Mia mag Fußball. Anna mag beides. Im Park ist es heiß. Die Sonne ist groß und gelb. Paul hat einen Ball. Mia hat auch einen Ball. „Ein Spiel!“
 
-Otto will auch. Otto hat keinen Ball. Otto hat einen Apfel. Der Apfel ist rund. Rund ist gut. Sie spielen. Der Apfel ist schnell. Otto auch. Am Ende essen sie den Apfel. Drei Stücke. Das ist gut.`,
+Simba will auch. Simba hat keinen Ball. Simba hat einen Apfel. Der Apfel ist rund. Rund ist gut. Sie spielen. Der Apfel ist schnell. Simba auch. Am Ende essen sie den Apfel. Drei Stücke. Das ist gut.`,
     lines:[
       {de:"Paul mag Cricket. Mia mag Fußball.", en:"Paul likes cricket. Mia likes football."},
       {de:"Anna mag beides.", en:"Anna likes both."},
       {de:"Im Park ist es heiß. Die Sonne ist groß und gelb.", en:"In the park it is hot. The sun is big and yellow."},
-      {de:"Otto hat keinen Ball. Otto hat einen Apfel.", en:"Otto has no ball. Otto has an apple."},
+      {de:"Simba hat keinen Ball. Simba hat einen Apfel.", en:"Simba has no ball. Simba has an apple."},
       {de:"Der Apfel ist rund. Rund ist gut.", en:"The apple is round. Round is good."},
       {de:"Am Ende essen sie den Apfel. Drei Stücke.", en:"At the end they eat the apple. Three pieces."}
     ],
@@ -786,10 +864,121 @@ Otto will auch. Otto hat keinen Ball. Otto hat einen Apfel. Der Apfel ist rund. 
     questions:[
       {q:"Was mag Paul?",opts:["Fußball","Cricket","Den Mond"],a:1, audio:"Paul mag Cricket"},
       {q:"Was mag Mia?",opts:["Fußball","Schnee","Bücher"],a:0, audio:"Mia mag Fußball"},
-      {q:"Was hat Otto?",opts:["Einen Ball","Einen Apfel","Einen Hut"],a:1, audio:"Otto hat einen Apfel"},
+      {q:"Was hat Simba?",opts:["Einen Ball","Einen Apfel","Einen Hut"],a:1, audio:"Simba hat einen Apfel"},
       {q:"Essen sie den Apfel am Ende?",opts:["Ja","Nein","Die Sonne isst"],a:0, audio:"Am Ende essen sie den Apfel"}
     ],
     otto:'Round things can be balls. Round things can be snacks. I brought an apple. Sport first. Snack later.'
+  },
+  {
+    id:'mowgli',
+    title:'Mowgli in the jungle',
+    blurb:'A small boy, a green jungle, kind animal friends.',
+    text:`Mowgli ist ein kleiner Junge. Er wohnt nicht in einem Haus in der Stadt. Er wohnt im Dschungel. Der Dschungel ist grün und groß. Im Dschungel ist es heiß.
+
+Raksha ist ein Einhorn. Sie ist weiß und schön. Raksha sagt: „Hallo, Mowgli! Ich bin Raksha. Du bist mein Freund.“ Mowgli sagt: „Hallo, Raksha! Ich bin Mowgli.“ Sie sind Freunde. Freunde sind gut. Das ist das Gesetz im Dschungel.`,
+    lines:[
+      {de:"Mowgli ist ein kleiner Junge.", en:"Mowgli is a small boy."},
+      {de:"Er wohnt im Dschungel. Der Dschungel ist grün und groß.", en:"He lives in the jungle. The jungle is green and big."},
+      {de:"Raksha ist ein Einhorn. Sie ist weiß und schön.", en:"Raksha is a unicorn. She is white and beautiful."},
+      {de:"Raksha sagt: Hallo, Mowgli! Du bist mein Freund.", en:"Raksha says: Hello, Mowgli! You are my friend."},
+      {de:"Mowgli sagt: Hallo, Raksha! Ich bin Mowgli.", en:"Mowgli says: Hello, Raksha! I am Mowgli."},
+      {de:"Sie sind Freunde. Das ist das Gesetz im Dschungel.", en:"They are friends. That is the law in the jungle."}
+    ],
+    song:{
+      title:'Jungle song',
+      verses:`Der Dschungel ist grün.
+Der Dschungel ist groß.
+Wir sind Freunde.
+Das ist gut.`,
+      lines:[
+        {de:"Der Dschungel ist grün.", en:"The jungle is green."},
+        {de:"Der Dschungel ist groß.", en:"The jungle is big."},
+        {de:"Wir sind Freunde.", en:"We are friends."},
+        {de:"Das ist gut.", en:"That is good."}
+      ]
+    },
+    glossary:[["Junge","boy"],["wohnt","lives"],["Dschungel","jungle"],["grün","green"],["heiß","hot"],["Einhorn","unicorn"],["weiß","white"],["Freund","friend"],["Freunde","friends"],["Gesetz","law / rule"]],
+    questions:[
+      {q:"Was ist Mowgli?",opts:["Ein Bär","Ein Junge","Ein Kuchen"],a:1, audio:"Mowgli ist ein kleiner Junge"},
+      {q:"Wo wohnt Mowgli?",opts:["In Berlin","Im Dschungel","Im Mond"],a:1, audio:"Er wohnt im Dschungel"},
+      {q:"Was ist Raksha?",opts:["Ein Löwe","Ein Einhorn","Ein Hund"],a:1, audio:"Raksha ist ein Einhorn"},
+      {q:"Sind Mowgli und Raksha Freunde?",opts:["Ja","Nein","Nur der Kuchen"],a:0, audio:"Sie sind Freunde"}
+    ],
+    otto:'Mowgli lives in the jungle. Raksha is his unicorn friend. The law is short: be a friend. Even I understood that, and I am a lion who argues with cakes.'
+  },
+  {
+    id:'baloo',
+    title:'Baloo the teacher',
+    blurb:'A big brown bear teaches Mowgli one important rule.',
+    text:`Baloo ist ein Bär. Er ist groß und braun. Baloo ist nicht schnell. Baloo ist gut. Heute sagt Baloo: „Mowgli, komm! Wir haben eine Stunde.“
+
+Baloo sagt: „Das Gesetz ist klein. Hör zu. Sei gut. Sei mutig. Hilf einem Freund.“ Mowgli sagt: „Ja, Baloo!“ Sie singen. Raksha kommt. Sie singt auch. Simba kommt. Simba kann nicht singen. Er sagt: „Ich bin ein Löwe. Löwen essen. Das ist mein Gesetz.“ Baloo lacht. „Heute singen wir. Dann essen wir.“ Das ist gut.`,
+    lines:[
+      {de:"Baloo ist ein Bär. Er ist groß und braun.", en:"Baloo is a bear. He is big and brown."},
+      {de:"Baloo ist nicht schnell. Baloo ist gut.", en:"Baloo is not fast. Baloo is good."},
+      {de:"Baloo sagt: Sei gut. Sei mutig. Hilf einem Freund.", en:"Baloo says: Be good. Be brave. Help a friend."},
+      {de:"Mowgli sagt: Ja, Baloo!", en:"Mowgli says: Yes, Baloo!"},
+      {de:"Raksha kommt. Sie singt auch.", en:"Raksha comes. She sings too."},
+      {de:"Simba sagt: Ich bin ein Löwe. Dann essen wir.", en:"Simba says: I am a lion. Then we eat."}
+    ],
+    song:{
+      title:'The little jungle law',
+      verses:`Sei gut.
+Sei mutig.
+Hilf einem Freund.
+Das ist das Gesetz.`,
+      lines:[
+        {de:"Sei gut.", en:"Be good."},
+        {de:"Sei mutig.", en:"Be brave."},
+        {de:"Hilf einem Freund.", en:"Help a friend."},
+        {de:"Das ist das Gesetz.", en:"That is the law."}
+      ]
+    },
+    glossary:[["Bär","bear"],["braun","brown"],["Stunde","lesson"],["Gesetz","law / rule"],["mutig","brave"],["hilf","help"],["Freund","friend"],["singen","sing"],["lacht","laughs"]],
+    questions:[
+      {q:"Was ist Baloo?",opts:["Ein Bär","Ein Einhorn","Ein Hund"],a:0, audio:"Baloo ist ein Bär"},
+      {q:"Welche Farbe hat Baloo?",opts:["Blau","Braun","Rosa"],a:1, audio:"Er ist groß und braun"},
+      {q:"Was sagt Baloo? Sei ___ .",opts:["langsam","mutig","ein Kuchen"],a:1, audio:"Sei mutig"},
+      {q:"Singt Raksha auch?",opts:["Ja","Nein","Nur Simba"],a:0, audio:"Sie singt auch"}
+    ],
+    otto:'Baloo’s law is three lines. Mine is one line: snacks. We are both teachers. Only one of us has a diploma. It is not me.'
+  },
+  {
+    id:'bagheera',
+    title:'Bagheera the panther',
+    blurb:'A quiet black panther, a loud tiger, friends who stay together.',
+    text:`Bagheera ist ein Panther. Er ist schwarz und schnell. Er ist leise. Mowgli mag Bagheera. Bagheera mag Mowgli. Sie laufen im Dschungel.
+
+Ein Tiger kommt. Der Tiger heißt Shere Khan. Er ist orange und laut. Shere Khan sagt: „Ich bin der Boss!“ Bagheera sagt: „Nein. Wir sind Freunde. Das ist das Gesetz.“ Raksha kommt. Baloo kommt. Simba kommt. Shere Khan schaut. Viele Freunde. Der Tiger geht. Mowgli ist glücklich. Freunde sind stark.`,
+    lines:[
+      {de:"Bagheera ist ein Panther. Er ist schwarz und schnell.", en:"Bagheera is a panther. He is black and fast."},
+      {de:"Er ist leise. Mowgli mag Bagheera.", en:"He is quiet. Mowgli likes Bagheera."},
+      {de:"Ein Tiger kommt. Er ist orange und laut.", en:"A tiger comes. He is orange and loud."},
+      {de:"Shere Khan sagt: Ich bin der Boss!", en:"Shere Khan says: I am the boss!"},
+      {de:"Bagheera sagt: Wir sind Freunde. Das ist das Gesetz.", en:"Bagheera says: We are friends. That is the law."},
+      {de:"Der Tiger geht. Freunde sind stark.", en:"The tiger goes. Friends are strong."}
+    ],
+    song:{
+      title:'We are one',
+      verses:`Wir sind Freunde.
+Du und ich.
+Im Dschungel.
+Du und ich.`,
+      lines:[
+        {de:"Wir sind Freunde.", en:"We are friends."},
+        {de:"Du und ich.", en:"You and I."},
+        {de:"Im Dschungel.", en:"In the jungle."},
+        {de:"Du und ich.", en:"You and I."}
+      ]
+    },
+    glossary:[["Panther","panther"],["schwarz","black"],["schnell","fast"],["leise","quiet"],["Tiger","tiger"],["laut","loud"],["Boss","boss"],["geht","goes"],["stark","strong"],["Freunde","friends"]],
+    questions:[
+      {q:"Was ist Bagheera?",opts:["Ein Bär","Ein Panther","Ein Hund"],a:1, audio:"Bagheera ist ein Panther"},
+      {q:"Welche Farbe hat Bagheera?",opts:["Orange","Schwarz","Gelb"],a:1, audio:"Er ist schwarz und schnell"},
+      {q:"Ist Shere Khan leise?",opts:["Ja","Nein, er ist laut","Er singt"],a:1, audio:"Er ist orange und laut"},
+      {q:"Geht der Tiger am Ende?",opts:["Ja","Nein","Er isst Kuchen"],a:0, audio:"Der Tiger geht"}
+    ],
+    otto:'The tiger wanted to be the boss. Then the friends arrived. The tiger did maths and left. Friendship is a very large number.'
   }
 ];
 
@@ -797,7 +986,7 @@ const SPEAK_PHRASES={
   hallo:[
     {de:"Hallo!", en:"Hello!"},
     {de:"Ich heiße Anna.", en:"My name is Anna."},
-    {de:"Ich bin Otto.", en:"I am Otto."},
+    {de:"Ich bin Simba.", en:"I am Simba."},
     {de:"Danke!", en:"Thank you!"},
     {de:"Tschüss!", en:"Bye!"}
   ],
@@ -1032,15 +1221,195 @@ function pickGermanVoice(){
       || null;
 }
 
+const Music={ctx:null, master:null, bg:null, sfx:null, playing:false, timer:null, step:0, nextTime:0, speechOn:false, sfxDuckTimer:null};
+const G4=392, A4=440, B4=493.88, C5=523.25, D5=587.33, E5=659.25, Fs5=739.99, G5=783.99, A5=880, F5=698.46;
+const MOZART=[
+  [G4,0.45],[D5,0.45],[G4,0.45],[D5,0.45],[G4,0.45],[D5,0.45],[G5,1.2],[0,0.3],
+  [Fs5,0.45],[E5,0.45],[Fs5,0.45],[E5,0.45],[Fs5,0.45],[E5,0.45],[A5,1.2],[0,0.3],
+  [G5,0.4],[Fs5,0.4],[E5,0.4],[D5,0.4],[C5,0.4],[B4,0.4],[A4,0.4],[G4,1.1],[0,0.5],
+  [C5,0.7],[C5,0.7],[G5,0.7],[G5,0.7],[A5,0.7],[A5,0.7],[G5,1.4],
+  [F5,0.7],[F5,0.7],[E5,0.7],[E5,0.7],[D5,0.7],[D5,0.7],[C5,1.4],
+  [G5,0.7],[G5,0.7],[F5,0.7],[F5,0.7],[E5,0.7],[E5,0.7],[D5,1.4],
+  [G5,0.7],[G5,0.7],[F5,0.7],[F5,0.7],[E5,0.7],[E5,0.7],[D5,1.4],
+  [C5,0.7],[C5,0.7],[G5,0.7],[G5,0.7],[A5,0.7],[A5,0.7],[G5,1.4],
+  [F5,0.7],[F5,0.7],[E5,0.7],[E5,0.7],[D5,0.7],[D5,0.7],[C5,1.6],[0,0.6]
+];
+function audioCtx(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return null;
+  if(!Music.ctx){
+    Music.ctx=new AC();
+    Music.master=Music.ctx.createGain();
+    Music.master.gain.value=0.32;
+    Music.master.connect(Music.ctx.destination);
+    Music.bg=Music.ctx.createGain();
+    Music.bg.gain.value=0.45;
+    Music.bg.connect(Music.master);
+    Music.sfx=Music.ctx.createGain();
+    Music.sfx.gain.value=0.85;
+    Music.sfx.connect(Music.ctx.destination);
+  }
+  if(!Music.sfx && Music.ctx){
+    Music.sfx=Music.ctx.createGain();
+    Music.sfx.gain.value=0.85;
+    Music.sfx.connect(Music.ctx.destination);
+  }
+  return Music.ctx;
+}
+async function unlockAudio(){
+  const ctx=audioCtx();
+  if(!ctx) return null;
+  try{ if(ctx.state==='suspended') await ctx.resume(); }catch(e){}
+  return ctx;
+}
+function playAt(freq, when, dur, type, vol, dest){
+  const ctx=Music.ctx;
+  if(!ctx || !freq) return;
+  const v=vol||0.35;
+  const destNode=dest||Music.master;
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.type=type||'triangle';
+  o.frequency.setValueAtTime(freq, when);
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(v, when+0.03);
+  g.gain.linearRampToValueAtTime(0, when+dur);
+  o.connect(g); g.connect(destNode);
+  o.start(when); o.stop(when+dur+0.02);
+  const o2=ctx.createOscillator(), g2=ctx.createGain();
+  o2.type='sine';
+  o2.frequency.setValueAtTime(freq*2, when);
+  g2.gain.setValueAtTime(0, when);
+  g2.gain.linearRampToValueAtTime(v*0.22, when+0.03);
+  g2.gain.linearRampToValueAtTime(0, when+dur);
+  o2.connect(g2); g2.connect(destNode);
+  o2.start(when); o2.stop(when+dur+0.02);
+}
+function startBand(){
+  return unlockAudio().then((ctx)=>{
+    if(!ctx || !state.musicOn) return false;
+    if(Music.playing) return true;
+    Music.playing=true; Music.step=0;
+    document.body.classList.add('music-on');
+    const now=ctx.currentTime;
+    playAt(G4, now, 0.7, 'triangle', 0.18);
+    playAt(B4, now+0.08, 0.7, 'triangle', 0.12);
+    playAt(D5, now+0.16, 0.75, 'triangle', 0.14);
+    Music.nextTime=now+1.05;
+    (function pump(){
+      if(!Music.playing || !state.musicOn || !Music.ctx) return;
+      const t=Music.ctx.currentTime;
+      while(Music.nextTime < t+1.6){
+        const note=MOZART[Music.step%MOZART.length];
+        const f=note[0], beats=note[1];
+        if(f) playAt(f, Music.nextTime, Math.max(0.18, beats*0.5), 'triangle', 0.18, Music.bg);
+        Music.step++;
+        Music.nextTime+=beats*0.58;
+      }
+      Music.timer=setTimeout(pump, 160);
+    })();
+    return true;
+  }).catch(()=>false);
+}
+function stopBand(){
+  Music.playing=false;
+  if(Music.timer){ clearTimeout(Music.timer); Music.timer=null; }
+  document.body.classList.remove('music-on');
+}
+function setMusic(on){
+  state.musicOn=!!on;
+  saveProgress();
+  if(state.musicOn) return startBand();
+  stopBand();
+  return Promise.resolve(false);
+}
+function labelMusic(big){
+  if(state.musicOn) return big ? '🎵 Music is on — tap to stop' : '🎵 Music on';
+  return big ? '🎵 Music is off — tap to play' : '🎵 Music off';
+}
+function syncMusicButtons(){
+  document.querySelectorAll('[data-music-btn]').forEach(btn=>{
+    const big=btn.getAttribute('data-music-btn')==='big';
+    btn.textContent=labelMusic(big);
+    btn.className='btn'+(state.musicOn?'':' ghost');
+  });
+}
+function toggleMusic(){
+  setMusic(!state.musicOn).then(()=>syncMusicButtons());
+}
+function ensureMusic(e){
+  if(!state.musicOn || Music.playing) return;
+  if(e && e.target && e.target.closest && e.target.closest('[data-music-btn]')) return;
+  startBand().then(ok=>{ if(ok) syncMusicButtons(); });
+}
+function duckBand(down){
+  if(!Music.bg || !Music.ctx) return;
+  Music.bg.gain.cancelScheduledValues(Music.ctx.currentTime);
+  Music.bg.gain.setTargetAtTime(down?0.08:0.45, Music.ctx.currentTime, 0.06);
+}
+function playNoiseClick(when, dur, vol){
+  const ctx=Music.ctx;
+  if(!ctx || !Music.sfx) return;
+  const n=Math.max(1, Math.floor(ctx.sampleRate*dur));
+  const buf=ctx.createBuffer(1, n, ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<n;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/n, 2.2);
+  const src=ctx.createBufferSource();
+  src.buffer=buf;
+  const hp=ctx.createBiquadFilter();
+  hp.type='highpass';
+  hp.frequency.value=1600;
+  const g=ctx.createGain();
+  g.gain.setValueAtTime(vol, when);
+  g.gain.exponentialRampToValueAtTime(0.001, when+dur);
+  src.connect(hp); hp.connect(g); g.connect(Music.sfx);
+  src.start(when); src.stop(when+dur+0.02);
+}
+function playSfx(kind){
+  if(!state.musicOn) return;
+  unlockAudio().then((ctx)=>{
+    if(!ctx || !Music.sfx) return;
+    const t=ctx.currentTime;
+    const bus=Music.sfx;
+    if(Music.playing && !Music.speechOn){
+      duckBand(true);
+      if(Music.sfxDuckTimer) clearTimeout(Music.sfxDuckTimer);
+      Music.sfxDuckTimer=setTimeout(()=>{
+        Music.sfxDuckTimer=null;
+        if(!Music.speechOn) duckBand(false);
+      }, 240);
+    }
+    if(kind==='ok'){
+      playNoiseClick(t, 0.04, 0.45);
+      playAt(1047, t, 0.12, 'sine', 0.7, bus);
+      playAt(1319, t+0.08, 0.18, 'sine', 0.75, bus);
+    } else if(kind==='bad'){
+      playNoiseClick(t, 0.05, 0.4);
+      playAt(220, t, 0.16, 'square', 0.5, bus);
+      playAt(165, t+0.09, 0.2, 'square', 0.38, bus);
+    } else if(kind==='tap'){
+      playNoiseClick(t, 0.05, 0.7);
+      playAt(1568, t, 0.08, 'sine', 0.85, bus);
+      playAt(2093, t+0.03, 0.07, 'sine', 0.55, bus);
+    } else if(kind==='win'){
+      playNoiseClick(t, 0.06, 0.5);
+      [1047,1319,1568,2093].forEach((f,i)=>playAt(f, t+i*0.1, 0.22, 'sine', 0.72, bus));
+    }
+  });
+}
+
 function speakNow(text, rate, onend){
   window.speechSynthesis.cancel();
+  Music.speechOn=true;
+  duckBand(true);
   const u = new SpeechSynthesisUtterance(text);
   u.lang='de-DE';
   u.rate = (rate != null ? rate : state.rate);
   u.pitch=1;
   const de = pickGermanVoice();
   if(de) u.voice = de;
-  if(onend) u.onend = onend;
+  const done=()=>{ Music.speechOn=false; duckBand(false); if(onend) onend(); };
+  u.onend = done;
+  u.onerror = done;
   window.speechSynthesis.speak(u);
 }
 
@@ -1151,18 +1520,19 @@ const GERMAN_LEXICON = (()=>{
   STORIES.forEach(st=>st.glossary.forEach(([w])=>{ add(w); w.split(/\s+/).forEach(add); }));
   ["haben","sein","wohnen","kommen","und","aus","in","nicht","sehr","aber","auch","einen",
    "eine","ein","mein","meine","unser","jahre","alt","heiße","heißt","wohne","wohnt","familie",
-   "hund","haus","lieblingsfarbe","hallo","tschüss","danke","bitte","ja","nein","fuchs","deutschland","italien","berlin","münchen","hamburg",
+   "hund","haus","lieblingsfarbe","hallo","tschüss","danke","bitte","ja","nein","löwe","simba","deutschland","italien","berlin","münchen","hamburg",
    "spanien","anna","paul","mia","gegenteil","farben","adjektive","zahlen","pronomen","verben",
    "lesen","prüfung","bin","bist","ist","sind","seid","habe","hast","hat","habt","der","die",
    "das","wir","ihr","sie","ich","du","er","es","groß","klein","alt","neu","gut","schlecht",
    "klasse","hobby","religion","hindu","muslim","christ","sikh","buddhist","indien","malen",
    "tanzen","singen","fußball","cricket","schwimmen","fünften","sechsten","siebten","achten",
-   "gerne","name","jahre","alt","schüler","schülerin","mag","kuchen","hunger","tisch","fuchs",
+   "gerne","name","jahre","alt","schüler","schülerin","mag","kuchen","hunger","tisch","löwe","löwen",
    "lacht","essen","stück","glücklich","heute","nichts","sprechen","bitte","schaut","idee",
    "augen","regel","hut","katze","vogel","regen","himmel","malt","bild","baum","hase",
    "schildkröte","freunde","spiel","apfel","äpfel","zählt","ballon","wind","mond","sterne",
    "nacht","tasche","schule","lehrerin","buch","bücher","schneemann","nase","karotte","park",
-   "sonne","rund","ball","cricket","fußball",
+   "sonne","rund","ball","cricket","fußball","einhorn","regenbogen","raksha","magisch","rosa",
+   "mowgli","baloo","bagheera","dschungel","bär","panther","tiger","gesetz","mutig","junge",
    "hundert","tausend","zwölf","elf","dreizehn","frage","richtig","eltern","kinder","vater",
    "mutter","bruder","schwester","onkel","tante","sohn","tochter","großvater","großmutter",
    "woher","welche","farbe","was","wie","wo","kommt","kommen","wohnen","net","nett","freunde",
@@ -1187,7 +1557,7 @@ const LEVELS=[
   {id:'pronomen', level:9, icon:'👤', label:'Pronomen', en:'Pronouns'},
   {id:'verben', level:10, icon:'📖', label:'Verben', en:'Verbs'},
   {id:'lesen', level:11, icon:'📚', label:'Lesetext', en:'Kids’ stories'},
-  {id:'challenge', level:12, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
+  {id:'challenge', level:12, icon:'🏆', label:'Simba-Cup', en:'Boss level'},
   {id:'stories', extra:true, icon:'📚', label:'Märchen', en:'Story shelf'},
   {id:'revision', extra:true, icon:'🎮', label:'Spielplatz', en:'Practice park'}
 ];
@@ -1204,6 +1574,7 @@ const state = {
   confirmReset:false,
   locksOn:true,
   storyId:'anna',
+  musicOn:true,
 };
 
 function loadProgress(){
@@ -1221,11 +1592,12 @@ function loadProgress(){
     }
     if(typeof d.locksOn==='boolean') state.locksOn=d.locksOn;
     if(typeof d.rate==='number' && d.rate>0) state.rate=d.rate;
+    if(typeof d.musicOn==='boolean') state.musicOn=d.musicOn;
   }catch(e){}
 }
 function saveProgress(){
   try{
-    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current, locksOn:state.locksOn, rate:state.rate}));
+    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current, locksOn:state.locksOn, rate:state.rate, musicOn:state.musicOn}));
   }catch(e){}
 }
 function levelById(id){ return LEVELS.find(m=>m.id===id); }
@@ -1250,14 +1622,16 @@ function goTo(id){
     const m=levelById(id);
     const prev=m && m.level ? LEVELS.find(x=>x.level===m.level-1) : LEVELS.find(x=>x.id==='hallo');
     state.lockHint=prev
-      ? `🔒 Level ${m.level} is sleeping. Clear Level ${prev.level} (${prev.en}) first — then Otto will open the gate.`
-      : '🔒 Finish Level 1 first. Otto is picky about queues.';
+      ? `🔒 Level ${m.level} is sleeping. Clear Level ${prev.level} (${prev.en}) first — then Simba will open the gate.`
+      : '🔒 Finish Level 1 first. Simba is picky about queues.';
+    playSfx('bad');
     render();
     return;
   }
   state.lockHint=null;
   state.current=id;
   saveProgress();
+  playSfx('tap');
   render();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1267,6 +1641,7 @@ function markDone(id){
   saveProgress();
   if(wasNew && levelById(id) && levelById(id).level){
     state.justCleared=id;
+    playSfx('win');
   }
   render();
 }
@@ -1332,8 +1707,9 @@ function renderQuiz(container, questions, onComplete){
     box.innerHTML='';
     if(idx>=questions.length){
       box.innerHTML=`<div class="qfeedback ok">${score===questions.length
-        ? 'Level check: full marks! Otto is doing cartwheels (carefully). '+score+'/'+questions.length+' ✓'
-        : 'Level check done — '+score+'/'+questions.length+' correct. Otto still likes you. 🎉'}</div>`;
+        ? 'Level check: full marks! Simba is doing cartwheels (carefully). '+score+'/'+questions.length+' ✓'
+        : 'Level check done — '+score+'/'+questions.length+' correct. Simba still likes you. 🎉'}</div>`;
+      playSfx(score===questions.length?'win':'ok');
       onComplete && onComplete(score, questions.length);
       return;
     }
@@ -1372,8 +1748,8 @@ function renderQuiz(container, questions, onComplete){
       }
       b.onclick=()=>{
         [...box.querySelectorAll('.qopt')].forEach(x=>x.disabled=true);
-        if(i===item.a){ b.classList.add('correct'); fb.textContent=pickOne(OTTO_YES); fb.className='qfeedback ok'; score++; }
-        else{ b.classList.add('incorrect'); fb.textContent=pickOne(OTTO_NO)+item.opts[item.a]; fb.className='qfeedback bad';
+        if(i===item.a){ b.classList.add('correct'); fb.textContent=pickOne(OTTO_YES); fb.className='qfeedback ok'; score++; playSfx('ok'); }
+        else{ b.classList.add('incorrect'); fb.textContent=pickOne(OTTO_NO)+item.opts[item.a]; fb.className='qfeedback bad'; playSfx('bad');
               [...box.querySelectorAll('.qopt')][item.a].classList.add('correct'); }
         box.appendChild(fb);
         setTimeout(()=>{ idx++; show(); }, 1100);
@@ -1450,7 +1826,7 @@ function renderMatch(container, pairs){
         re.classList.add('paired'); selLeft.el.classList.add('paired'); selLeft.el.classList.remove('sel');
         pairedCount++;
         if(pairedCount===pairs.length){
-          const done=document.createElement('div'); done.className='qfeedback ok'; done.textContent='You matched them all! Otto wants a medal. (And a snack.) ✓';
+          const done=document.createElement('div'); done.className='qfeedback ok'; done.textContent='You matched them all! Simba wants a medal. (And a snack.) ✓';
           grid.after(done);
         }
       } else {
@@ -1497,7 +1873,7 @@ function startListen(expected, btn, fb){
     const alts=[];
     for(let i=0;i<ev.results[0].length;i++) alts.push(ev.results[0][i].transcript);
     const ok=alts.some(a=>heardMatches(a, expected));
-    fb.textContent = ok ? 'Great speaking! Otto’s ears approved. ✓  I heard: '+alts[0] : 'Almost — I heard “'+alts[0]+'”. Otto believes in second tries. Listen again.';
+    fb.textContent = ok ? 'Great speaking! Simba’s ears approved. ✓  I heard: '+alts[0] : 'Almost — I heard “'+alts[0]+'”. Simba believes in second tries. Listen again.';
     fb.className='qfeedback '+(ok?'ok':'bad');
   };
   r.onerror=()=>{
@@ -1556,7 +1932,7 @@ function renderEarPick(card, items){
   function show(){
     box.innerHTML='';
     if(idx>=items.length){
-      box.innerHTML=`<div class="qfeedback ok">Ears: switched on. ${score}/${items.length} heard correctly. Otto is impressed (and a bit jealous). 👂</div>`;
+      box.innerHTML=`<div class="qfeedback ok">Ears: switched on. ${score}/${items.length} heard correctly. Simba is impressed (and a bit jealous). 👂</div>`;
       return;
     }
     const item=items[idx];
@@ -1573,7 +1949,7 @@ function renderEarPick(card, items){
       b.appendChild(label);
       b.onclick=()=>{
         [...box.querySelectorAll('.qopt')].forEach(x=>x.disabled=true);
-        if(i===item.a){ b.classList.add('correct'); fb.textContent='Yes — that was '+item.say+' ✓ Otto’s ears did a wiggle.'; fb.className='qfeedback ok'; score++; }
+        if(i===item.a){ b.classList.add('correct'); fb.textContent='Yes — that was '+item.say+' ✓ Simba’s ears did a wiggle.'; fb.className='qfeedback ok'; score++; }
         else { b.classList.add('incorrect'); fb.textContent='It was '+item.say+' — sneaky, wasn’t it?'; fb.className='qfeedback bad';
           [...box.querySelectorAll('.qopt')][item.a].classList.add('correct'); }
         box.appendChild(fb);
@@ -1611,34 +1987,41 @@ function renderRecap(root, moduleId){
   const qs=RECAP[moduleId];
   if(!qs) return;
   const card=document.createElement('div'); card.className='card recapcard';
-  card.innerHTML=`<h2>Warm-up recap</h2><div class="tagline">A tiny look-back so earlier words stay in your head. Say the answers out loud if you can. Otto will pretend not to look.</div>`;
+  card.innerHTML=`<h2>Warm-up recap</h2><div class="tagline">A tiny look-back so earlier words stay in your head. Say the answers out loud if you can. Simba will pretend not to look.</div>`;
   renderQuiz(card, qs, null);
   root.appendChild(card);
 }
 
 function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 const OTTO_YES=[
-  'Yes! Richtig (= correct)! Otto did a tiny fox dance. ✓',
+  'Yes! Richtig (= correct)! Simba did a tiny lion dance. ✓',
   'Spot on. Richtig (= correct). Your brain just high-fived itself. ✓',
   'Correct! Richtig (= correct). Even the umlauts are smiling. ✓',
-  'Richtig (= correct)! Otto would give you a biscuit, but he ate them. ✓'
+  'Richtig (= correct)! Simba would give you a biscuit, but he ate them. ✓'
 ];
 const OTTO_NO=[
-  'Oof — Otto blinked. The answer is ',
-  'Nearly! (Foxes are not perfect either.) It is ',
+  'Oof — Simba blinked. The answer is ',
+  'Nearly! (Lions are not perfect either.) It is ',
   'Not that one. The winner is ',
   'Close enough to high-five, not close enough to score. It is '
 ];
 const OTTO_CHAT=[
-  'Hallo! Ich bin Otto.',
-  'Ich bin ein Fuchs.',
+  'Hallo! Ich bin Simba.',
+  'Ich bin ein Löwe.',
   'Ich habe keinen Hund.',
-  'Meine Lieblingsfarbe ist orange.',
+  'Meine Lieblingsfarbe ist gelb.',
   'Wir sind super!'
+];
+const RAKSHA_CHAT=[
+  'Hallo! Ich bin Raksha.',
+  'Ich bin ein Einhorn.',
+  'Ich wohne im Dschungel.',
+  'Wir sind Freunde.',
+  'Das Gesetz ist gut.'
 ];
 function ottoSays(card, text){
   const d=document.createElement('div'); d.className='otto';
-  d.innerHTML=`<strong>Otto the fox:</strong> ${text}`;
+  d.innerHTML=`<strong>Simba the lion:</strong> ${text}`;
   card.appendChild(d);
 }
 
@@ -1672,7 +2055,7 @@ function renderListenAll(card, words){
   };
   row.appendChild(b);
   const tip=document.createElement('p'); tip.className='note';
-  tip.textContent='Close your eyes if you like. Hear the music of the words before you look at letters. (Peeking is for later. Otto is watching. Kindly.)';
+  tip.textContent='Close your eyes if you like. Hear the music of the words before you look at letters. (Peeking is for later. Simba is watching. Kindly.)';
   card.appendChild(tip);
   card.appendChild(row);
 }
@@ -1727,7 +2110,7 @@ function sectionLabel(card, text){
 }
 
 function renderHallo(root){
-  const card=moduleShell(`${deHTML('Hallo')} — hello, I am…`,'The smallest useful German: greet, say your name, say bye. No verb tables yet. Otto starts every day with this. (Then snacks.)');
+  const card=moduleShell(`${deHTML('Hallo')} — hello, I am…`,'The smallest useful German: greet, say your name, say bye. No verb tables yet. Simba starts every day with this. (Then snacks.)');
   lsrwRail(card);
   explainer(card, `<strong>Learn whole little sentences first.</strong> Do not worry about grammar names yet. ${deHTML('Ich bin')} simply means “I am”. ${deHTML('Ich heiße')} means “my name is”. You will meet the full verbs ${deHTML('sein')} and ${deHTML('haben')} in the next level, once these feel easy.`);
   ottoSays(card, 'If you can say <em>Hallo</em>, you can make a friend. If you can say <em>Ich heiße</em>, you can <em>be</em> one. That is plenty for Level 1.');
@@ -1749,8 +2132,8 @@ function renderHallo(root){
   const tip=document.createElement('div'); tip.className='tipbox';
   tip.innerHTML=`<strong>Two “I” sentences (keep them as a pair):</strong><br>
   ${deHTML('Ich heiße')} Anna. = My name is Anna.<br>
-  ${deHTML('Ich bin')} Otto. = I am Otto.<br><br>
-  Use ${deHTML('Ich heiße')} for your <em>name</em>. Use ${deHTML('Ich bin')} for who or what you are (a kid, a fox, twelve years old — later).`;
+  ${deHTML('Ich bin')} Simba. = I am Simba.<br><br>
+  Use ${deHTML('Ich heiße')} for your <em>name</em>. Use ${deHTML('Ich bin')} for who or what you are (a kid, a lion, twelve years old — later).`;
   card.appendChild(tip);
 
   sectionLabel(card,'Memory match');
@@ -1772,7 +2155,7 @@ function renderHallo(root){
 
 function renderHabenSein(root){
   renderRecap(root, 'haben-sein');
-  const card=moduleShell(`${glossHTML('Haben','to have')} &amp; ${glossHTML('Sein','to be')}`,'You already know Ich bin. Now see how that verb changes for you, me, and Otto’s friends. (Otto has been “being” a fox his whole life.)');
+  const card=moduleShell(`${glossHTML('Haben','to have')} &amp; ${glossHTML('Sein','to be')}`,'You already know Ich bin. Now see how that verb changes for you, me, and Simba’s friends. (Simba has been “being” a lion his whole life.)');
   lsrwRail(card);
   explainer(card, `<strong>LSRW:</strong> Listen first, then Speak, then Read, then Write. That order helps German stay in your ears and your mouth — not only on the page.<br><br><strong>What's a “verb”?</strong> A verb is an action or state word — like “am”, “have”, “run”. In German (and English), the verb changes its spelling depending on <em>who</em> is doing it — this is called <strong>conjugation</strong>. Compare: “I am” vs “she is” in English — same idea, just different endings.`);
   ottoSays(card, 'If you can say <em>I am</em> and <em>I have</em>, you can introduce yourself <em>and</em> brag about your snacks. Priorities.');
@@ -1784,7 +2167,7 @@ function renderHabenSein(root){
   Quick check: if the sentence is describing <strong>what something IS</strong>, use ${deHTML('sein')}. If it's describing <strong>what someone OWNS</strong>, use ${deHTML('haben')}.`;
   card.appendChild(usage);
 
-  phase(card,'L','1 👂 Listen','Hear the German. Choose the English meaning. No writing yet. (Otto’s ears are enormous. Use yours.)');
+  phase(card,'L','1 👂 Listen','Hear the German. Choose the English meaning. No writing yet. (Simba’s ears are enormous. Use yours.)');
   renderListenAll(card, ['ich bin','du bist','er ist','ich habe','du hast','er hat']);
   renderEarPick(card, EAR_ITEMS['haben-sein']);
 
@@ -1850,7 +2233,7 @@ function renderHabenSein(root){
 
 function renderVorstellen(root){
   renderRecap(root, 'vorstellen');
-  const card=moduleShell(`${glossHTML('Ich bin','I am')}… — this is me`,'A real introduction: name, age, class, religion, hobbies. Copy Anna first. Then swap in your own facts. Otto will still be a fox.');
+  const card=moduleShell(`${glossHTML('Ich bin','I am')}… — this is me`,'A real introduction: name, age, class, religion, hobbies. Copy Anna first. Then swap in your own facts. Simba will still be a lion.');
   lsrwRail(card);
   explainer(card, `<strong>This is how you introduce yourself.</strong> You already know ${deHTML('Ich heiße')} and ${deHTML('Ich bin')}. Now stack little sentences into one “this is me” talk.<br><br>
   ${deHTML('Ich heiße')} Anna. — name<br>
@@ -1858,7 +2241,7 @@ function renderVorstellen(root){
   ${deHTML('Ich bin in der sechsten Klasse.')} — class<br>
   ${deHTML('Ich bin Hindu.')} — religion (use the word that is true for you)<br>
   ${deHTML('Mein Hobby ist Lesen.')} — hobby`);
-  ottoSays(card, 'Religion and hobbies are personal. Learn the sentence pattern, then tell the truth about <em>you</em>. Otto’s hobby is snacks. His class is “fox”. His age is a secret.');
+  ottoSays(card, 'Religion and hobbies are personal. Learn the sentence pattern, then tell the truth about <em>you</em>. Simba’s hobby is snacks. His class is “lion”. His age is a secret.');
 
   phase(card,'L','1 👂 Listen','Hear a whole introduction. Then pick meanings. No writing yet.');
   renderListenAll(card, [
@@ -1928,7 +2311,7 @@ function renderFarben(root){
   const card=moduleShell(`${deHTML('Farben')} (Colours)`,'Colours — tap any swatch or speaker to hear it pronounced. Warning: orange is both a colour and a fruit. German does that too.');
   lsrwRail(card);
   explainer(card, `<strong>Easy topic to start with!</strong> Colour words in German mostly sound a little like English if you say them slowly (e.g. ${deHTML('rot')} ≈ “red”, ${deHTML('grün')} ≈ “green”). Follow Listen → Speak → Read → Write.`);
-  ottoSays(card, `If you forget ${glossHTML('rot','red')}, picture a tomato having a dramatic day. If you forget ${glossHTML('grün','green')}, picture Otto in a salad. He would not like that.`);
+  ottoSays(card, `If you forget ${glossHTML('rot','red')}, picture a tomato having a dramatic day. If you forget ${glossHTML('grün','green')}, picture Simba in a salad. He would not like that.`);
 
   phase(card,'L','1 👂 Listen','Hear the colour. Pick the English. Eyes on the meaning, not the spelling yet.');
   renderListenAll(card, COLORS.map(c=>c[0]));
@@ -1963,10 +2346,10 @@ function renderFarben(root){
 
 function renderAdjektive(root){
   renderRecap(root, 'adjektive');
-  const card=moduleShell(`${deHTML('Adjektive')} (Adjectives)`,'Common adjectives, taught as opposite pairs — easier to remember together. Hot/cold. Big/small. Otto/not a wolf.');
+  const card=moduleShell(`${deHTML('Adjektive')} (Adjectives)`,'Common adjectives, taught as opposite pairs — easier to remember together. Hot/cold. Big/small. Simba/not a wolf.');
   lsrwRail(card);
   explainer(card, `<strong>What's an “adjective”?</strong> An adjective describes a noun — like “big”, “old”, “hot”. The German word for “opposite” is ${glossHTML('Gegenteil','opposite')} — you'll see this word used below. Learning words in opposite pairs (big/small, hot/cold) makes them much easier to remember than learning them one at a time.`);
-  ottoSays(card, `${glossHTML('groß','big')} and ${glossHTML('klein','small')} are opposites, like “one biscuit” and “the whole tin”. Otto supports the tin.`);
+  ottoSays(card, `${glossHTML('groß','big')} and ${glossHTML('klein','small')} are opposites, like “one biscuit” and “the whole tin”. Simba supports the tin.`);
 
   phase(card,'L','1 👂 Listen','Hear the describing word. Pick the English.');
   renderListenAll(card, ADJ_PAIRS.flatMap(([a,,b])=>[a,b]));
@@ -2104,7 +2487,7 @@ function renderZahlen(root){
   const nextBtn=document.createElement('button'); nextBtn.className='btn ghost'; nextBtn.textContent='Next number →';
   nextBtn.style.display='none';
   checkBtn.onclick=()=>{
-    if(parseInt(input.value,10)===target){ fb.textContent='Yes! Richtig (= correct) ✓  It was '+target+' ('+numberWord(target)+') — Otto counted on his toes and got confused.'; fb.style.color='#0f8f84'; }
+    if(parseInt(input.value,10)===target){ fb.textContent='Yes! Richtig (= correct) ✓  It was '+target+' ('+numberWord(target)+') — Simba counted on his toes and got confused.'; fb.style.color='#0f8f84'; }
     else{ fb.textContent='Not quite — it was '+target+' ('+numberWord(target)+'). Numbers are slippery. Try the next one.'; fb.style.color='var(--berry)'; }
     input.disabled=true;
     checkBtn.disabled=true;
@@ -2246,7 +2629,7 @@ function renderPronomen(root){
   const card=moduleShell(`${deHTML('Personalpronomen')} (Personal Pronouns)`,'Personal pronouns — who is doing the action.');
   lsrwRail(card);
   explainer(card, `<strong>What's a “pronoun”?</strong> A pronoun replaces a name — instead of “Anna is happy”, you can say “she is happy”. “She” is a pronoun. Below are all the German pronouns. You already know most of the ideas (I, you, he, she, we...) — you're just learning their German words.`);
-  ottoSays(card, `${glossHTML('sie','she / they')} can mean “she” or “they”. Context is your friend. Guessing wildly is Otto’s hobby, not a study skill.`);
+  ottoSays(card, `${glossHTML('sie','she / they')} can mean “she” or “they”. Context is your friend. Guessing wildly is Simba’s hobby, not a study skill.`);
 
   phase(card,'L','1 👂 Listen','Hear ich, du, wir… Pick the English.');
   renderListenAll(card, ['ich','du','er','sie','wir','ihr','Sie']);
@@ -2346,7 +2729,7 @@ function renderLesen(root){
   if(!asShelf) renderRecap(root, 'lesen');
   const card=moduleShell(
     asShelf ? 'Story shelf — kids’ German tales' : `A little story — ${glossHTML('Lesetext','reading text')}`,
-    'Pick a story below. There are '+STORIES.length+' short tales. Word help stays under the passage.'
+    'Pick a story below. There are '+STORIES.length+' short tales. Jungle tales are kid-safe retellings of the old Jungle Book. Word help stays under the passage.'
   );
   const shelf=document.createElement('p'); shelf.className='story-shelf-label';
   shelf.textContent='Tap a story card — '+STORIES.length+' to choose from';
@@ -2383,6 +2766,21 @@ function renderLesen(root){
 
   phase(card,'S','2 🗣️ Speak','Echo one sentence at a time. Shadow the voice.');
   renderSpeakAlong(card, story.lines);
+
+  if(story.song){
+    sectionLabel(card, '🎶 '+story.song.title);
+    const note=document.createElement('p'); note.className='note';
+    note.textContent='A little jungle chant to sing. Made for this app — not a movie song.';
+    card.appendChild(note);
+    const song=document.createElement('div'); song.className='songbox'; song.textContent=story.song.verses;
+    card.appendChild(song);
+    const songRow=document.createElement('div'); songRow.className='btnrow';
+    const hearSong=document.createElement('button'); hearSong.className='btn ghost'; hearSong.textContent='🔊 Hear the song';
+    hearSong.onclick=()=>speak(story.song.verses.replace(/\s+/g,' ').trim(), Math.min(state.rate, 0.78));
+    songRow.appendChild(hearSong);
+    card.appendChild(songRow);
+    renderSpeakAlong(card, story.song.lines);
+  }
 
   phase(card,'R','3 📖 Read','Read it as a passage. Meanings are not inside the story — they live in Word help below.');
   const now=document.createElement('div'); now.id='story-now';
@@ -2422,12 +2820,12 @@ function renderLesen(root){
 }
 
 function renderChallenge(root){
-  const card=moduleShell('Otto-Cup','Boss level! A mix of everything you have learned so far. No timer. No scary test. Just show Otto you remember.');
+  const card=moduleShell('Simba-Cup','Boss level! A mix of everything you have learned so far. No timer. No scary test. Just show Simba you remember.');
   const startWrap=document.createElement('div');
   const info=document.createElement('p'); info.className='note';
   info.textContent='This is a fun mix from every level. Take your time. If a bit feels wobbly, go back to that level in the Practice park afterwards.';
   startWrap.appendChild(info);
-  const startBtn=document.createElement('button'); startBtn.className='btn'; startBtn.textContent='Start the Otto-Cup 🏆';
+  const startBtn=document.createElement('button'); startBtn.className='btn'; startBtn.textContent='Start the Simba-Cup 🏆';
   startWrap.appendChild(startBtn);
   card.appendChild(startWrap);
   root.appendChild(card);
@@ -2459,7 +2857,7 @@ function runChallenge(card){
     {topic:'Verben', q:'"Du ___ aus Italien." (kommen)', opts:['kommst','kommt','komme'], a:0},
     {topic:'Verben', q:'"Er ___ in Berlin." (wohnen)', opts:['wohnt','wohnst','wohnen'], a:0},
     {topic:'Lesetext', q:'In “Anna in Berlin”, Anna is from...', opts:['Munich','Berlin','Hamburg'], a:1},
-    {topic:'Lesetext', q:'In “Otto and the cake”, Otto says he is a...', opts:['Fox','Cake','Dog'], a:2},
+    {topic:'Lesetext', q:'In “Simba and the cake”, Simba says he is a...', opts:['Lion','Cake','Dog'], a:2},
   ];
   const topicScores={};
   const quizHost=document.createElement('div');
@@ -2471,7 +2869,7 @@ function runChallenge(card){
     if(idx>=examQs.length){ finishChallenge(); return; }
     const item=examQs[idx];
     const box=document.createElement('div'); box.className='qwrap';
-    const prog=document.createElement('div'); prog.className='progressline'; prog.textContent=`Otto-Cup ${idx+1} / ${examQs.length} — ${item.topic}`;
+    const prog=document.createElement('div'); prog.className='progressline'; prog.textContent=`Simba-Cup ${idx+1} / ${examQs.length} — ${item.topic}`;
     box.appendChild(prog);
     const p=document.createElement('div'); p.className='qprompt';
     p.innerHTML = decorateQuotedGerman(item.q);
@@ -2501,7 +2899,7 @@ function runChallenge(card){
   function finishChallenge(){
     quizHost.innerHTML='';
     const summary=document.createElement('div'); summary.className='summarybox';
-    let html=`<div style="font-family:'Fredoka',sans-serif;font-size:22px;margin-bottom:8px;">Otto-Cup score: ${score} / ${examQs.length}</div>`;
+    let html=`<div style="font-family:'Fredoka',sans-serif;font-size:22px;margin-bottom:8px;">Simba-Cup score: ${score} / ${examQs.length}</div>`;
     Object.entries(topicScores).forEach(([topic,{correct,total}])=>{
       if(total===0) return;
       const pct=Math.round(100*correct/total);
@@ -2513,11 +2911,11 @@ function runChallenge(card){
     const weakTopics=Object.entries(topicScores).filter(([t,{correct,total}])=>total>0 && correct/total<0.5).map(([t])=>t);
     if(weakTopics.length){
       const w=document.createElement('p'); w.className='note'; w.style.marginTop='12px';
-      w.innerHTML=`<strong>Play these again in Practice park:</strong> ${weakTopics.join(', ')} — Otto’s gentle hint list.`;
+      w.innerHTML=`<strong>Play these again in Practice park:</strong> ${weakTopics.join(', ')} — Simba’s gentle hint list.`;
       card.appendChild(w);
     } else {
       const w=document.createElement('p'); w.className='note'; w.style.marginTop='12px';
-      w.textContent='Wow. Otto would give you a medal, but he already spent it on snacks.';
+      w.textContent='Wow. Simba would give you a medal, but he already spent it on snacks.';
       card.appendChild(w);
     }
     if(score>=examQs.length-2){
@@ -2527,7 +2925,7 @@ function runChallenge(card){
       card.appendChild(claim);
     } else {
       const again=document.createElement('p'); again.className='note'; again.style.marginTop='12px';
-      again.textContent='Almost! Play the wobbly topics again, then come back for the Otto-Cup.';
+      again.textContent='Almost! Play the wobbly topics again, then come back for the Simba-Cup.';
       card.appendChild(again);
     }
   }
@@ -2604,9 +3002,9 @@ function render(){
   const masthead=document.createElement('div'); masthead.className='masthead';
   const left=document.createElement('div');
   left.innerHTML=`
-      <div class="flagbar"><div class="b"></div><div class="r"></div><div class="g"></div></div>
-      <h1>Deutsch<span>reise</span></h1>
-      <div class="sub">${glossHTML('Deutschreise','German journey')} · Learn German the fun way · Levels 1–${STORY_LEVELS.length}</div>
+      <div class="rainbowbar" title="Rainbow path"></div>
+      <h1>🦄 Deutsch<span>reise</span></h1>
+      <div class="sub">${glossHTML('Deutschreise','German journey')} · Jungle friends · Music on — tap 🎵 to stop</div>
   `;
   left.querySelector('h1').appendChild(speakerBtn('Deutschreise'));
   const tools=document.createElement('div');
@@ -2623,27 +3021,48 @@ function render(){
   slowBtn.onclick=()=>{ state.rate=0.58; syncSpeed(); saveProgress(); };
   normBtn.onclick=()=>{ state.rate=0.85; syncSpeed(); saveProgress(); };
   syncSpeed();
-  speed.appendChild(lbl); speed.appendChild(slowBtn); speed.appendChild(normBtn);
-  const buddy=document.createElement('div'); buddy.className='buddy'; buddy.textContent='🦊';
-  buddy.title='Tap Otto — he only speaks German, and he knows about five sentences.';
+  const musicBtn=document.createElement('button');
+  musicBtn.type='button';
+  musicBtn.setAttribute('data-music-btn','bar');
+  musicBtn.className='btn'+(state.musicOn?'':' ghost');
+  musicBtn.textContent=labelMusic(false);
+  musicBtn.title='Music plays by default. Tap to switch it off or on.';
+  musicBtn.onclick=toggleMusic;
+  speed.appendChild(lbl); speed.appendChild(slowBtn); speed.appendChild(normBtn); speed.appendChild(musicBtn);
+  const buddies=document.createElement('div'); buddies.className='buddies';
+  const raksha=document.createElement('div'); raksha.className='buddy unicorn'; raksha.textContent='🦄';
+  raksha.title='Tap Raksha the unicorn — she lives in the jungle and speaks easy German.';
+  raksha.onclick=()=>speak(pickOne(RAKSHA_CHAT));
+  const buddy=document.createElement('div'); buddy.className='buddy'; buddy.textContent='🦁';
+  buddy.title='Tap Simba — he only speaks German, and he knows about five sentences.';
   buddy.onclick=()=>speak(pickOne(OTTO_CHAT));
-  tools.appendChild(speed); tools.appendChild(buddy);
+  buddies.appendChild(raksha); buddies.appendChild(buddy);
+  tools.appendChild(speed); tools.appendChild(buddies);
   masthead.appendChild(left); masthead.appendChild(tools);
   app.appendChild(masthead);
 
   const welcome=document.createElement('div'); welcome.className='welcomebox';
   const mapDone=STORY_LEVELS.every(m=>state.done.has(m.id));
   welcome.innerHTML= mapDone
-    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, or tap <strong>Start again</strong> to wipe the stars and clear the whole map from Level 1. Use <strong>Free play</strong> if you want every level open, or <strong>Locked path</strong> to open them in order. New levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
-    : `<strong>A beginner German adventure.</strong> Choose <strong>Locked path</strong> to finish one level ⭐ before the next opens, or <strong>Free play</strong> to jump anywhere. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Tap <strong>Start again</strong> anytime to reset every star.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
+    ? `<strong>Rainbow map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Story shelf, or tap <strong>Start again</strong> to reset the rainbow and clear the whole map from Level 1. Use <strong>Free play</strong> if you want every level open, or <strong>Locked path</strong> to open them in order. New levels will arrive as you grow.<br><br><strong>Simba the lion</strong> and <strong>Raksha the unicorn</strong> are your travel buddies. Tap them. Tiny German. Enormous sparkle.`
+    : `<strong>A jungle German adventure.</strong> Music plays softly in the background — tap <strong>🎵 Music on</strong> if you want it quiet. Choose <strong>Locked path</strong> to finish one level 🦄 before the next opens, or <strong>Free play</strong> to jump anywhere. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word.<br><br><strong>Simba the lion</strong> and <strong>Raksha the unicorn</strong> walk the jungle with you. Tap them for a little German magic.`;
   app.appendChild(welcome);
+  const musicRow=document.createElement('div'); musicRow.className='btnrow'; musicRow.style.margin='0 0 16px';
+  const bigMusic=document.createElement('button');
+  bigMusic.type='button';
+  bigMusic.setAttribute('data-music-btn','big');
+  bigMusic.className='btn'+(state.musicOn?'':' ghost');
+  bigMusic.textContent=labelMusic(true);
+  bigMusic.onclick=toggleMusic;
+  musicRow.appendChild(bigMusic);
+  app.appendChild(musicRow);
 
   const overall=document.createElement('div');
   const cleared=STORY_LEVELS.filter(m=>state.done.has(m.id)).length;
   const pct=Math.round(100*cleared/STORY_LEVELS.length);
   const toolsRow=document.createElement('div'); toolsRow.className='progress-tools';
   const cap=document.createElement('div'); cap.className='progress-caption';
-  cap.textContent= mapDone ? '🏆 Beginner map cleared!' : `⭐ Level ${Math.min(cleared+1, STORY_LEVELS.length)} of ${STORY_LEVELS.length} · ${cleared} cleared`;
+  cap.textContent= mapDone ? '🌈 Rainbow map cleared!' : `🦄 Level ${Math.min(cleared+1, STORY_LEVELS.length)} of ${STORY_LEVELS.length} · ${cleared} cleared`;
   const resetBtn=document.createElement('button'); resetBtn.className='btn ghost'; resetBtn.type='button';
   resetBtn.textContent='🔁 Start again';
   resetBtn.title='Clear all stars and begin at Level 1';
@@ -2696,8 +3115,8 @@ function render(){
   if(state.done.has(state.current) && cur && cur.level){
     const b=document.createElement('div'); b.className='badge';
     b.innerHTML= cur.level===STORY_LEVELS.length
-      ? '★ Boss level cleared! Otto is proud. (Quietly. He is a fox.)'
-      : `★ Level ${cur.level} cleared! Otto is proud. (Quietly. He is a fox.)`;
+      ? '🦄 Boss level cleared! Simba is proud. Raksha is sparkly. (Quietly. Mostly.)'
+      : `🦄 Level ${cur.level} cleared! Simba is proud. Raksha did a tiny rainbow.`;
     moduleRoot.appendChild(b);
   }
 
@@ -2729,11 +3148,11 @@ function render(){
     const overlay=document.createElement('div'); overlay.className='level-up';
     const box=document.createElement('div'); box.className='level-up-card';
     const finishedAll=clearedLv && clearedLv.level===STORY_LEVELS.length;
-    box.innerHTML=`<div class="burst">${finishedAll?'🏆':'🎉'}</div>
-      <h3>${finishedAll?'Beginner map complete!':'Level '+clearedLv.level+' cleared!'}</h3>
+    box.innerHTML=`<div class="burst">${finishedAll?'🌈🦄':'🦄'}</div>
+      <h3>${finishedAll?'Rainbow map complete!':'Level '+clearedLv.level+' cleared!'}</h3>
       <p>${finishedAll
-        ? 'You finished every beginner level. More levels will appear as you grow. Otto packed a tiny suitcase of pride.'
-        : (clearedLv.label+' is yours. '+clearedLv.en+'. The next gate just opened.')}</p>`;
+        ? 'You finished every beginner level. More levels will appear as you grow. Raksha packed extra sparkles. Simba packed pride.'
+        : (clearedLv.label+' is yours. '+clearedLv.en+'. The next rainbow gate just opened.')}</p>`;
     const row=document.createElement('div'); row.className='btnrow'; row.style.justifyContent='center';
     const stay=document.createElement('button'); stay.className='btn ghost'; stay.textContent='Stay here';
     stay.onclick=()=>{ state.justCleared=null; overlay.remove(); };
@@ -2764,7 +3183,7 @@ function render(){
     const box=document.createElement('div'); box.className='level-up-card';
     box.innerHTML=`<div class="burst">🔁</div>
       <h3>Start again?</h3>
-      <p>This clears every star. You will begin at Level 1 — Hallo. Locked path or Free play stays as you left it. Otto will pretend this is a brand-new journey.</p>`;
+      <p>This clears every star. You will begin at Level 1 — Hallo. Locked path or Free play stays as you left it. Simba will pretend this is a brand-new journey.</p>`;
     const row=document.createElement('div'); row.className='btnrow'; row.style.justifyContent='center';
     const cancel=document.createElement('button'); cancel.className='btn ghost'; cancel.textContent='Keep my stars';
     cancel.onclick=()=>{ state.confirmReset=false; overlay.remove(); };
@@ -2778,6 +3197,10 @@ function render(){
 }
 
 render();
+['pointerdown','keydown'].forEach(ev=>{
+  document.addEventListener(ev, ensureMusic, true);
+});
+ensureMusic();
 </script>
 </body>
 </html>
