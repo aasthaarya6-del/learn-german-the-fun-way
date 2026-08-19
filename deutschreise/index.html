@@ -279,6 +279,7 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .qfeedback{font-size:15px;font-weight:800;margin-top:8px;}
 .qfeedback.ok{color:#0f8f84;}
 .qfeedback.bad{color:var(--berry);}
+.qfeedback.try{color:#b56a2c;}
 .progressline{font-size:13px;color:var(--ink-soft);margin-bottom:8px;font-weight:800;}
 
 .fillrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:16px;font-weight:700;}
@@ -1221,7 +1222,7 @@ function pickGermanVoice(){
       || null;
 }
 
-const Music={ctx:null, master:null, bg:null, sfx:null, playing:false, timer:null, step:0, nextTime:0, speechOn:false, sfxDuckTimer:null};
+const Music={ctx:null, master:null, bg:null, sfx:null, playing:false, timer:null, step:0, nextTime:0, speechOn:false, sfxDuckTimer:null, micMute:false};
 const G4=392, A4=440, B4=493.88, C5=523.25, D5=587.33, E5=659.25, Fs5=739.99, G5=783.99, A5=880, F5=698.46;
 const MOZART=[
   [G4,0.45],[D5,0.45],[G4,0.45],[D5,0.45],[G4,0.45],[D5,0.45],[G5,1.2],[0,0.3],
@@ -1341,10 +1342,14 @@ function ensureMusic(e){
   if(e && e.target && e.target.closest && e.target.closest('[data-music-btn]')) return;
   startBand().then(ok=>{ if(ok) syncMusicButtons(); });
 }
-function duckBand(down){
+function applyBgGain(){
   if(!Music.bg || !Music.ctx) return;
+  const target = Music.micMute ? 0.001 : (Music.speechOn ? 0.08 : 0.45);
   Music.bg.gain.cancelScheduledValues(Music.ctx.currentTime);
-  Music.bg.gain.setTargetAtTime(down?0.08:0.45, Music.ctx.currentTime, 0.06);
+  Music.bg.gain.setTargetAtTime(target, Music.ctx.currentTime, 0.05);
+}
+function duckBand(){
+  applyBgGain();
 }
 function playNoiseClick(when, dur, vol){
   const ctx=Music.ctx;
@@ -1365,17 +1370,18 @@ function playNoiseClick(when, dur, vol){
   src.start(when); src.stop(when+dur+0.02);
 }
 function playSfx(kind){
-  if(!state.musicOn) return;
+  if(!state.musicOn || Music.micMute) return;
   unlockAudio().then((ctx)=>{
     if(!ctx || !Music.sfx) return;
     const t=ctx.currentTime;
     const bus=Music.sfx;
-    if(Music.playing && !Music.speechOn){
-      duckBand(true);
+    if(Music.playing && !Music.speechOn && Music.bg){
+      Music.bg.gain.cancelScheduledValues(ctx.currentTime);
+      Music.bg.gain.setTargetAtTime(0.08, ctx.currentTime, 0.05);
       if(Music.sfxDuckTimer) clearTimeout(Music.sfxDuckTimer);
       Music.sfxDuckTimer=setTimeout(()=>{
         Music.sfxDuckTimer=null;
-        if(!Music.speechOn) duckBand(false);
+        applyBgGain();
       }, 240);
     }
     if(kind==='ok'){
@@ -1846,54 +1852,200 @@ function foldDe(s){
     .replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
     .replace(/[.,!?;:"„""''¡¿]/g,'').replace(/\s+/g,' ').trim();
 }
-function heardMatches(heard, expected){
+function squeezeDe(s){
+  return foldDe(s)
+    .replace(/tsch/g,'ch').replace(/sch/g,'sh').replace(/ch/g,'x')
+    .replace(/ck/g,'k').replace(/tz/g,'z').replace(/ph/g,'f')
+    .replace(/ae|ai|ay|ei/g,'e').replace(/oe|eu/g,'o').replace(/ue/g,'u').replace(/ie/g,'i')
+    .replace(/w/g,'v').replace(/j/g,'y').replace(/c/g,'k')
+    .replace(/[^a-z0-9]+/g,'').replace(/(.)\1+/g,'$1');
+}
+function editDist(a,b){
+  const m=a.length, n=b.length;
+  if(!m) return n; if(!n) return m;
+  const row=new Array(n+1);
+  for(let j=0;j<=n;j++) row[j]=j;
+  for(let i=1;i<=m;i++){
+    let prev=row[0]; row[0]=i;
+    for(let j=1;j<=n;j++){
+      const tmp=row[j];
+      row[j]=a[i-1]===b[j-1] ? prev : 1+Math.min(prev, row[j], row[j-1]);
+      prev=tmp;
+    }
+  }
+  return row[n];
+}
+function closeEnough(a,b){
+  if(!a || !b) return false;
+  if(a===b || a.includes(b) || b.includes(a)) return true;
+  const d=editDist(a,b), max=Math.max(a.length,b.length);
+  if(max<=4) return d<=1;
+  if(max<=8) return d<=3;
+  return d/max<=0.45;
+}
+const HEAR_STOP=new Set(['der','die','das','den','dem','des','ein','eine','einen','einem','eines','und','in','im','ist','bin','bist','sind','seid','hat','habe','haben','wir','ihr','sie','du','ich','es','the','a','an','is','am','are','my','i']);
+function tokensOf(s){
+  return foldDe(s).split(' ').filter(w=>w && !HEAR_STOP.has(w) && w.length>1);
+}
+function heardMatches(heard, expected, expectedEn){
   const h=foldDe(heard), e=foldDe(expected);
   if(!h || !e) return false;
-  if(h===e) return true;
-  if(h.includes(e) || e.includes(h)) return true;
-  const strip=x=>x.replace(/^(der|die|das|ein|eine|einen|einem|mein|meine|mein|hallo)\s+/,'');
-  return strip(h)===strip(e);
+  if(closeEnough(h,e) || closeEnough(squeezeDe(h), squeezeDe(e))) return true;
+  const ht=tokensOf(h), et=tokensOf(e);
+  if(et.length){
+    const hit=et.filter(t=>ht.some(x=>closeEnough(squeezeDe(x), squeezeDe(t)))).length;
+    if(hit/et.length>=0.45) return true;
+  }
+  if(expectedEn){
+    const en=foldDe(expectedEn), ens=squeezeDe(en), hs=squeezeDe(h);
+    if(closeEnough(h,en) || closeEnough(hs,ens)) return true;
+    const ent=tokensOf(en);
+    if(ent.length){
+      const hit=ent.filter(t=>ht.some(x=>closeEnough(squeezeDe(x), squeezeDe(t)))).length;
+      if(hit/ent.length>=0.5) return true;
+    }
+  }
+  return false;
 }
 function canListen(){
-  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  return !!(window.isSecureContext && (window.SpeechRecognition || window.webkitSpeechRecognition));
 }
-function startListen(expected, btn, fb){
+const Listen={rec:null, timer:null, active:false, btn:null};
+function stopListen(){
+  Listen.active=false;
+  if(Listen.timer){ clearTimeout(Listen.timer); Listen.timer=null; }
+  if(Listen.btn){ Listen.btn.classList.remove('listening'); Listen.btn=null; }
+  if(Listen.rec){
+    const r=Listen.rec; Listen.rec=null;
+    r.onresult=r.onerror=r.onend=null;
+    try{ r.abort(); }catch(e){}
+  }
+  Music.micMute=false;
+  applyBgGain();
+}
+function startListen(expected, expectedEn, btn, fb){
   const Rec=window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!Rec){
-    fb.textContent='Mic check is not available in this browser — tap “I said it” after you speak.';
-    fb.className='qfeedback';
+  if(!Rec || !window.isSecureContext){
+    fb.textContent='The microphone needs the website (or tap “I said it” — that still counts).';
+    fb.className='qfeedback try';
     return;
   }
-  const r=new Rec();
-  r.lang='de-DE'; r.interimResults=false; r.maxAlternatives=4;
-  fb.textContent='Listening… say it now!'; fb.className='qfeedback';
+  stopListen();
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  Music.speechOn=false;
+  Music.micMute=true;
+  applyBgGain();
+
+  Listen.active=true;
+  Listen.btn=btn;
   btn.classList.add('listening');
-  r.onresult=(ev)=>{
+  fb.textContent='Listening… say it now. Take your time.';
+  fb.className='qfeedback';
+
+  const alts=[];
+  let won=false;
+  let restarts=0;
+  const finish=()=>{
+    if(!Listen.active) return;
+    const rec=Listen.rec;
+    Listen.active=false;
+    if(Listen.timer){ clearTimeout(Listen.timer); Listen.timer=null; }
+    if(rec){
+      rec.onresult=rec.onerror=rec.onend=null;
+      try{ rec.stop(); }catch(e){}
+      Listen.rec=null;
+    }
     btn.classList.remove('listening');
-    const alts=[];
-    for(let i=0;i<ev.results[0].length;i++) alts.push(ev.results[0][i].transcript);
-    const ok=alts.some(a=>heardMatches(a, expected));
-    fb.textContent = ok ? 'Great speaking! Simba’s ears approved. ✓  I heard: '+alts[0] : 'Almost — I heard “'+alts[0]+'”. Simba believes in second tries. Listen again.';
-    fb.className='qfeedback '+(ok?'ok':'bad');
+    Listen.btn=null;
+    Music.micMute=false;
+    applyBgGain();
+    if(won) return;
+    if(alts.length){
+      fb.textContent='I heard “'+alts[0]+'”. Brave try! Tap the mic again, or “I said it” — that still counts.';
+      fb.className='qfeedback try';
+    } else {
+      fb.textContent='I didn’t catch it. Speak a little louder after you tap, or tap “I said it”. That still counts!';
+      fb.className='qfeedback try';
+    }
   };
-  r.onerror=()=>{
-    btn.classList.remove('listening');
-    fb.textContent='Could not hear that. Try again, or tap “I said it”.';
-    fb.className='qfeedback';
+  const succeed=(heard)=>{
+    if(won) return;
+    won=true;
+    fb.textContent='Yes! I heard you: “'+heard+'”. ✓';
+    fb.className='qfeedback ok';
+    finish();
+    playSfx('ok');
   };
-  r.onend=()=>btn.classList.remove('listening');
-  try{ r.start(); }
-  catch(e){
-    btn.classList.remove('listening');
-    fb.textContent='Allow the microphone, or just repeat after the speaker and tap “I said it”.';
-  }
+  const attach=(r)=>{
+    r.lang='de-DE';
+    r.interimResults=true;
+    r.continuous=true;
+    r.maxAlternatives=8;
+    r.onresult=(ev)=>{
+      if(!Listen.active || won) return;
+      for(let i=ev.resultIndex;i<ev.results.length;i++){
+        for(let j=0;j<ev.results[i].length;j++){
+          const t=ev.results[i][j].transcript;
+          if(t && alts.indexOf(t)<0) alts.push(t);
+        }
+        const live=ev.results[i][0] && ev.results[i][0].transcript;
+        if(live) { fb.textContent='Hearing: “'+live+'” …'; fb.className='qfeedback'; }
+      }
+      const hit=alts.find(a=>heardMatches(a, expected, expectedEn));
+      if(hit) succeed(hit);
+    };
+    r.onerror=(ev)=>{
+      if(!Listen.active || won) return;
+      const err=ev && ev.error;
+      if(err==='no-speech' || err==='aborted') return;
+      if(err==='not-allowed' || err==='service-not-allowed'){
+        fb.textContent='Allow the microphone, or tap “I said it”. Speaking out loud still counts.';
+        fb.className='qfeedback try';
+        won=true;
+        finish();
+        return;
+      }
+      if(err==='audio-capture'){
+        fb.textContent='No microphone found. Tap “I said it” after you say the line.';
+        fb.className='qfeedback try';
+        won=true;
+        finish();
+      }
+    };
+    r.onend=()=>{
+      if(!Listen.active || won) return;
+      if(alts.some(a=>heardMatches(a, expected, expectedEn))){
+        succeed(alts.find(a=>heardMatches(a, expected, expectedEn)));
+        return;
+      }
+      if(restarts<2){
+        restarts++;
+        try{ r.start(); }catch(e){ finish(); }
+        return;
+      }
+      finish();
+    };
+  };
+  Listen.timer=setTimeout(finish, 9000);
+  setTimeout(()=>{
+    if(!Listen.active || won) return;
+    const r=new Rec();
+    Listen.rec=r;
+    attach(r);
+    try{ r.start(); }
+    catch(e){
+      fb.textContent='Allow the microphone, or tap “I said it” after you speak.';
+      fb.className='qfeedback try';
+      finish();
+    }
+  }, 220);
 }
 
 function renderSpeakAlong(card, phrases){
   if(!phrases || !phrases.length) return;
   sectionLabel(card,'Repeat after me');
   const note=document.createElement('p'); note.className='note';
-  note.textContent='Listen first, then copy with your voice. Speaking is what makes the words stay. Use Slow at the top if it feels too fast. Chrome or Edge can listen and tell you if you were close.';
+  note.textContent='Hear it, then say it out loud. The computer’s ears are a bit silly — if it misses you, tap “I said it”. That still counts. Brave speaking is the point.';
   card.appendChild(note);
   const list=document.createElement('div'); list.className='speaklist';
   phrases.forEach((ph)=>{
@@ -1908,12 +2060,17 @@ function renderSpeakAlong(card, phrases){
     hear.onclick=()=>speak(ph.de);
     const slow=document.createElement('button'); slow.className='btn ghost'; slow.textContent='🐢 Slow';
     slow.onclick=()=>speak(ph.de, 0.58);
-    const said=document.createElement('button'); said.className='btn ghost'; said.textContent='I said it ✓';
-    const mic=document.createElement('button'); mic.className='btn'; mic.textContent=canListen()?'🎤 I will say it':'🎤 Practise';
+    const said=document.createElement('button'); said.className='btn'; said.textContent='I said it ✓';
+    const mic=document.createElement('button'); mic.className='btn ghost'; mic.textContent=canListen()?'🎤 Check my voice':'🎤 Practise';
     const fb=document.createElement('div'); fb.className='qfeedback';
-    said.onclick=()=>{ fb.textContent='Nice. Say it twice more — once in a silly voice, once like a newsreader. ✓'; fb.className='qfeedback ok'; };
-    mic.onclick=()=>startListen(ph.de, mic, fb);
-    btns.appendChild(hear); btns.appendChild(slow); btns.appendChild(mic); btns.appendChild(said);
+    said.onclick=()=>{
+      stopListen();
+      fb.textContent='Nice. Say it twice more — once in a silly voice, once like a newsreader. ✓';
+      fb.className='qfeedback ok';
+      playSfx('ok');
+    };
+    mic.onclick=()=>startListen(ph.de, ph.en, mic, fb);
+    btns.appendChild(hear); btns.appendChild(slow); btns.appendChild(said); btns.appendChild(mic);
     row.appendChild(btns); row.appendChild(fb);
     list.appendChild(row);
   });
@@ -2990,6 +3147,7 @@ const RENDERERS={
 };
 
 function render(){
+  stopListen();
   const app=document.getElementById('app');
   app.innerHTML='';
   resetHeard();
