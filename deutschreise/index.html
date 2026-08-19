@@ -1300,6 +1300,10 @@ function startBand(){
       if(!Music.playing || !state.musicOn || !Music.ctx) return;
       const t=Music.ctx.currentTime;
       while(Music.nextTime < t+1.6){
+        if(Music.micMute){
+          Music.nextTime=t+0.25;
+          break;
+        }
         const note=MOZART[Music.step%MOZART.length];
         const f=note[0], beats=note[1];
         if(f) playAt(f, Music.nextTime, Math.max(0.18, beats*0.5), 'triangle', 0.18, Music.bg);
@@ -1879,7 +1883,7 @@ function closeEnough(a,b){
   if(!a || !b) return false;
   if(a===b || a.includes(b) || b.includes(a)) return true;
   const d=editDist(a,b), max=Math.max(a.length,b.length);
-  if(max<=4) return d<=1;
+  if(max<=5) return d<=2;
   if(max<=8) return d<=3;
   return d/max<=0.45;
 }
@@ -1887,10 +1891,32 @@ const HEAR_STOP=new Set(['der','die','das','den','dem','des','ein','eine','einen
 function tokensOf(s){
   return foldDe(s).split(' ').filter(w=>w && !HEAR_STOP.has(w) && w.length>1);
 }
+const HEAR_ALIASES={
+  tschuess:['tschuss','tschuess','tschues','tschus','tuss','tus','chus','chuss','choose','chose','juice','chess','cheers','shoes','cheese','ciao','bye','bye bye','tchuss','tues','jus','chos','tchuess','schuss','toes','two shoes','just','tchus','zus','shoes','choos','chews','jews','tues'],
+  hallo:['hello','halo','hallow','hola','alo','hollow','hallo','allo','hullo'],
+  danke:['danke','danka','thanks','thank you','thankyou','donkey','dunkay','danka schon']
+};
+function aliasKey(expected){
+  const f=foldDe(expected).replace(/^(der|die|das)\s+/,'');
+  if(HEAR_ALIASES[f]) return f;
+  if(f.indexOf('tschue')===0 || f.indexOf('tschus')===0) return 'tschuess';
+  if(f==='hallo' || f==='hello') return 'hallo';
+  if(f.indexOf('dank')===0) return 'danke';
+  return '';
+}
 function heardMatches(heard, expected, expectedEn){
   const h=foldDe(heard), e=foldDe(expected);
   if(!h || !e) return false;
   if(closeEnough(h,e) || closeEnough(squeezeDe(h), squeezeDe(e))) return true;
+  const key=aliasKey(expected);
+  if(key){
+    const pool=HEAR_ALIASES[key]||[];
+    const hs=squeezeDe(h);
+    if(pool.some(a=>{
+      const fa=foldDe(a), sa=squeezeDe(a);
+      return h===fa || hs===sa || h.includes(fa) || fa.includes(h) || closeEnough(hs,sa) || closeEnough(h,fa);
+    })) return true;
+  }
   const ht=tokensOf(h), et=tokensOf(e);
   if(et.length){
     const hit=et.filter(t=>ht.some(x=>closeEnough(squeezeDe(x), squeezeDe(t)))).length;
@@ -1939,12 +1965,15 @@ function startListen(expected, expectedEn, btn, fb){
   Listen.active=true;
   Listen.btn=btn;
   btn.classList.add('listening');
-  fb.textContent='Listening… say it now. Take your time.';
+  const cue=String(expected||'').replace(/[!.?]+$/g,'').trim();
+  fb.textContent='Listening… say “'+cue+'” now!';
   fb.className='qfeedback';
 
   const alts=[];
   let won=false;
   let restarts=0;
+  const langs=['de-DE','de-DE','en-IN','en-GB'];
+  const shortLine=foldDe(expected).split(' ').filter(Boolean).length<=2;
   const finish=()=>{
     if(!Listen.active) return;
     const rec=Listen.rec;
@@ -1971,15 +2000,19 @@ function startListen(expected, expectedEn, btn, fb){
   const succeed=(heard)=>{
     if(won) return;
     won=true;
-    fb.textContent='Yes! I heard you: “'+heard+'”. ✓';
+    const looksLike=foldDe(heard).indexOf(foldDe(cue))>=0;
+    fb.textContent= looksLike ? 'Yes! I heard you: “'+heard+'”. ✓' : 'Yes! That sounded like '+cue+'. ✓';
     fb.className='qfeedback ok';
     finish();
     playSfx('ok');
   };
-  const attach=(r)=>{
-    r.lang='de-DE';
+  const bootRec=(lang)=>{
+    if(!Listen.active || won) return;
+    const r=new Rec();
+    Listen.rec=r;
+    r.lang=lang||'de-DE';
     r.interimResults=true;
-    r.continuous=true;
+    r.continuous=!shortLine;
     r.maxAlternatives=8;
     r.onresult=(ev)=>{
       if(!Listen.active || won) return;
@@ -2014,31 +2047,27 @@ function startListen(expected, expectedEn, btn, fb){
     };
     r.onend=()=>{
       if(!Listen.active || won) return;
-      if(alts.some(a=>heardMatches(a, expected, expectedEn))){
-        succeed(alts.find(a=>heardMatches(a, expected, expectedEn)));
-        return;
-      }
-      if(restarts<2){
+      const hit=alts.find(a=>heardMatches(a, expected, expectedEn));
+      if(hit){ succeed(hit); return; }
+      if(restarts<3){
         restarts++;
-        try{ r.start(); }catch(e){ finish(); }
+        bootRec(langs[Math.min(restarts, langs.length-1)]);
         return;
       }
       finish();
     };
-  };
-  Listen.timer=setTimeout(finish, 9000);
-  setTimeout(()=>{
-    if(!Listen.active || won) return;
-    const r=new Rec();
-    Listen.rec=r;
-    attach(r);
     try{ r.start(); }
     catch(e){
       fb.textContent='Allow the microphone, or tap “I said it” after you speak.';
       fb.className='qfeedback try';
       finish();
     }
-  }, 220);
+  };
+  Listen.timer=setTimeout(finish, 12000);
+  setTimeout(()=>{
+    if(!Listen.active || won) return;
+    bootRec('de-DE');
+  }, 400);
 }
 
 function renderSpeakAlong(card, phrases){
