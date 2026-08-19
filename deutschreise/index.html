@@ -253,13 +253,32 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 
 .passage{
   background:#fff;border:3px solid var(--sun);border-radius:20px;
-  padding:18px 20px;font-size:20px;line-height:1.7;margin-bottom:18px;font-weight:600;
+  padding:22px 24px;font-size:20px;line-height:1.85;margin-bottom:12px;font-weight:600;
+  text-align:justify;hyphens:auto;
 }
-.passage .sent{
-  display:flex;align-items:flex-start;gap:8px;margin:0 0 12px;line-height:1.7;
+.passage p{margin:0 0 1em;}
+.passage p:last-child{margin-bottom:0;}
+.story-shelf-label{font-family:'Fredoka',sans-serif;font-size:18px;margin:4px 0 8px;}
+.story-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:10px;
+  margin:0 0 16px;
 }
-.passage .sent:last-child{margin-bottom:0;}
-.passage .sent p{margin:0;flex:1;}
+.story-card{
+  text-align:left;
+  background:#fff;
+  border:3px solid var(--ink);
+  border-radius:18px;
+  padding:12px 14px;
+  cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  box-shadow:3px 3px 0 rgba(43,37,80,0.08);
+}
+.story-card:hover{background:#fff6d6;transform:translateY(-2px);}
+.story-card.on{border-color:var(--berry);background:#fff0f6;}
+.story-card .st{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:700;display:block;margin-bottom:4px;}
+.story-card .sb{font-size:13px;font-weight:700;color:var(--ink-soft);line-height:1.35;display:block;}
 .glossary-panel{
   background:#f4f0ff;border:3px solid var(--ink);border-radius:20px;
   padding:14px 16px;margin:0 0 16px;
@@ -468,30 +487,310 @@ const CONJ = {
 };
 const PRON_ROW=["ich","du","er/sie/es","wir","ihr","sie/Sie"];
 
-const PASSAGE = `Hallo! Ich heiße Anna und ich bin zwölf Jahre alt. Ich wohne in Berlin. Meine Familie ist groß. Ich habe einen Bruder und eine Schwester. Mein Bruder heißt Paul und meine Schwester heißt Mia. Wir haben auch einen Hund. Er ist braun und klein. Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien. Unser Haus ist nicht sehr groß, aber es ist schön. Meine Lieblingsfarbe ist blau.`;
+const STORIES=[
+  {
+    id:'anna',
+    title:'Anna in Berlin',
+    blurb:'A girl, a family, a small brown dog.',
+    text:`Hallo! Ich heiße Anna und ich bin zwölf Jahre alt. Ich wohne in Berlin. Meine Familie ist groß. Ich habe einen Bruder und eine Schwester. Mein Bruder heißt Paul und meine Schwester heißt Mia. Wir haben auch einen Hund. Er ist braun und klein.
 
-const GLOSSARY=[["Hallo","hello"],["heiße","am called"],["Jahre alt","years old"],["wohne","live"],["Familie","family"],["groß","big"],["auch","also"],["Hund","dog"],["braun","brown"],["klein","small"],["Haus","house"],["schön","beautiful"],["Lieblingsfarbe","favourite colour"],["und","and"],["Bruder","brother"],["Schwester","sister"],["heißt","is called"],["Vater","father"],["Mutter","mother"],["kommt","comes"],["aus","from"]];
+Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien. Unser Haus ist nicht sehr groß, aber es ist schön. Meine Lieblingsfarbe ist blau.`,
+    lines:[
+      {de:"Hallo! Ich heiße Anna und ich bin zwölf Jahre alt.", en:"Hello! My name is Anna and I am twelve years old."},
+      {de:"Ich wohne in Berlin.", en:"I live in Berlin."},
+      {de:"Meine Familie ist groß.", en:"My family is big."},
+      {de:"Ich habe einen Bruder und eine Schwester.", en:"I have a brother and a sister."},
+      {de:"Mein Bruder heißt Paul und meine Schwester heißt Mia.", en:"My brother is called Paul and my sister is called Mia."},
+      {de:"Wir haben auch einen Hund.", en:"We also have a dog."},
+      {de:"Er ist braun und klein.", en:"He is brown and small."},
+      {de:"Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien.", en:"My father comes from Germany and my mother comes from Italy."},
+      {de:"Unser Haus ist nicht sehr groß, aber es ist schön.", en:"Our house is not very big, but it is beautiful."},
+      {de:"Meine Lieblingsfarbe ist blau.", en:"My favourite colour is blue."}
+    ],
+    glossary:[["Hallo","hello"],["heiße","am called"],["Jahre alt","years old"],["wohne","live"],["Familie","family"],["groß","big"],["auch","also"],["Hund","dog"],["braun","brown"],["klein","small"],["Haus","house"],["schön","beautiful"],["Lieblingsfarbe","favourite colour"],["und","and"],["Bruder","brother"],["Schwester","sister"],["heißt","is called"],["Vater","father"],["Mutter","mother"],["kommt","comes"],["aus","from"]],
+    questions:[
+      {q:"Wie alt ist Anna?",opts:["Elf","Zwölf","Dreizehn"],a:1, audio:"Wie alt ist Anna?"},
+      {q:"Wo wohnt Anna?",opts:["München","Hamburg","Berlin"],a:2, audio:"Wo wohnt Anna?"},
+      {q:"Wie heißt Annas Bruder?",opts:["Paul","Peter","Max"],a:0, audio:"Wie heißt Annas Bruder?"},
+      {q:"Welche Farbe hat der Hund?",opts:["Schwarz","Braun","Weiß"],a:1, audio:"Welche Farbe hat der Hund?"},
+      {q:"Woher kommt Annas Mutter?",opts:["Deutschland","Spanien","Italien"],a:2, audio:"Woher kommt Annas Mutter?"},
+      {q:"Was ist Annas Lieblingsfarbe?",opts:["Rot","Grün","Blau"],a:2, audio:"Was ist Annas Lieblingsfarbe?"}
+    ],
+    otto:'Anna has a brother, a sister, a dog, and a favourite colour. That is a whole soap opera in six sentences. You can do this.'
+  },
+  {
+    id:'kuchen',
+    title:'Otto and the cake',
+    blurb:'A hungry fox, a big cake, a terrible plan.',
+    text:`Otto ist ein kleiner oranger Fuchs. Heute hat Otto sehr großen Hunger. Auf dem Tisch ist ein Kuchen. Der Kuchen ist groß, braun und sehr schön. Otto schaut und schaut. Dann hat er eine Idee. Otto sagt: „Hallo, Kuchen! Ich heiße Otto. Bist du mein Kuchen?“ Der Kuchen sagt nichts. Kuchen sprechen nicht. Das ist gut für den Kuchen und schlecht für Otto.
 
-const PASSAGE_Q=[
-  {q:"Wie alt ist Anna?",opts:["Elf","Zwölf","Dreizehn"],a:1, audio:"Wie alt ist Anna?"},
-  {q:"Wo wohnt Anna?",opts:["München","Hamburg","Berlin"],a:2, audio:"Wo wohnt Anna?"},
-  {q:"Wie heißt Annas Bruder?",opts:["Paul","Peter","Max"],a:0, audio:"Wie heißt Annas Bruder?"},
-  {q:"Welche Farbe hat der Hund?",opts:["Schwarz","Braun","Weiß"],a:1, audio:"Welche Farbe hat der Hund?"},
-  {q:"Woher kommt Annas Mutter?",opts:["Deutschland","Spanien","Italien"],a:2, audio:"Woher kommt Annas Mutter?"},
-  {q:"Was ist Annas Lieblingsfarbe?",opts:["Rot","Grün","Blau"],a:2, audio:"Was ist Annas Lieblingsfarbe?"}
-];
+Anna kommt. Sie ist zwölf Jahre alt und sie ist nicht langsam. „Otto! Das ist mein Kuchen!“ Otto macht große Augen. Er sagt: „Ich bin ein Hund. Hunde essen Kuchen. Das ist die Regel.“ Anna lacht. „Du bist kein Hund. Du bist ein Fuchs. Füchse sind orange. Hunde sind nicht orange.“ Otto sagt: „Bitte, ein kleines Stück!“ Anna sagt: „Ja. Nur ein kleines Stück.“ Jetzt ist Otto glücklich. Der Kuchen ist nicht mehr groß. Anna auch nicht. Sie haben Hunger. Sie essen. Das ist gut.`,
+    lines:[
+      {de:"Otto ist ein kleiner oranger Fuchs.", en:"Otto is a small orange fox."},
+      {de:"Heute hat Otto sehr großen Hunger.", en:"Today Otto is very hungry."},
+      {de:"Auf dem Tisch ist ein Kuchen.", en:"On the table there is a cake."},
+      {de:"Otto sagt: Hallo, Kuchen! Bist du mein Kuchen?", en:"Otto says: Hello, cake! Are you my cake?"},
+      {de:"Der Kuchen sagt nichts. Kuchen sprechen nicht.", en:"The cake says nothing. Cakes do not speak."},
+      {de:"Anna kommt. Otto! Das ist mein Kuchen!", en:"Anna comes. Otto! That is my cake!"},
+      {de:"Otto sagt: Ich bin ein Hund. Hunde essen Kuchen.", en:"Otto says: I am a dog. Dogs eat cake."},
+      {de:"Anna lacht. Du bist kein Hund. Du bist ein Fuchs.", en:"Anna laughs. You are not a dog. You are a fox."},
+      {de:"Otto sagt bitte. Anna sagt ja. Nur ein kleines Stück.", en:"Otto says please. Anna says yes. Only a little piece."},
+      {de:"Jetzt ist Otto glücklich. Sie essen. Das ist gut.", en:"Now Otto is happy. They eat. That is good."}
+    ],
+    glossary:[["Fuchs","fox"],["heute","today"],["Hunger","hunger"],["Tisch","table"],["Kuchen","cake"],["schaut","looks"],["Idee","idea"],["sagt","says"],["nichts","nothing"],["sprechen","speak"],["schlecht","bad"],["langsam","slow"],["Augen","eyes"],["Regel","rule"],["essen","eat"],["lacht","laughs"],["kein","not a / no"],["Bitte","please"],["Stück","piece"],["jetzt","now"],["glücklich","happy"],["orange","orange"],["groß","big"],["braun","brown"],["schön","beautiful"],["klein","small"],["Hund","dog"],["nicht","not"]],
+    questions:[
+      {q:"Was ist Otto?",opts:["Ein Hund","Ein Fuchs","Ein Kuchen"],a:1, audio:"Was ist Otto?"},
+      {q:"Was ist auf dem Tisch?",opts:["Ein Hund","Ein Haus","Ein Kuchen"],a:2, audio:"Was ist auf dem Tisch?"},
+      {q:"Welche Farbe hat Otto?",opts:["Blau","Orange","Grün"],a:1, audio:"Welche Farbe hat Otto?"},
+      {q:"Was sagt Otto? „Ich bin ein ___ .“",opts:["Fuchs","Kuchen","Hund"],a:2, audio:"Ich bin ein Hund"},
+      {q:"Gibt Anna Otto ein Stück Kuchen?",opts:["Ja","Nein","Der Kuchen spricht"],a:0, audio:"Ein kleines Stück"},
+      {q:"Wie ist Otto am Ende?",opts:["Traurig","Glücklich","Langsam"],a:1, audio:"Jetzt ist Otto glücklich"}
+    ],
+    otto:'Otto tries to be a dog so he can eat cake. Dogs did not write this rule. Cakes did not vote. Anna is the government.'
+  },
+  {
+    id:'hut',
+    title:'The red hat',
+    blurb:'Mia loses a hat. A small brown dog has a secret.',
+    text:`Mia hat einen roten Hut. Der Hut ist klein und schön. Heute ist der Hut nicht da. Mia sucht und sucht. „Wo ist mein Hut?“ Paul sucht auch. Der kleine braune Hund hat etwas Rotes. Es ist der Hut!
 
-const PASSAGE_LINES=[
-  {de:"Hallo! Ich heiße Anna und ich bin zwölf Jahre alt.", en:"Hello! My name is Anna and I am twelve years old."},
-  {de:"Ich wohne in Berlin.", en:"I live in Berlin."},
-  {de:"Meine Familie ist groß.", en:"My family is big."},
-  {de:"Ich habe einen Bruder und eine Schwester.", en:"I have a brother and a sister."},
-  {de:"Mein Bruder heißt Paul und meine Schwester heißt Mia.", en:"My brother is called Paul and my sister is called Mia."},
-  {de:"Wir haben auch einen Hund.", en:"We also have a dog."},
-  {de:"Er ist braun und klein.", en:"He is brown and small."},
-  {de:"Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien.", en:"My father comes from Germany and my mother comes from Italy."},
-  {de:"Unser Haus ist nicht sehr groß, aber es ist schön.", en:"Our house is not very big, but it is beautiful."},
-  {de:"Meine Lieblingsfarbe ist blau.", en:"My favourite colour is blue."}
+Der Hund mag den Hut. Mia sagt: „Das ist mein Hut, nicht dein Hut!“ Der Hund gibt den Hut. Jetzt ist Mia glücklich. Der Hund auch. Sie spielen. Das ist gut.`,
+    lines:[
+      {de:"Mia hat einen roten Hut.", en:"Mia has a red hat."},
+      {de:"Heute ist der Hut nicht da.", en:"Today the hat is not there."},
+      {de:"Mia sucht und sucht. Wo ist mein Hut?", en:"Mia looks and looks. Where is my hat?"},
+      {de:"Der kleine braune Hund hat etwas Rotes.", en:"The small brown dog has something red."},
+      {de:"Es ist der Hut!", en:"It is the hat!"},
+      {de:"Mia sagt: Das ist mein Hut, nicht dein Hut!", en:"Mia says: That is my hat, not your hat!"},
+      {de:"Der Hund gibt den Hut. Jetzt ist Mia glücklich.", en:"The dog gives the hat. Now Mia is happy."}
+    ],
+    glossary:[["Hut","hat"],["sucht","looks for"],["wo","where"],["etwas","something"],["Rotes","red thing"],["gibt","gives"],["spielen","play"],["rot","red"],["Hund","dog"],["glücklich","happy"]],
+    questions:[
+      {q:"Welche Farbe hat der Hut?",opts:["Blau","Rot","Grün"],a:1, audio:"Welche Farbe hat der Hut?"},
+      {q:"Wer sucht den Hut?",opts:["Otto","Mia und Paul","Der Mond"],a:1, audio:"Mia sucht und sucht"},
+      {q:"Wer hat den Hut?",opts:["Der Hund","Der Vogel","Der Kuchen"],a:0, audio:"Der Hund hat den Hut"},
+      {q:"Gibt der Hund den Hut?",opts:["Ja","Nein","Der Hut spricht"],a:0, audio:"Der Hund gibt den Hut"}
+    ],
+    otto:'The dog did not steal the hat. The dog borrowed the hat. This is what dogs tell themselves.'
+  },
+  {
+    id:'katze',
+    title:'Luna the cat',
+    blurb:'A quiet grey cat tries to be a bird. Gravity says no.',
+    text:`Luna ist eine kleine Katze. Sie ist grau und leise. Luna sieht einen Vogel. Der Vogel ist gelb und schnell. Luna sagt: „Ich bin auch ein Vogel!“ Sie springt. Sie fliegt nicht. Katzen fliegen nicht. Das ist die Regel.
+
+Luna sitzt. Der Vogel kommt. „Hallo, Luna! Du bist eine Katze. Das ist gut.“ Luna ist glücklich. Sie ist eine Katze. Katzen sind gut.`,
+    lines:[
+      {de:"Luna ist eine kleine Katze. Sie ist grau und leise.", en:"Luna is a small cat. She is grey and quiet."},
+      {de:"Luna sieht einen Vogel. Der Vogel ist gelb und schnell.", en:"Luna sees a bird. The bird is yellow and fast."},
+      {de:"Luna sagt: Ich bin auch ein Vogel!", en:"Luna says: I am a bird too!"},
+      {de:"Sie springt. Sie fliegt nicht.", en:"She jumps. She does not fly."},
+      {de:"Katzen fliegen nicht. Das ist die Regel.", en:"Cats do not fly. That is the rule."},
+      {de:"Der Vogel kommt. Hallo, Luna! Du bist eine Katze.", en:"The bird comes. Hello, Luna! You are a cat."},
+      {de:"Luna ist glücklich. Katzen sind gut.", en:"Luna is happy. Cats are good."}
+    ],
+    glossary:[["Katze","cat"],["grau","grey"],["leise","quiet"],["sieht","sees"],["Vogel","bird"],["gelb","yellow"],["schnell","fast"],["springt","jumps"],["fliegt","flies"],["sitzt","sits"],["Regel","rule"]],
+    questions:[
+      {q:"Was ist Luna?",opts:["Ein Vogel","Eine Katze","Ein Hund"],a:1, audio:"Was ist Luna?"},
+      {q:"Welche Farbe hat Luna?",opts:["Gelb","Grau","Rot"],a:1, audio:"Luna ist grau"},
+      {q:"Fliegt Luna?",opts:["Ja","Nein","Nur am Montag"],a:1, audio:"Sie fliegt nicht"},
+      {q:"Wie ist Luna am Ende?",opts:["Glücklich","Laut","Ein Vogel"],a:0, audio:"Luna ist glücklich"}
+    ],
+    otto:'I also cannot fly. I have tested this. The ground agreed with me very quickly.'
+  },
+  {
+    id:'regen',
+    title:'Rainy pictures',
+    blurb:'No football today. Paintbrushes save the afternoon.',
+    text:`Heute ist es kalt. Der Himmel ist grau. Es ist Regen. Anna, Paul und Mia wollen Fußball spielen. Fußball im Regen ist nicht gut. Die Mutter sagt: „Malt ein Bild!“
+
+Anna malt ein blaues Haus. Paul malt einen grünen Baum. Mia malt einen orangen Fuchs. Der Fuchs sieht aus wie Otto. Otto kommt. „Das bin ich! Ich bin schön!“ Alle lachen. Der Regen ist lang. Das Bild ist gut.`,
+    lines:[
+      {de:"Heute ist es kalt. Der Himmel ist grau.", en:"Today it is cold. The sky is grey."},
+      {de:"Es ist Regen. Fußball im Regen ist nicht gut.", en:"It is rain. Football in the rain is not good."},
+      {de:"Die Mutter sagt: Malt ein Bild!", en:"Mum says: Paint a picture!"},
+      {de:"Anna malt ein blaues Haus.", en:"Anna paints a blue house."},
+      {de:"Paul malt einen grünen Baum.", en:"Paul paints a green tree."},
+      {de:"Mia malt einen orangen Fuchs.", en:"Mia paints an orange fox."},
+      {de:"Otto sagt: Das bin ich! Ich bin schön!", en:"Otto says: That is me! I am beautiful!"}
+    ],
+    glossary:[["Himmel","sky"],["Regen","rain"],["kalt","cold"],["wollen","want"],["Fußball","football"],["malt","paints"],["Bild","picture"],["Baum","tree"],["sieht aus wie","looks like"],["lachen","laugh"],["lang","long"]],
+    questions:[
+      {q:"Wie ist das Wetter?",opts:["Heiß","Regen und kalt","Schnee"],a:1, audio:"Es ist Regen"},
+      {q:"Was malt Anna?",opts:["Ein Haus","Einen Hund","Einen Ball"],a:0, audio:"Anna malt ein blaues Haus"},
+      {q:"Was malt Mia?",opts:["Einen Baum","Einen Fuchs","Einen Hut"],a:1, audio:"Mia malt einen orangen Fuchs"},
+      {q:"Ist Otto schön? (Otto sagt…)",opts:["Ja","Nein","Otto malt"],a:0, audio:"Ich bin schön"}
+    ],
+    otto:'Mia painted me. The ears are perfect. The cake is missing. I forgive the artist.'
+  },
+  {
+    id:'hase',
+    title:'Fast and slow',
+    blurb:'A rabbit is fast. A tortoise is not. Friendship is both.',
+    text:`Ein Hase ist schnell. Eine Schildkröte ist langsam. Der Hase sagt: „Ich bin schnell. Du bist langsam.“ Die Schildkröte sagt: „Wir laufen. Das ist ein Spiel.“
+
+Der Hase läuft sehr schnell. Dann sitzt er. Er hat Hunger. Die Schildkröte läuft und läuft. Sie kommt. Der Hase kommt auch. Sie kommen zusammen. Der Hase sagt: „Du bist gut.“ Sie sind Freunde. Freunde können schnell und langsam sein.`,
+    lines:[
+      {de:"Ein Hase ist schnell. Eine Schildkröte ist langsam.", en:"A rabbit is fast. A tortoise is slow."},
+      {de:"Die Schildkröte sagt: Wir laufen. Das ist ein Spiel.", en:"The tortoise says: We run. That is a game."},
+      {de:"Der Hase läuft sehr schnell. Dann sitzt er.", en:"The rabbit runs very fast. Then he sits."},
+      {de:"Die Schildkröte läuft und läuft. Sie kommt.", en:"The tortoise runs and runs. She arrives."},
+      {de:"Sie kommen zusammen.", en:"They arrive together."},
+      {de:"Der Hase sagt: Du bist gut. Sie sind Freunde.", en:"The rabbit says: You are good. They are friends."}
+    ],
+    glossary:[["Hase","rabbit"],["Schildkröte","tortoise"],["schnell","fast"],["langsam","slow"],["laufen","run"],["Spiel","game"],["Hunger","hunger"],["zusammen","together"],["Freunde","friends"]],
+    questions:[
+      {q:"Wer ist schnell?",opts:["Die Schildkröte","Der Hase","Der Hut"],a:1, audio:"Ein Hase ist schnell"},
+      {q:"Wer ist langsam?",opts:["Der Hase","Die Schildkröte","Otto"],a:1, audio:"Eine Schildkröte ist langsam"},
+      {q:"Was ist das? Ein ___ .",opts:["Kuchen","Spiel","Haus"],a:1, audio:"Das ist ein Spiel"},
+      {q:"Sind sie Freunde am Ende?",opts:["Ja","Nein","Nur der Hase"],a:0, audio:"Sie sind Freunde"}
+    ],
+    otto:'I am not fast. I am not slow. I am snack-shaped. The tortoise still beat me to the carrots.'
+  },
+  {
+    id:'apfel',
+    title:'Ten apples',
+    blurb:'Grandma’s tree, ten apples, one very fast fox.',
+    text:`Die Großmutter hat einen Baum. Der Baum ist groß und grün. An dem Baum sind Äpfel. Die Äpfel sind rot und gelb. Anna zählt: eins, zwei, drei, vier, fünf. Paul zählt: sechs, sieben, acht, neun, zehn. Zehn Äpfel!
+
+Die Großmutter sagt: „Ein Apfel für Anna. Ein Apfel für Paul. Ein Apfel für Mia. Ein Apfel für Otto.“ Otto isst schnell. Die Großmutter lacht. „Otto, du bist ein Fuchs, kein Kind. Aber heute ja.“`,
+    lines:[
+      {de:"Die Großmutter hat einen Baum. Der Baum ist groß und grün.", en:"Grandma has a tree. The tree is big and green."},
+      {de:"An dem Baum sind Äpfel. Die Äpfel sind rot und gelb.", en:"On the tree there are apples. The apples are red and yellow."},
+      {de:"Anna zählt: eins, zwei, drei, vier, fünf.", en:"Anna counts: one, two, three, four, five."},
+      {de:"Paul zählt: sechs, sieben, acht, neun, zehn.", en:"Paul counts: six, seven, eight, nine, ten."},
+      {de:"Zehn Äpfel!", en:"Ten apples!"},
+      {de:"Ein Apfel für Otto. Otto isst schnell.", en:"An apple for Otto. Otto eats quickly."}
+    ],
+    glossary:[["Großmutter","grandmother"],["Baum","tree"],["Äpfel","apples"],["Apfel","apple"],["zählt","counts"],["zehn","ten"],["isst","eats"],["Kind","child"],["heute","today"]],
+    questions:[
+      {q:"Wie viele Äpfel sind da?",opts:["Fünf","Zehn","Zwölf"],a:1, audio:"Zehn Äpfel"},
+      {q:"Welche Farben haben die Äpfel?",opts:["Blau und schwarz","Rot und gelb","Lila"],a:1, audio:"Die Äpfel sind rot und gelb"},
+      {q:"Wer zählt eins bis fünf?",opts:["Paul","Anna","Otto"],a:1, audio:"Anna zählt"},
+      {q:"Isst Otto einen Apfel?",opts:["Ja","Nein","Otto zählt"],a:0, audio:"Otto isst schnell"}
+    ],
+    otto:'I am not a child. Grandma still gave me an apple. Grandmas see the truth and ignore it on purpose.'
+  },
+  {
+    id:'ballon',
+    title:'The yellow balloon',
+    blurb:'A balloon goes up. A tall dad comes back down with it.',
+    text:`Mia hat einen gelben Ballon. Der Ballon ist groß und schön. Ein Wind kommt. Der Wind ist schnell. Der Ballon fliegt. „Oh nein!“ Mia ist nicht glücklich.
+
+Der Ballon ist in einem Baum. Der Baum ist hoch. Der Vater ist groß. Der Vater kommt. „Ich habe den Ballon.“ Mia sagt: „Danke!“ Jetzt ist der Ballon klein. Das ist okay. Mia hat den Ballon. Und sie hat den Vater.`,
+    lines:[
+      {de:"Mia hat einen gelben Ballon.", en:"Mia has a yellow balloon."},
+      {de:"Ein Wind kommt. Der Wind ist schnell.", en:"A wind comes. The wind is fast."},
+      {de:"Der Ballon fliegt. Oh nein!", en:"The balloon flies. Oh no!"},
+      {de:"Der Ballon ist in einem Baum. Der Baum ist hoch.", en:"The balloon is in a tree. The tree is high."},
+      {de:"Der Vater kommt. Ich habe den Ballon.", en:"Dad comes. I have the balloon."},
+      {de:"Mia sagt: Danke!", en:"Mia says: Thank you!"}
+    ],
+    glossary:[["Ballon","balloon"],["gelb","yellow"],["Wind","wind"],["fliegt","flies"],["Baum","tree"],["hoch","high / tall"],["Vater","father"],["Danke","thank you"],["okay","okay"],["klein","small"]],
+    questions:[
+      {q:"Welche Farbe hat der Ballon?",opts:["Rot","Gelb","Grün"],a:1, audio:"Mia hat einen gelben Ballon"},
+      {q:"Was kommt?",opts:["Ein Hund","Ein Wind","Ein Kuchen"],a:1, audio:"Ein Wind kommt"},
+      {q:"Wo ist der Ballon?",opts:["Im Haus","In einem Baum","Im Mond"],a:1, audio:"Der Ballon ist in einem Baum"},
+      {q:"Wer holt den Ballon?",opts:["Otto","Der Vater","Der Vogel"],a:1, audio:"Der Vater kommt"}
+    ],
+    otto:'I cannot climb trees. I can climb onto sofas. Sofas never have balloons. Life is unfair, but soft.'
+  },
+  {
+    id:'mond',
+    title:'Otto and the moon',
+    blurb:'The moon is yellow. Otto has a theory. Anna has facts.',
+    text:`Es ist Nacht. Der Himmel ist schwarz. Die Sterne sind weiß. Der Mond ist groß und gelb. Otto schaut und schaut. „Hallo, Mond! Bist du ein Kuchen?“ Der Mond sagt nichts. Monde sprechen nicht.
+
+Anna sagt: „Otto, der Mond ist kein Kuchen. Der Mond ist der Mond.“ Otto sagt: „Schade. Aber er ist schön.“ Sie zählen Sterne: eins, zwei, drei. Otto ist glücklich. Der Mond auch. Monde essen nicht. Das ist okay.`,
+    lines:[
+      {de:"Es ist Nacht. Der Himmel ist schwarz.", en:"It is night. The sky is black."},
+      {de:"Die Sterne sind weiß. Der Mond ist groß und gelb.", en:"The stars are white. The moon is big and yellow."},
+      {de:"Otto sagt: Hallo, Mond! Bist du ein Kuchen?", en:"Otto says: Hello, moon! Are you a cake?"},
+      {de:"Der Mond sagt nichts. Monde sprechen nicht.", en:"The moon says nothing. Moons do not speak."},
+      {de:"Anna sagt: Der Mond ist kein Kuchen.", en:"Anna says: The moon is not a cake."},
+      {de:"Sie zählen Sterne: eins, zwei, drei.", en:"They count stars: one, two, three."}
+    ],
+    glossary:[["Nacht","night"],["Himmel","sky"],["Sterne","stars"],["Mond","moon"],["schwarz","black"],["weiß","white"],["schaut","looks"],["Schade","too bad"],["zählen","count"],["essen","eat"]],
+    questions:[
+      {q:"Was ist groß und gelb?",opts:["Der Hund","Der Mond","Der Hut"],a:1, audio:"Der Mond ist groß und gelb"},
+      {q:"Welche Farbe haben die Sterne?",opts:["Weiß","Grün","Braun"],a:0, audio:"Die Sterne sind weiß"},
+      {q:"Ist der Mond ein Kuchen?",opts:["Ja","Nein","Manchmal"],a:1, audio:"Der Mond ist kein Kuchen"},
+      {q:"Was zählen Anna und Otto?",opts:["Äpfel","Sterne","Hüte"],a:1, audio:"Sie zählen Sterne"}
+    ],
+    otto:'I asked the moon if it was cake. The moon said nothing. Anna translated: that means no.'
+  },
+  {
+    id:'tasche',
+    title:'Mixed-up bags',
+    blurb:'Blue bag, green bag, two books, one giggle.',
+    text:`Heute ist Schule. Anna hat eine Tasche. Die Tasche ist blau. Paul hat eine Tasche. Die Tasche ist grün. In der Schule sagt die Lehrerin: „Bitte, ein Buch!“
+
+Anna öffnet die Tasche. Das Buch ist nicht da. Das Buch von Paul ist da. Paul öffnet die Tasche. Das Buch von Anna ist da. Sie lachen. „Wir haben die Taschen!“ Die Lehrerin lacht auch. Sie geben die Bücher. Jetzt ist alles gut.`,
+    lines:[
+      {de:"Heute ist Schule. Anna hat eine blaue Tasche.", en:"Today is school. Anna has a blue bag."},
+      {de:"Paul hat eine grüne Tasche.", en:"Paul has a green bag."},
+      {de:"Die Lehrerin sagt: Bitte, ein Buch!", en:"The teacher says: Please, a book!"},
+      {de:"Anna öffnet die Tasche. Das Buch von Paul ist da.", en:"Anna opens the bag. Paul's book is there."},
+      {de:"Paul öffnet die Tasche. Das Buch von Anna ist da.", en:"Paul opens the bag. Anna's book is there."},
+      {de:"Sie lachen. Sie geben die Bücher. Jetzt ist alles gut.", en:"They laugh. They give the books. Now everything is good."}
+    ],
+    glossary:[["Schule","school"],["Tasche","bag"],["Lehrerin","teacher"],["Buch","book"],["öffnet","opens"],["lachen","laugh"],["geben","give"],["Bücher","books"],["blau","blue"],["grün","green"]],
+    questions:[
+      {q:"Welche Farbe hat Annas Tasche?",opts:["Grün","Blau","Gelb"],a:1, audio:"Die Tasche ist blau"},
+      {q:"Welche Farbe hat Pauls Tasche?",opts:["Grün","Rot","Schwarz"],a:0, audio:"Die Tasche ist grün"},
+      {q:"Was will die Lehrerin?",opts:["Einen Hund","Ein Buch","Einen Ballon"],a:1, audio:"Bitte, ein Buch"},
+      {q:"Lachen Anna und Paul?",opts:["Ja","Nein","Nur Otto"],a:0, audio:"Sie lachen"}
+    ],
+    otto:'I once put a cake in a school bag. That was not mixed up. That was a plan. The teacher was not a fox.'
+  },
+  {
+    id:'schnee',
+    title:'The snowman',
+    blurb:'A carrot nose, a fox with questions, an apple for Otto.',
+    text:`Heute ist es kalt. Alles ist weiß. Die Kinder machen einen Schneemann. Der Schneemann ist groß. Er hat eine orange Nase. Die Nase ist eine Karotte.
+
+Otto kommt. „Ist die Nase ein Kuchen?“ „Nein, Otto. Es ist eine Karotte. Karotten sind für den Schneemann.“ Otto sagt: „Okay.“ Er hat einen Apfel. Äpfel sind für Füchse. Der Schneemann hat die Nase. Otto hat den Apfel. Alle sind glücklich.`,
+    lines:[
+      {de:"Heute ist es kalt. Alles ist weiß.", en:"Today it is cold. Everything is white."},
+      {de:"Die Kinder machen einen Schneemann.", en:"The children make a snowman."},
+      {de:"Er hat eine orange Nase. Die Nase ist eine Karotte.", en:"He has an orange nose. The nose is a carrot."},
+      {de:"Otto sagt: Ist die Nase ein Kuchen?", en:"Otto says: Is the nose a cake?"},
+      {de:"Nein, Otto. Es ist eine Karotte.", en:"No, Otto. It is a carrot."},
+      {de:"Otto hat einen Apfel. Alle sind glücklich.", en:"Otto has an apple. Everyone is happy."}
+    ],
+    glossary:[["kalt","cold"],["weiß","white"],["Kinder","children"],["Schneemann","snowman"],["Nase","nose"],["Karotte","carrot"],["okay","okay"],["Apfel","apple"],["Füchse","foxes"],["glücklich","happy"]],
+    questions:[
+      {q:"Was machen die Kinder?",opts:["Einen Kuchen","Einen Schneemann","Einen Hut"],a:1, audio:"Die Kinder machen einen Schneemann"},
+      {q:"Was ist die Nase?",opts:["Ein Apfel","Eine Karotte","Ein Buch"],a:1, audio:"Die Nase ist eine Karotte"},
+      {q:"Isst Otto die Nase?",opts:["Ja","Nein","Die Nase lacht"],a:1, audio:"Karotten sind für den Schneemann"},
+      {q:"Was hat Otto?",opts:["Einen Apfel","Einen Ballon","Einen Mond"],a:0, audio:"Otto hat einen Apfel"}
+    ],
+    otto:'Carrot noses are not cake. I accepted this with an apple. Personal growth. Crunchy personal growth.'
+  },
+  {
+    id:'park',
+    title:'The apple ball',
+    blurb:'Cricket, football, and one round apple join the game.',
+    text:`Paul mag Cricket. Mia mag Fußball. Anna mag beides. Im Park ist es heiß. Die Sonne ist groß und gelb. Paul hat einen Ball. Mia hat auch einen Ball. „Ein Spiel!“
+
+Otto will auch. Otto hat keinen Ball. Otto hat einen Apfel. Der Apfel ist rund. Rund ist gut. Sie spielen. Der Apfel ist schnell. Otto auch. Am Ende essen sie den Apfel. Drei Stücke. Das ist gut.`,
+    lines:[
+      {de:"Paul mag Cricket. Mia mag Fußball.", en:"Paul likes cricket. Mia likes football."},
+      {de:"Anna mag beides.", en:"Anna likes both."},
+      {de:"Im Park ist es heiß. Die Sonne ist groß und gelb.", en:"In the park it is hot. The sun is big and yellow."},
+      {de:"Otto hat keinen Ball. Otto hat einen Apfel.", en:"Otto has no ball. Otto has an apple."},
+      {de:"Der Apfel ist rund. Rund ist gut.", en:"The apple is round. Round is good."},
+      {de:"Am Ende essen sie den Apfel. Drei Stücke.", en:"At the end they eat the apple. Three pieces."}
+    ],
+    glossary:[["mag","likes"],["Cricket","cricket"],["Fußball","football"],["beides","both"],["Park","park"],["heiß","hot"],["Sonne","sun"],["Ball","ball"],["rund","round"],["Spiel","game"],["Ende","end"],["Stück","piece"]],
+    questions:[
+      {q:"Was mag Paul?",opts:["Fußball","Cricket","Den Mond"],a:1, audio:"Paul mag Cricket"},
+      {q:"Was mag Mia?",opts:["Fußball","Schnee","Bücher"],a:0, audio:"Mia mag Fußball"},
+      {q:"Was hat Otto?",opts:["Einen Ball","Einen Apfel","Einen Hut"],a:1, audio:"Otto hat einen Apfel"},
+      {q:"Essen sie den Apfel am Ende?",opts:["Ja","Nein","Die Sonne isst"],a:0, audio:"Am Ende essen sie den Apfel"}
+    ],
+    otto:'Round things can be balls. Round things can be snacks. I brought an apple. Sport first. Snack later.'
+  }
 ];
 
 const SPEAK_PHRASES={
@@ -849,7 +1148,7 @@ const GERMAN_LEXICON = (()=>{
   PRONOUNS.forEach(([de])=>add(de));
   Object.values(CONJ).forEach(arr=>arr.forEach(add));
   PRON_ROW.forEach(p=>p.split('/').forEach(add));
-  GLOSSARY.forEach(([w])=>{ add(w); w.split(/\s+/).forEach(add); });
+  STORIES.forEach(st=>st.glossary.forEach(([w])=>{ add(w); w.split(/\s+/).forEach(add); }));
   ["haben","sein","wohnen","kommen","und","aus","in","nicht","sehr","aber","auch","einen",
    "eine","ein","mein","meine","unser","jahre","alt","heiße","heißt","wohne","wohnt","familie",
    "hund","haus","lieblingsfarbe","hallo","tschüss","danke","bitte","ja","nein","fuchs","deutschland","italien","berlin","münchen","hamburg",
@@ -858,7 +1157,12 @@ const GERMAN_LEXICON = (()=>{
    "das","wir","ihr","sie","ich","du","er","es","groß","klein","alt","neu","gut","schlecht",
    "klasse","hobby","religion","hindu","muslim","christ","sikh","buddhist","indien","malen",
    "tanzen","singen","fußball","cricket","schwimmen","fünften","sechsten","siebten","achten",
-   "gerne","name","jahre","alt","schüler","schülerin","mag",
+   "gerne","name","jahre","alt","schüler","schülerin","mag","kuchen","hunger","tisch","fuchs",
+   "lacht","essen","stück","glücklich","heute","nichts","sprechen","bitte","schaut","idee",
+   "augen","regel","hut","katze","vogel","regen","himmel","malt","bild","baum","hase",
+   "schildkröte","freunde","spiel","apfel","äpfel","zählt","ballon","wind","mond","sterne",
+   "nacht","tasche","schule","lehrerin","buch","bücher","schneemann","nase","karotte","park",
+   "sonne","rund","ball","cricket","fußball",
    "hundert","tausend","zwölf","elf","dreizehn","frage","richtig","eltern","kinder","vater",
    "mutter","bruder","schwester","onkel","tante","sohn","tochter","großvater","großmutter",
    "woher","welche","farbe","was","wie","wo","kommt","kommen","wohnen","net","nett","freunde",
@@ -882,8 +1186,9 @@ const LEVELS=[
   {id:'familie', level:8, icon:'👪', label:'Familie', en:'Family'},
   {id:'pronomen', level:9, icon:'👤', label:'Pronomen', en:'Pronouns'},
   {id:'verben', level:10, icon:'📖', label:'Verben', en:'Verbs'},
-  {id:'lesen', level:11, icon:'📄', label:'Lesetext', en:'A little story'},
+  {id:'lesen', level:11, icon:'📚', label:'Lesetext', en:'Kids’ stories'},
   {id:'challenge', level:12, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
+  {id:'stories', extra:true, icon:'📚', label:'Märchen', en:'Story shelf'},
   {id:'revision', extra:true, icon:'🎮', label:'Spielplatz', en:'Practice park'}
 ];
 const MODULES=LEVELS;
@@ -898,6 +1203,7 @@ const state = {
   lockHint:null,
   confirmReset:false,
   locksOn:true,
+  storyId:'anna',
 };
 
 function loadProgress(){
@@ -1406,7 +1712,7 @@ function moduleShell(title, tagline){
   const m=levelById(state.current);
   const chip = (m && m.level)
     ? `<div class="levelchip">Level ${m.level} of ${STORY_LEVELS.length}</div>`
-    : (m && m.extra ? `<div class="levelchip extra">Practice park</div>` : '');
+    : (m && m.extra ? `<div class="levelchip extra">${m.en}</div>` : '');
   card.innerHTML=`${chip}<h2>${title}</h2><div class="tagline">${tagline}</div>`;
   return card;
 }
@@ -2034,56 +2340,83 @@ function renderVerben(root){
 }
 
 function renderLesen(root){
-  renderRecap(root, 'lesen');
-  const card=moduleShell(`A little story — ${glossHTML('Lesetext','reading text')}`,'Read a short German story made from words you already know. No trick questions. Otto promises. (Mostly.)');
-  lsrwRail(card);
-  explainer(card, `<strong>Don't panic if you don't understand every word!</strong> This passage uses vocabulary you've already learned — colours, family words, numbers, and the verbs ${deHTML('sein')} / ${deHTML('haben')} / ${deHTML('wohnen')} / ${deHTML('kommen')}. Use LSRW: listen to the whole story first, speak the sentences, then read the text, then write the answers.`);
-  ottoSays(card, 'Anna has a brother, a sister, a dog, and a favourite colour. That is a whole soap opera in six sentences. You can do this.');
+  if(!STORIES.some(s=>s.id===state.storyId)) state.storyId='anna';
+  const story=STORIES.find(s=>s.id===state.storyId) || STORIES[0];
+  const asShelf=state.current==='stories';
+  if(!asShelf) renderRecap(root, 'lesen');
+  const card=moduleShell(
+    asShelf ? 'Story shelf — kids’ German tales' : `A little story — ${glossHTML('Lesetext','reading text')}`,
+    'Pick a story below. There are '+STORIES.length+' short tales. Word help stays under the passage.'
+  );
+  const shelf=document.createElement('p'); shelf.className='story-shelf-label';
+  shelf.textContent='Tap a story card — '+STORIES.length+' to choose from';
+  card.appendChild(shelf);
+  const grid=document.createElement('div'); grid.className='story-grid';
+  STORIES.forEach((s)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='story-card'+(s.id===story.id?' on':'');
+    b.innerHTML=`<span class="st">${s.id===story.id?'📖 ':''}${s.title}</span><span class="sb">${s.blurb}</span>`;
+    b.onclick=()=>{
+      state.storyId=s.id;
+      if(asShelf) state.current='stories';
+      render();
+      requestAnimationFrame(()=>document.getElementById('story-now')?.scrollIntoView({behavior:'smooth',block:'start'}));
+    };
+    grid.appendChild(b);
+  });
+  card.appendChild(grid);
 
-  phase(card,'L','1 👂 Listen','Play the story. Look away from the screen if you can. Get the gist first. Pretend Otto is reading you a bedtime story, except it is about Berlin.');
+  lsrwRail(card);
+  explainer(card, `<strong>Don't panic if you don't understand every word!</strong> These are kids' stories, not a test booklet. Listen first, speak a few lines, then read the whole passage. You only need to finish one quiz to clear Level 11. The rest are extra fun.`);
+  ottoSays(card, story.otto);
+  const blurb=document.createElement('p'); blurb.className='note'; blurb.textContent=story.blurb;
+  card.appendChild(blurb);
+
+  const speakStory=()=>speak(story.text.replace(/\s+/g,' ').trim(), Math.min(state.rate, 0.78));
+  phase(card,'L','1 👂 Listen','Play the whole passage. Look away if you like. Get the gist first.');
   const listenRow=document.createElement('div'); listenRow.className='btnrow';
   const spkBtn=document.createElement('button'); spkBtn.className='btn'; spkBtn.textContent='🔊 Listen to the whole story';
-  spkBtn.onclick=()=>speak(PASSAGE, Math.min(state.rate, 0.78));
+  spkBtn.onclick=speakStory;
   listenRow.appendChild(spkBtn);
   card.appendChild(listenRow);
 
   phase(card,'S','2 🗣️ Speak','Echo one sentence at a time. Shadow the voice.');
-  renderSpeakAlong(card, PASSAGE_LINES);
+  renderSpeakAlong(card, story.lines);
 
-  phase(card,'R','3 📖 Read','Read the story as a story. Meanings sit in the word-help box underneath — not inside the sentences.');
-  sectionLabel(card,'The story');
+  phase(card,'R','3 📖 Read','Read it as a passage. Meanings are not inside the story — they live in Word help below.');
+  const now=document.createElement('div'); now.id='story-now';
+  card.appendChild(now);
+  sectionLabel(card, story.title);
   const p=document.createElement('div'); p.className='passage';
-  PASSAGE_LINES.forEach((line)=>{
-    const row=document.createElement('div'); row.className='sent';
-    const t=document.createElement('p'); t.textContent=line.de;
-    row.appendChild(t);
-    row.appendChild(speakerBtn(line.de));
-    p.appendChild(row);
+  story.text.split(/\n\s*\n/).forEach((chunk)=>{
+    const para=document.createElement('p'); para.textContent=chunk.trim();
+    p.appendChild(para);
   });
   card.appendChild(p);
-  const hearRow=document.createElement('div'); hearRow.className='btnrow'; hearRow.style.marginTop='-6px';
+  const hearRow=document.createElement('div'); hearRow.className='btnrow';
   const hearAll=document.createElement('button'); hearAll.className='btn ghost'; hearAll.textContent='🔊 Hear the whole story';
-  hearAll.onclick=()=>speak(PASSAGE, Math.min(state.rate, 0.78));
+  hearAll.onclick=speakStory;
   hearRow.appendChild(hearAll);
   card.appendChild(hearRow);
 
   const panel=document.createElement('div'); panel.className='glossary-panel';
-  panel.innerHTML=`<h3>Word help</h3><p class="hint">Read the story first. Peek here only if a word is stuck.</p>`;
-  const grid=document.createElement('div'); grid.className='glossary-grid';
-  GLOSSARY.forEach(([w,m])=>{
+  panel.innerHTML=`<h3>Word help</h3><p class="hint">For this story only. Read the passage first. Peek here if a word is stuck.</p>`;
+  const g=document.createElement('div'); g.className='glossary-grid';
+  story.glossary.forEach(([w,m])=>{
     const item=document.createElement('div'); item.className='glossary-item';
     const strong=document.createElement('strong'); strong.textContent=w;
     const en=document.createElement('span'); en.className='en'; en.textContent=' — '+m;
     item.appendChild(strong); item.appendChild(en);
     item.appendChild(speakerBtn(w));
-    grid.appendChild(item);
+    g.appendChild(item);
   });
-  panel.appendChild(grid);
+  panel.appendChild(g);
   card.appendChild(panel);
 
-  phase(card,'W','4 ✍️ Write','Answer in your head, then tap. These questions are about the story you just heard.');
+  phase(card,'W','4 ✍️ Write','These questions are about the story you just read.');
   sectionLabel(card,'Comprehension questions');
-  renderQuiz(card, PASSAGE_Q, (score,total)=>{ if(score>=total-1) markDone('lesen'); });
+  renderQuiz(card, story.questions, (score,total)=>{ if(score>=total-1) markDone('lesen'); });
 
   root.appendChild(card);
 }
@@ -2125,7 +2458,8 @@ function runChallenge(card){
     {topic:'Pronomen', q:'"Wir" means...', opts:['You (group)','We','They'], a:1, audio:'Wir'},
     {topic:'Verben', q:'"Du ___ aus Italien." (kommen)', opts:['kommst','kommt','komme'], a:0},
     {topic:'Verben', q:'"Er ___ in Berlin." (wohnen)', opts:['wohnt','wohnst','wohnen'], a:0},
-    {topic:'Lesetext', q:'In the story, Anna is from...', opts:['Munich','Berlin','Hamburg'], a:1},
+    {topic:'Lesetext', q:'In “Anna in Berlin”, Anna is from...', opts:['Munich','Berlin','Hamburg'], a:1},
+    {topic:'Lesetext', q:'In “Otto and the cake”, Otto says he is a...', opts:['Fox','Cake','Dog'], a:2},
   ];
   const topicScores={};
   const quizHost=document.createElement('div');
@@ -2254,7 +2588,7 @@ function renderRevision(root){
 const RENDERERS={
   'hallo':renderHallo,'haben-sein':renderHabenSein,'vorstellen':renderVorstellen,'farben':renderFarben,'adjektive':renderAdjektive,
   'zahlen':renderZahlen,'zahlen100':renderZahlen100,'familie':renderFamilie,'pronomen':renderPronomen,
-  'verben':renderVerben,'lesen':renderLesen,'challenge':renderChallenge,'revision':renderRevision
+  'verben':renderVerben,'lesen':renderLesen,'stories':renderLesen,'challenge':renderChallenge,'revision':renderRevision
 };
 
 function render(){
