@@ -357,6 +357,17 @@ const numberWordBig = (n)=>{
   return String(n);
 };
 
+const GREETINGS=[
+  ["Hallo","hello"],
+  ["Tschüss","bye"],
+  ["Ja","yes"],
+  ["Nein","no"],
+  ["Danke","thank you"],
+  ["Bitte","please / you're welcome"],
+  ["Ich heiße","my name is"],
+  ["Ich bin","I am"]
+];
+
 const COLORS=[
   ["rot","red","#c1272d"],["blau","blue","#2856a8"],["grün","green","#3a7d5c"],
   ["gelb","yellow","#e0b23a"],["orange","orange","#e07a2c"],["lila","purple","#7a4fa3"],
@@ -429,6 +440,13 @@ const PASSAGE_LINES=[
 ];
 
 const SPEAK_PHRASES={
+  hallo:[
+    {de:"Hallo!", en:"Hello!"},
+    {de:"Ich heiße Anna.", en:"My name is Anna."},
+    {de:"Ich bin Otto.", en:"I am Otto."},
+    {de:"Danke!", en:"Thank you!"},
+    {de:"Tschüss!", en:"Bye!"}
+  ],
   'haben-sein':[
     {de:"Ich bin Anna.", en:"I am Anna."},
     {de:"Ich bin zwölf Jahre alt.", en:"I am twelve years old."},
@@ -478,6 +496,11 @@ const SPEAK_PHRASES={
 };
 
 const RECAP={
+  'haben-sein':[
+    {q:'"Hallo" means...', opts:['Bye','Hello','Please'], a:1, audio:'Hallo'},
+    {q:'How do you say "thank you"?', opts:['Bitte','Danke','Tschüss'], a:1, audio:'Danke'},
+    {q:'"Ich heiße Anna" means...', opts:['I am Anna.','My name is Anna.','I have Anna.'], a:1, audio:'Ich heiße Anna'}
+  ],
   farben:[
     {q:'What does "sein" mean?', opts:['to have','to be','to come'], a:1, audio:'sein'},
     {q:'"Ich ___ Anna." (I am Anna)', opts:['bin','habe','bist'], a:0},
@@ -521,6 +544,12 @@ const RECAP={
 };
 
 const EAR_ITEMS={
+  hallo:[
+    {say:'Hallo', opts:['hello','bye','please'], a:0},
+    {say:'Tschüss', opts:['thank you','bye','yes'], a:1},
+    {say:'Danke', opts:['please','hello','thank you'], a:2},
+    {say:'Ich heiße Anna', opts:['I am Anna','My name is Anna','I have Anna'], a:1}
+  ],
   'haben-sein':[
     {say:'ich bin', opts:['I am','I have','you are'], a:0},
     {say:'du hast', opts:['you are','you have','he has'], a:1},
@@ -565,6 +594,11 @@ const EAR_ITEMS={
 };
 
 const WRITE_SENTENCES={
+  hallo:[
+    {en:'Hello', answer:'Hallo'},
+    {en:'Thank you', answer:'Danke'},
+    {en:'My name is Anna.', answer:'Ich heiße Anna.'}
+  ],
   'haben-sein':[
     {en:'I am Anna.', answer:'Ich bin Anna.'},
     {en:'I have a dog.', answer:'Ich habe einen Hund.'},
@@ -735,6 +769,7 @@ function decorateQuotedGerman(text){
 const GERMAN_LEXICON = (()=>{
   const s = new Set();
   const add = (w)=>{ const k=wordKey(w); if(k) s.add(k); };
+  GREETINGS.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); });
   COLORS.forEach(([de])=>add(de));
   ADJ_PAIRS.forEach(([a,,b])=>{ add(a); add(b); });
   FAMILY.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); });
@@ -744,7 +779,7 @@ const GERMAN_LEXICON = (()=>{
   GLOSSARY.forEach(([w])=>{ add(w); w.split(/\s+/).forEach(add); });
   ["haben","sein","wohnen","kommen","und","aus","in","nicht","sehr","aber","auch","einen",
    "eine","ein","mein","meine","unser","jahre","alt","heiße","heißt","wohne","wohnt","familie",
-   "hund","haus","lieblingsfarbe","hallo","deutschland","italien","berlin","münchen","hamburg",
+   "hund","haus","lieblingsfarbe","hallo","tschüss","danke","bitte","ja","nein","fuchs","deutschland","italien","berlin","münchen","hamburg",
    "spanien","anna","paul","mia","gegenteil","farben","adjektive","zahlen","pronomen","verben",
    "lesen","prüfung","bin","bist","ist","sind","seid","habe","hast","hat","habt","der","die",
    "das","wir","ihr","sie","ich","du","er","es","groß","klein","alt","neu","gut","schlecht",
@@ -761,16 +796,17 @@ const GERMAN_LEXICON = (()=>{
 
 /* ===================== STATE ===================== */
 const LEVELS=[
-  {id:'haben-sein', level:1, icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
-  {id:'farben', level:2, icon:'🎨', label:'Farben', en:'Colours'},
-  {id:'adjektive', level:3, icon:'⚖️', label:'Adjektive', en:'Adjectives'},
-  {id:'zahlen', level:4, icon:'🔢', label:'Zahlen', en:'Numbers'},
-  {id:'zahlen100', level:5, icon:'💯', label:'Zahlen 100+', en:'Bigger numbers'},
-  {id:'familie', level:6, icon:'👪', label:'Familie', en:'Family'},
-  {id:'pronomen', level:7, icon:'👤', label:'Pronomen', en:'Pronouns'},
-  {id:'verben', level:8, icon:'📖', label:'Verben', en:'Verbs'},
-  {id:'lesen', level:9, icon:'📄', label:'Lesetext', en:'A little story'},
-  {id:'challenge', level:10, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
+  {id:'hallo', level:1, icon:'👋', label:'Hallo', en:'Hello, I am…'},
+  {id:'haben-sein', level:2, icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
+  {id:'farben', level:3, icon:'🎨', label:'Farben', en:'Colours'},
+  {id:'adjektive', level:4, icon:'⚖️', label:'Adjektive', en:'Adjectives'},
+  {id:'zahlen', level:5, icon:'🔢', label:'Zahlen', en:'Numbers'},
+  {id:'zahlen100', level:6, icon:'💯', label:'Zahlen 100+', en:'Bigger numbers'},
+  {id:'familie', level:7, icon:'👪', label:'Familie', en:'Family'},
+  {id:'pronomen', level:8, icon:'👤', label:'Pronomen', en:'Pronouns'},
+  {id:'verben', level:9, icon:'📖', label:'Verben', en:'Verbs'},
+  {id:'lesen', level:10, icon:'📄', label:'Lesetext', en:'A little story'},
+  {id:'challenge', level:11, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
   {id:'revision', extra:true, icon:'🎮', label:'Spielplatz', en:'Practice park'}
 ];
 const MODULES=LEVELS;
@@ -778,7 +814,7 @@ const SAVE_KEY='deutschreise-levels-v2';
 const STORY_LEVELS=LEVELS.filter(m=>m.level);
 
 const state = {
-  current:'haben-sein',
+  current:'hallo',
   done:new Set(),
   rate:0.85,
   justCleared:null,
@@ -793,6 +829,7 @@ function loadProgress(){
     if(Array.isArray(d.done)){
       state.done=new Set(d.done.map(id=>id==='exam'?'challenge':id));
     }
+    if(state.done.size && !state.done.has('hallo')) state.done.add('hallo');
     if(d.current){
       const cur=d.current==='exam'?'challenge':d.current;
       if(LEVELS.some(m=>m.id===cur)) state.current=cur;
@@ -808,7 +845,7 @@ function levelById(id){ return LEVELS.find(m=>m.id===id); }
 function isUnlocked(id){
   const m=levelById(id);
   if(!m) return false;
-  if(m.extra) return state.done.has('haben-sein');
+  if(m.extra) return state.done.has('hallo');
   if(m.level===1) return true;
   const prev=LEVELS.find(x=>x.level===m.level-1);
   return !!(prev && state.done.has(prev.id));
@@ -821,7 +858,7 @@ function nextStoryLevel(id){
 function goTo(id){
   if(!isUnlocked(id)){
     const m=levelById(id);
-    const prev=m && m.level ? LEVELS.find(x=>x.level===m.level-1) : LEVELS.find(x=>x.id==='haben-sein');
+    const prev=m && m.level ? LEVELS.find(x=>x.level===m.level-1) : LEVELS.find(x=>x.id==='hallo');
     state.lockHint=prev
       ? `🔒 Level ${m.level} is sleeping. Clear Level ${prev.level} (${prev.en}) first — then Otto will open the gate.`
       : '🔒 Finish Level 1 first. Otto is picky about queues.';
@@ -1286,8 +1323,53 @@ function sectionLabel(card, text){
   const l=document.createElement('div'); l.className='section-label'; l.textContent=text; card.appendChild(l); return l;
 }
 
+function renderHallo(root){
+  const card=moduleShell(`${deHTML('Hallo')} — hello, I am…`,'The smallest useful German: greet, say your name, say bye. No verb tables yet. Otto starts every day with this. (Then snacks.)');
+  lsrwRail(card);
+  explainer(card, `<strong>Learn whole little sentences first.</strong> Do not worry about grammar names yet. ${deHTML('Ich bin')} simply means “I am”. ${deHTML('Ich heiße')} means “my name is”. You will meet the full verbs ${deHTML('sein')} and ${deHTML('haben')} in the next level, once these feel easy.`);
+  ottoSays(card, 'If you can say <em>Hallo</em>, you can make a friend. If you can say <em>Ich heiße</em>, you can <em>be</em> one. That is plenty for Level 1.');
+
+  phase(card,'L','1 👂 Listen','Hear the hello-words. Pick the English. No spelling yet.');
+  renderListenAll(card, ['Hallo','Tschüss','Ja','Nein','Danke','Bitte','Ich heiße','Ich bin']);
+  renderEarPick(card, EAR_ITEMS.hallo);
+
+  phase(card,'S','2 🗣️ Speak','Say them out loud. Wave while you say Hallo. It still counts.');
+  renderChant(card, ['Hallo','Ich heiße','Ich bin','Danke','Tschüss'], 'Chant: hello → name → bye', 'Clap: Hallo — Ich heiße — Ich bin — Danke — Tschüss.', ['hello','my name is','I am','thank you','bye']);
+  renderSpeakAlong(card, SPEAK_PHRASES.hallo);
+
+  phase(card,'R','3 📖 Read','Now look at the letters. These are your first German friends.');
+  sectionLabel(card,'Useful little words');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  GREETINGS.forEach(([de,en])=>tiles.appendChild(makeTile(de, en)));
+  card.appendChild(tiles);
+
+  const tip=document.createElement('div'); tip.className='tipbox';
+  tip.innerHTML=`<strong>Two “I” sentences (keep them as a pair):</strong><br>
+  ${deHTML('Ich heiße')} Anna. = My name is Anna.<br>
+  ${deHTML('Ich bin')} Otto. = I am Otto.<br><br>
+  Use ${deHTML('Ich heiße')} for your <em>name</em>. Use ${deHTML('Ich bin')} for who or what you are (a kid, a fox, twelve years old — later).`;
+  card.appendChild(tip);
+
+  sectionLabel(card,'Memory match');
+  renderMatch(card, [['Hallo','hello'],['Tschüss','bye'],['Danke','thank you'],['Ja','yes']]);
+
+  phase(card,'W','4 ✍️ Write','Write the little words. Short is good.');
+  renderWriteFromEnglish(card, WRITE_SENTENCES.hallo);
+
+  sectionLabel(card,'Level check ⭐');
+  renderQuiz(card,[
+    {q:'How do you say "hello"?', opts:['Tschüss','Hallo','Danke'], a:1, audio:'Hallo'},
+    {q:'"Ich heiße Anna" means...', opts:['I am Anna.','My name is Anna.','I have Anna.'], a:1, audio:'Ich heiße Anna'},
+    {q:'How do you say "bye"?', opts:['Bitte','Hallo','Tschüss'], a:2, audio:'Tschüss'},
+    {q:'"Danke" means...', opts:['Please','Thank you','Yes'], a:1, audio:'Danke'},
+  ], (score,total)=>{ if(score>=total-1) markDone('hallo'); });
+
+  root.appendChild(card);
+}
+
 function renderHabenSein(root){
-  const card=moduleShell(`${glossHTML('Haben','to have')} &amp; ${glossHTML('Sein','to be')}`,'The two most essential German verbs — “to have” and “to be”. Master these first. (Otto has been “being” a fox his whole life.)');
+  renderRecap(root, 'haben-sein');
+  const card=moduleShell(`${glossHTML('Haben','to have')} &amp; ${glossHTML('Sein','to be')}`,'You already know Ich bin. Now see how that verb changes for you, me, and Otto’s friends. (Otto has been “being” a fox his whole life.)');
   lsrwRail(card);
   explainer(card, `<strong>LSRW:</strong> Listen first, then Speak, then Read, then Write. That order helps German stay in your ears and your mouth — not only on the page.<br><br><strong>What's a “verb”?</strong> A verb is an action or state word — like “am”, “have”, “run”. In German (and English), the verb changes its spelling depending on <em>who</em> is doing it — this is called <strong>conjugation</strong>. Compare: “I am” vs “she is” in English — same idea, just different endings.`);
   ottoSays(card, 'If you can say <em>I am</em> and <em>I have</em>, you can introduce yourself <em>and</em> brag about your snacks. Priorities.');
@@ -1842,6 +1924,8 @@ function renderChallenge(root){
 
 function runChallenge(card){
   const examQs=[
+    {topic:'Hallo', q:'"Hallo" means...', opts:['Bye','Hello','Please'], a:1, audio:'Hallo'},
+    {topic:'Hallo', q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
     {topic:'Haben & Sein', q:'"Ich ___ zehn Jahre alt."', opts:['bin','habe','bist'], a:0},
     {topic:'Haben & Sein', q:'"Wir ___ einen Hund."', opts:['sind','haben','seid'], a:1},
     {topic:'Farben', q:'"Blau" means...', opts:['Green','Blue','Yellow'], a:1, audio:'Blau'},
@@ -1919,7 +2003,7 @@ function runChallenge(card){
     }
     if(score>=examQs.length-2){
       const claim=document.createElement('button'); claim.className='btn'; claim.style.marginTop='14px';
-      claim.textContent='Claim Level 10 star ⭐';
+      claim.textContent='Claim Level '+STORY_LEVELS.length+' star ⭐';
       claim.onclick=()=>markDone('challenge');
       card.appendChild(claim);
     } else {
@@ -1933,6 +2017,7 @@ function runChallenge(card){
 function renderRevision(root){
   const card=moduleShell('Practice park — Flashcards','A playground, not a test. Hear, say, read, then check. Say the German out loud before you flip. Whispering still counts. Dramatic whispering counts extra.');
   const allCards=[
+    ...GREETINGS.map(([de,en])=>({front:de,back:en,type:'Hallo'})),
     ...COLORS.map(([de,en])=>({front:de,back:en,type:'Farben'})),
     ...ADJ_PAIRS.flatMap(([a,ae,b,be])=>[{front:a,back:ae,type:'Adjektive'},{front:b,back:be,type:'Adjektive'}]),
     ...FAMILY.map(([de,en])=>({front:de,back:en,type:'Familie'})),
@@ -1944,7 +2029,7 @@ function renderRevision(root){
   const cardEl=document.createElement('div'); cardEl.className='flashcard';
   const spkHost=document.createElement('div');
   function germanOf(c){ return c.type==='Zahlen' ? c.back : c.front; }
-  const TYPE_EN={Farben:'Colours', Adjektive:'Adjectives', Familie:'Family', Pronomen:'Pronouns', Zahlen:'Numbers'};
+  const TYPE_EN={Hallo:'Hello', Farben:'Colours', Adjektive:'Adjectives', Familie:'Family', Pronomen:'Pronouns', Zahlen:'Numbers'};
   function draw(){
     flipped=false;
     const c=allCards[i];
@@ -1981,7 +2066,7 @@ function renderRevision(root){
 
 /* ===================== RENDER SHELL ===================== */
 const RENDERERS={
-  'haben-sein':renderHabenSein,'farben':renderFarben,'adjektive':renderAdjektive,
+  'hallo':renderHallo,'haben-sein':renderHabenSein,'farben':renderFarben,'adjektive':renderAdjektive,
   'zahlen':renderZahlen,'zahlen100':renderZahlen100,'familie':renderFamilie,'pronomen':renderPronomen,
   'verben':renderVerben,'lesen':renderLesen,'challenge':renderChallenge,'revision':renderRevision
 };
@@ -1990,7 +2075,7 @@ function render(){
   const app=document.getElementById('app');
   app.innerHTML='';
   resetHeard();
-  if(!isUnlocked(state.current)) state.current='haben-sein';
+  if(!isUnlocked(state.current)) state.current='hallo';
 
   const masthead=document.createElement('div'); masthead.className='masthead';
   const left=document.createElement('div');
