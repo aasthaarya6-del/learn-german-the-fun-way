@@ -913,11 +913,12 @@ function loadProgress(){
       if(LEVELS.some(m=>m.id===cur)) state.current=cur;
     }
     if(typeof d.locksOn==='boolean') state.locksOn=d.locksOn;
+    if(typeof d.rate==='number' && d.rate>0) state.rate=d.rate;
   }catch(e){}
 }
 function saveProgress(){
   try{
-    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current, locksOn:state.locksOn}));
+    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current, locksOn:state.locksOn, rate:state.rate}));
   }catch(e){}
 }
 function levelById(id){ return LEVELS.find(m=>m.id===id); }
@@ -1560,7 +1561,7 @@ function renderVorstellen(root){
   renderEarPick(card, EAR_ITEMS.vorstellen);
 
   phase(card,'S','2 🗣️ Speak','Say Anna’s introduction. Next time, change the name, age, class, and hobby to yours.');
-  renderChant(card, ['Ich heiße','Ich bin … Jahre alt','Ich bin in der … Klasse','Mein Hobby ist'], 'Chant: this is me', 'Point to yourself and say it. Name — age — class — hobby.', ['my name is','I am … years old','I am in class …','my hobby is']);
+  renderChant(card, ['Ich heiße','Jahre alt','die Klasse','Mein Hobby ist'], 'Chant: this is me', 'Point to yourself and say it. Name — age — class — hobby.', ['my name is','years old','class','my hobby is']);
   renderSpeakAlong(card, SPEAK_PHRASES.vorstellen);
 
   phase(card,'R','3 📖 Read','Look at the building blocks. Tap any tile to hear it.');
@@ -2095,7 +2096,7 @@ function renderChallenge(root){
 function runChallenge(card){
   const examQs=[
     {topic:'Hallo', q:'"Hallo" means...', opts:['Bye','Hello','Please'], a:1, audio:'Hallo'},
-    {topic:'Hallo', q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
+    {topic:'Hallo', q:'How do you say "bye"?', opts:['Bitte','Hallo','Tschüss'], a:2, audio:'Tschüss'},
     {topic:'Haben & Sein', q:'"Ich ___ zehn Jahre alt."', opts:['bin','habe','bist'], a:0},
     {topic:'Haben & Sein', q:'"Wir ___ einen Hund."', opts:['sind','haben','seid'], a:1},
     {topic:'This is me', q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
@@ -2248,9 +2249,10 @@ function render(){
   const app=document.getElementById('app');
   app.innerHTML='';
   resetHeard();
-  if(!isUnlocked(state.current)){
-    const playable=[...STORY_LEVELS].reverse().find(m=>isUnlocked(m.id));
+  if(!isUnlocked(state.current) || !RENDERERS[state.current]){
+    const playable=[...STORY_LEVELS].reverse().find(m=>RENDERERS[m.id] && isUnlocked(m.id));
     state.current=playable?playable.id:'hallo';
+    saveProgress();
   }
 
   const masthead=document.createElement('div'); masthead.className='masthead';
@@ -2272,8 +2274,8 @@ function render(){
     slowBtn.className='btn'+(slow?'':' ghost');
     normBtn.className='btn'+(slow?' ghost':'');
   }
-  slowBtn.onclick=()=>{ state.rate=0.58; syncSpeed(); };
-  normBtn.onclick=()=>{ state.rate=0.85; syncSpeed(); };
+  slowBtn.onclick=()=>{ state.rate=0.58; syncSpeed(); saveProgress(); };
+  normBtn.onclick=()=>{ state.rate=0.85; syncSpeed(); saveProgress(); };
   syncSpeed();
   speed.appendChild(lbl); speed.appendChild(slowBtn); speed.appendChild(normBtn);
   const buddy=document.createElement('div'); buddy.className='buddy'; buddy.textContent='🦊';
@@ -2365,7 +2367,7 @@ function render(){
   if(nxt){
     if(isUnlocked(nxt.id)){
       const nb=document.createElement('button'); nb.className='btn';
-      nb.textContent=(nxt.level?('Level '+nxt.level+' unlocked · '):'')+nxt.label+' →';
+      nb.textContent=(nxt.level?(state.locksOn?('Level '+nxt.level+' unlocked · '):('Level '+nxt.level+' · ')):'')+nxt.label+' →';
       nb.onclick=()=>goTo(nxt.id); nav.appendChild(nb);
     } else if(cur && cur.level && !state.done.has(cur.id)){
       const wait=document.createElement('span'); wait.className='note'; wait.style.margin='8px 0 0';
@@ -2416,7 +2418,7 @@ function render(){
     const box=document.createElement('div'); box.className='level-up-card';
     box.innerHTML=`<div class="burst">🔁</div>
       <h3>Start again?</h3>
-      <p>This clears every star and locks the later levels. You will begin at Level 1 — Hallo. Speaking speed stays as it is. Otto will pretend this is a brand-new journey.</p>`;
+      <p>This clears every star. You will begin at Level 1 — Hallo. Locked path or Free play stays as you left it. Otto will pretend this is a brand-new journey.</p>`;
     const row=document.createElement('div'); row.className='btnrow'; row.style.justifyContent='center';
     const cancel=document.createElement('button'); cancel.className='btn ghost'; cancel.textContent='Keep my stars';
     cancel.onclick=()=>{ state.confirmReset=false; overlay.remove(); };
