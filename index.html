@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutschreise — German Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2550;
+  --ink-soft:#5b5680;
+  --card:#fffdf9;
+  --sky:#6ec6ff;
+  --sun:#ffd166;
+  --peach:#ff8a6b;
+  --berry:#ff5d8f;
+  --grass:#2ec4b6;
+  --grape:#7b6cff;
+  --leaf:#7bd97b;
+  --shadow: 6px 6px 0 rgba(43,37,80,0.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  min-height:100vh;
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, #fff7c2 0 70px, transparent 71px),
+    radial-gradient(circle at 88% 14%, #ffd6ea 0 90px, transparent 91px),
+    radial-gradient(circle at 80% 90%, #c9f4ff 0 120px, transparent 121px),
+    radial-gradient(circle at 8% 78%, #d8ffd4 0 80px, transparent 81px),
+    linear-gradient(180deg,#c9eaff 0%,#fff6d8 42%,#ffe8f3 100%);
+}
+.wrap{max-width:920px;margin:0 auto;padding:22px 16px 80px;}
+
+.masthead{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:var(--card);border:4px solid var(--ink);border-radius:28px;
+  padding:16px 20px;box-shadow:var(--shadow);margin-bottom:16px;
+}
+.masthead h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(28px,6vw,44px);
+  margin:0;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.masthead h1 span{color:var(--berry);}
+.masthead .sub{font-size:15px;color:var(--ink-soft);font-weight:700;margin-top:4px;}
+.otto{
+  margin:8px 0 16px;padding:10px 14px;background:#fff;
+  border:3px dashed var(--peach);border-radius:18px;
+  font-size:15px;font-weight:700;line-height:1.45;
+}
+.otto strong{color:#e07a2c;}
+.buddy{
+  font-size:52px;line-height:1;filter:drop-shadow(3px 3px 0 rgba(43,37,80,0.12));
+  animation:bob 2.8s ease-in-out infinite;cursor:pointer;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.flagbar{display:flex;height:10px;width:78px;border-radius:999px;overflow:hidden;margin-bottom:8px;border:2px solid var(--ink);}
+.flagbar div{flex:1;}
+.flagbar .b{background:#111;} .flagbar .r{background:#e63946;} .flagbar .g{background:#ffd166;}
+
+.welcomebox{
+  background:#fff;border:3px dashed var(--grape);border-radius:22px;
+  padding:14px 18px;margin-bottom:16px;font-size:16px;line-height:1.55;font-weight:700;
+}
+.welcomebox strong{color:var(--grape);}
+
+.overallbar{height:14px;background:#fff;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin-bottom:6px;}
+.overallbar>div{height:100%;background:linear-gradient(90deg,var(--berry),var(--sun),var(--grass));transition:width .4s ease;}
+.progress-caption{font-size:14px;color:var(--ink-soft);font-weight:800;margin-bottom:8px;}
+
+.journey{display:flex;overflow-x:auto;gap:12px;padding:12px 4px 20px;margin-bottom:6px;scrollbar-width:thin;}
+.stamp{
+  flex:0 0 auto;width:92px;height:92px;border-radius:50%;
+  border:4px solid #cfc9e8;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;font-size:12px;font-weight:800;text-align:center;padding:6px;
+  color:var(--ink-soft); transition:transform .15s ease, border-color .15s ease, color .15s ease;
+  position:relative;box-shadow:3px 3px 0 rgba(43,37,80,0.08);
+}
+.stamp:hover{transform:translateY(-4px) scale(1.04);}
+.stamp .icon{font-size:26px;margin-bottom:2px;}
+.stamp .stampen{font-size:10px;font-weight:700;color:inherit;opacity:0.8;margin-top:1px;}
+.stamp.active{border-color:var(--berry);color:var(--berry);background:#fff0f6;}
+.stamp.done{border-color:var(--grass);color:#0f8f84;background:#edfffb;}
+.stamp.done::after{
+  content:"★";position:absolute;top:-4px;right:2px;background:var(--sun);color:var(--ink);
+  width:22px;height:22px;border-radius:50%;font-size:13px;display:flex;align-items:center;
+  justify-content:center;border:2px solid var(--ink);
+}
+
+.card{
+  background:var(--card);
+  border:4px solid var(--ink);
+  border-radius:28px;
+  padding:24px 24px 26px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+.card h2{font-family:'Fredoka',sans-serif;font-size:clamp(24px,4vw,34px);margin:0 0 6px;}
+.card .tagline{color:var(--ink-soft);font-size:16px;margin-bottom:16px;font-weight:700;}
+.section-label{
+  display:inline-block;font-size:13px;letter-spacing:0.02em;font-weight:800;
+  color:#fff;background:var(--grape);margin:20px 0 12px;padding:6px 12px;border-radius:999px;
+  border:2px solid var(--ink);
+}
+.section-label:first-of-type{margin-top:4px;}
+
+.tiles{display:flex;flex-wrap:wrap;gap:10px;}
+.tile{
+  display:flex;align-items:center;gap:8px;
+  background:#fff;border:3px solid var(--ink);border-radius:18px;
+  padding:10px 12px;cursor:pointer;font-weight:800;font-size:16px;
+  transition:transform .12s ease, background .12s ease;
+  box-shadow:3px 3px 0 rgba(43,37,80,0.08);
+}
+.tile:hover{background:#fff6d6;transform:translateY(-2px);}
+.tile .en{font-weight:700;color:var(--ink-soft);font-size:13px;}
+.tile.swatch{padding-left:10px;}
+.swatchdot{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink);display:inline-block;}
+
+table.conj{width:100%;border-collapse:separate;border-spacing:0;margin-top:6px;font-size:16px;overflow:hidden;border-radius:16px;border:3px solid var(--ink);}
+table.conj th{
+  text-align:left;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;
+  color:#fff;background:var(--grape);padding:10px 10px;
+}
+table.conj td{padding:10px;border-bottom:2px solid #f0ecff;background:#fff;}
+table.conj tr:last-child td{border-bottom:none;}
+table.conj td.pron{font-weight:800;width:90px;}
+table.conj tr:hover td{background:#fff8e8;}
+.audio-td{cursor:pointer;width:44px;}
+
+button.btn{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;
+  background:var(--grape);color:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:10px 18px;cursor:pointer;
+  box-shadow:3px 3px 0 rgba(43,37,80,0.15);
+}
+button.btn:hover{background:var(--berry);transform:translateY(-1px);}
+button.btn.ghost{background:#fff;color:var(--ink);}
+button.btn.ghost:hover{background:var(--sun);color:var(--ink);}
+button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+
+.spk{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;border:2.5px solid var(--ink);
+  background:var(--sun);cursor:pointer;font-size:13px;flex:0 0 auto;
+  vertical-align:middle;margin-left:4px;box-shadow:2px 2px 0 rgba(43,37,80,0.12);
+}
+.spk:hover{background:#ffe08a;transform:scale(1.08);}
+.spk.first-spk{
+  animation:pulse 1.6s ease-in-out infinite;
+  background:#fff36b;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,209,102,0.7)}
+  50%{box-shadow:0 0 0 6px rgba(255,209,102,0)}
+}
+.deword{display:inline-flex;align-items:center;gap:2px;white-space:nowrap;}
+.deword .de{color:var(--grape);}
+.gloss{color:var(--ink-soft);font-weight:700;font-size:0.92em;white-space:normal;}
+
+.qwrap{background:#fff;border:3px dashed var(--peach);border-radius:20px;padding:16px 18px;margin-top:10px;}
+.qprompt{font-weight:800;font-size:18px;margin-bottom:12px;line-height:1.45;}
+.qopt{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  width:100%;text-align:left;background:#fff;border:3px solid var(--ink);
+  border-radius:16px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:16px;
+  font-family:'Nunito',sans-serif;font-weight:800;
+}
+.qopt:hover{background:#fff3d6;}
+.qopt.correct{background:#d8ffef;border-color:var(--grass);}
+.qopt.incorrect{background:#ffe0ea;border-color:var(--berry);}
+.qopt:disabled{cursor:default;}
+.qfeedback{font-size:15px;font-weight:800;margin-top:8px;}
+.qfeedback.ok{color:#0f8f84;}
+.qfeedback.bad{color:var(--berry);}
+.progressline{font-size:13px;color:var(--ink-soft);margin-bottom:8px;font-weight:800;}
+
+.fillrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:16px;font-weight:700;}
+.fillrow input{
+  border:3px solid var(--ink);border-radius:12px;background:#fff;
+  font-family:'Fredoka',sans-serif;font-size:16px;font-weight:700;width:120px;padding:6px 8px;text-align:center;color:var(--ink);
+}
+.fillrow input:focus{outline:none;border-color:var(--berry);background:#fff8e8;}
+.fillrow input.ok{border-color:var(--grass);color:#0f8f84;background:#edfffb;}
+.fillrow input.bad{border-color:var(--berry);color:var(--berry);background:#fff0f6;}
+
+.matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.matchcol{display:flex;flex-direction:column;gap:8px;}
+.matchitem{
+  background:#fff;border:3px solid var(--ink);border-radius:16px;padding:10px 12px;
+  cursor:pointer;font-size:15px;font-weight:800;text-align:center;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.matchitem.sel{border-color:var(--sun);background:#fff3d6;}
+.matchitem.paired{border-color:var(--grass);background:#d8ffef;color:#0f8f84;cursor:default;}
+.matchitem.wrongflash{border-color:var(--berry);background:#ffe0ea;}
+
+.examtimer{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;
+  background:var(--ink);color:#fff;padding:8px 16px;border-radius:16px;display:inline-block;
+}
+.examtimer.low{background:var(--berry);}
+
+.flashcard{
+  background:linear-gradient(180deg,#fff 0%,#fff6d6 100%);
+  border:4px solid var(--ink);border-radius:28px;
+  min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  cursor:pointer;font-family:'Fredoka',sans-serif;font-size:32px;text-align:center;padding:20px;
+  box-shadow:var(--shadow);margin-bottom:16px;user-select:none;
+}
+.flashcard .hint{font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink-soft);margin-top:10px;font-weight:800;}
+.flashnav{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--ink-soft);font-weight:800;}
+
+.passage{
+  background:#fff;border:3px solid var(--sun);border-radius:20px;
+  padding:16px 18px;font-size:18px;line-height:1.85;margin-bottom:16px;font-weight:700;
+}
+.glossbtn{font-size:15px;text-decoration:none;cursor:pointer;color:var(--grape);background:none;border:none;font-family:'Nunito',sans-serif;font-weight:800;padding:0;margin-bottom:12px;}
+.glossary{background:#f4f0ff;border-radius:16px;padding:12px 14px;font-size:15px;margin-bottom:16px;display:none;font-weight:700;}
+.glossary.show{display:block;}
+.glossary span{display:inline-flex;align-items:center;margin-right:14px;margin-bottom:8px;}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;background:var(--grass);color:#fff;
+  font-size:15px;font-weight:800;padding:8px 14px;border-radius:999px;margin-top:8px;
+  border:3px solid var(--ink);
+}
+
+@media(max-width:600px){
+  .matchgrid{grid-template-columns:1fr;}
+  .card{padding:18px 14px;}
+  .buddy{font-size:40px;}
+}
+
+.explainer{
+  background:#e8fff8;border:3px solid var(--grass);padding:14px 16px;border-radius:18px;
+  font-size:16px;color:var(--ink);margin-bottom:16px;line-height:1.55;font-weight:700;
+}
+.explainer strong{color:#0f8f84;}
+.tipbox{
+  background:#fff6d6;border:3px solid var(--sun);border-radius:18px;
+  padding:14px 16px;margin-bottom:16px;font-size:16px;line-height:1.55;font-weight:700;
+}
+.tipbox strong{color:#c47b00;}
+.note{font-size:15px;color:var(--ink-soft);margin:0 0 10px;font-weight:700;line-height:1.5;}
+.summarybox{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:16px 18px;margin-top:14px;}
+.summaryrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid #f0ecff;font-size:15px;font-weight:800;}
+.summaryrow:last-child{border-bottom:none;}
+.weak{color:var(--berry);font-weight:800;}
+.strong{color:#0f8f84;font-weight:800;}
+
+.speedbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+.speedbar .lbl{font-size:12px;font-weight:800;color:var(--ink-soft);}
+.speedbar .btn{padding:7px 12px;font-size:13px;}
+.recapcard{border-color:var(--peach);background:#fff8f2;}
+.speaklist{display:flex;flex-direction:column;gap:10px;}
+.speakrow{
+  background:#fff;border:3px solid var(--ink);border-radius:18px;padding:12px 14px;
+}
+.speakrow .line-de{font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;}
+.speakrow .line-en{color:var(--ink-soft);font-size:14px;font-weight:700;margin:4px 0 10px;}
+.speakrow .listening{background:var(--berry)!important;color:#fff;}
+.micdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;margin-right:6px;animation:pulse 1s ease-in-out infinite;}
+
+.lsrw-rail{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px;}
+.lsrw-pill{
+  font-size:13px;font-weight:800;padding:7px 12px;border-radius:999px;
+  border:2.5px solid var(--ink);box-shadow:2px 2px 0 rgba(43,37,80,0.08);
+}
+.lsrw-pill.L{background:#bfe9ff;}
+.lsrw-pill.S{background:#ffe08a;}
+.lsrw-pill.R{background:#c8f7c8;}
+.lsrw-pill.W{background:#ffc4a8;}
+.phase{
+  margin:22px 0 12px;padding:12px 14px;border-radius:16px;border:3px solid var(--ink);
+  font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;
+}
+.phase .phase-blurb{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--ink-soft);margin-top:4px;}
+.phase.L{background:#e3f6ff;}
+.phase.S{background:#fff6d6;}
+.phase.R{background:#e8fff8;}
+.phase.W{background:#ffe8dc;}
+
+@media (prefers-reduced-motion: reduce){
+  .buddy,.spk.first-spk{animation:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===================== DATA ===================== */
+
+const numberWord = (n)=>{
+  const ones=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn",
+  "elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn"];
+  const tens={20:"zwanzig",30:"dreißig",40:"vierzig",50:"fünfzig",60:"sechzig",70:"siebzig",80:"achtzig",90:"neunzig"};
+  if(n<=19) return ones[n];
+  if(n===100) return "hundert";
+  const t=Math.floor(n/10)*10, u=n%10;
+  if(u===0) return tens[t];
+  const unit = u===1?"ein":ones[u];
+  return unit+"und"+tens[t];
+};
+
+const numberWordBig = (n)=>{
+  const onesArr=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun"];
+  if(n<=100) return numberWord(n);
+  if(n<1000){
+    const h=Math.floor(n/100), rem=n%100;
+    let word=(h===1?'':onesArr[h])+'hundert';
+    if(rem>0) word+=numberWord(rem);
+    return word;
+  }
+  if(n<10000){
+    const th=Math.floor(n/1000), rem=n%1000;
+    let word=(th===1?'':onesArr[th])+'tausend';
+    if(rem>0) word+=numberWordBig(rem);
+    return word;
+  }
+  return String(n);
+};
+
+const COLORS=[
+  ["rot","red","#c1272d"],["blau","blue","#2856a8"],["grün","green","#3a7d5c"],
+  ["gelb","yellow","#e0b23a"],["orange","orange","#e07a2c"],["lila","purple","#7a4fa3"],
+  ["rosa","pink","#e07fa0"],["braun","brown","#7a5230"],["schwarz","black","#1e2a38"],
+  ["weiß","white","#f7f4ec"],["grau","grey","#8a8f96"]
+];
+
+const ADJ_PAIRS=[
+  ["groß","big","klein","small"],["alt","old","neu","new"],
+  ["schnell","fast","langsam","slow"],["heiß","hot","kalt","cold"],
+  ["gut","good","schlecht","bad"],["lang","long","kurz","short"],
+  ["schön","beautiful","hässlich","ugly"],["laut","loud","leise","quiet"]
+];
+
+const FAMILY=[
+  ["die Familie","the family"],["der Vater","the father"],["die Mutter","the mother"],
+  ["der Bruder","the brother"],["die Schwester","the sister"],["der Großvater","the grandfather"],
+  ["die Großmutter","the grandmother"],["der Onkel","the uncle"],["die Tante","the aunt"],
+  ["der Sohn","the son"],["die Tochter","the daughter"],["die Eltern","the parents"],["die Kinder","the children"]
+];
+
+const PRONOUNS=[
+  ["ich","I"],["du","you (informal, singular)"],["er","he"],["sie","she"],["es","it"],
+  ["wir","we"],["ihr","you (informal, plural)"],["sie","they"],["Sie","you (formal)"]
+];
+
+const CONJ = {
+  sein:["bin","bist","ist","sind","seid","sind"],
+  haben:["habe","hast","hat","haben","habt","haben"],
+  wohnen:["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"],
+  kommen:["komme","kommst","kommt","kommen","kommt","kommen"]
+};
+const PRON_ROW=["ich","du","er/sie/es","wir","ihr","sie/Sie"];
+
+const PASSAGE = `Hallo! Ich heiße Anna und ich bin zwölf Jahre alt. Ich wohne in Berlin. Meine Familie ist groß. Ich habe einen Bruder und eine Schwester. Mein Bruder heißt Paul und meine Schwester heißt Mia. Wir haben auch einen Hund. Er ist braun und klein. Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien. Unser Haus ist nicht sehr groß, aber es ist schön. Meine Lieblingsfarbe ist blau.`;
+
+const GLOSSARY=[["Hallo","hello"],["heiße","am called"],["Jahre alt","years old"],["wohne","live"],["Familie","family"],["groß","big"],["auch","also"],["Hund","dog"],["braun","brown"],["klein","small"],["Haus","house"],["schön","beautiful"],["Lieblingsfarbe","favourite colour"],["und","and"],["Bruder","brother"],["Schwester","sister"],["heißt","is called"],["Vater","father"],["Mutter","mother"],["kommt","comes"],["aus","from"]];
+
+const PASSAGE_MEANINGS={
+  hallo:"hello", ich:"I", heiße:"am called", und:"and", bin:"am", zwölf:"twelve",
+  jahre:"years", alt:"old", wohne:"live", in:"in", berlin:"Berlin", meine:"my",
+  familie:"family", ist:"is", groß:"big", habe:"have", einen:"a", bruder:"brother",
+  eine:"a", schwester:"sister", mein:"my", heißt:"is called", wir:"we", haben:"have",
+  auch:"also", hund:"dog", er:"he", braun:"brown", klein:"small", vater:"father",
+  kommt:"comes", aus:"from", deutschland:"Germany", mutter:"mother", italien:"Italy",
+  unser:"our", haus:"house", nicht:"not", sehr:"very", aber:"but", es:"it",
+  schön:"beautiful", lieblingsfarbe:"favourite colour", blau:"blue"
+};
+
+const PASSAGE_Q=[
+  {q:"Wie alt ist Anna?",opts:["Elf","Zwölf","Dreizehn"],a:1, audio:"Wie alt ist Anna?"},
+  {q:"Wo wohnt Anna?",opts:["München","Hamburg","Berlin"],a:2, audio:"Wo wohnt Anna?"},
+  {q:"Wie heißt Annas Bruder?",opts:["Paul","Peter","Max"],a:0, audio:"Wie heißt Annas Bruder?"},
+  {q:"Welche Farbe hat der Hund?",opts:["Schwarz","Braun","Weiß"],a:1, audio:"Welche Farbe hat der Hund?"},
+  {q:"Woher kommt Annas Mutter?",opts:["Deutschland","Spanien","Italien"],a:2, audio:"Woher kommt Annas Mutter?"},
+  {q:"Was ist Annas Lieblingsfarbe?",opts:["Rot","Grün","Blau"],a:2, audio:"Was ist Annas Lieblingsfarbe?"}
+];
+
+const PASSAGE_LINES=[
+  {de:"Hallo! Ich heiße Anna und ich bin zwölf Jahre alt.", en:"Hello! My name is Anna and I am twelve years old."},
+  {de:"Ich wohne in Berlin.", en:"I live in Berlin."},
+  {de:"Meine Familie ist groß.", en:"My family is big."},
+  {de:"Ich habe einen Bruder und eine Schwester.", en:"I have a brother and a sister."},
+  {de:"Mein Bruder heißt Paul und meine Schwester heißt Mia.", en:"My brother is called Paul and my sister is called Mia."},
+  {de:"Wir haben auch einen Hund.", en:"We also have a dog."},
+  {de:"Er ist braun und klein.", en:"He is brown and small."},
+  {de:"Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien.", en:"My father comes from Germany and my mother comes from Italy."},
+  {de:"Unser Haus ist nicht sehr groß, aber es ist schön.", en:"Our house is not very big, but it is beautiful."},
+  {de:"Meine Lieblingsfarbe ist blau.", en:"My favourite colour is blue."}
+];
+
+const SPEAK_PHRASES={
+  'haben-sein':[
+    {de:"Ich bin Anna.", en:"I am Anna."},
+    {de:"Ich bin zwölf Jahre alt.", en:"I am twelve years old."},
+    {de:"Ich habe einen Hund.", en:"I have a dog."},
+    {de:"Wir sind in Berlin.", en:"We are in Berlin."}
+  ],
+  farben:[
+    {de:"Meine Lieblingsfarbe ist blau.", en:"My favourite colour is blue."},
+    {de:"Der Hund ist braun.", en:"The dog is brown."},
+    {de:"Das Haus ist weiß.", en:"The house is white."},
+    {de:"Es ist grün.", en:"It is green."}
+  ],
+  adjektive:[
+    {de:"Das Haus ist groß.", en:"The house is big."},
+    {de:"Der Hund ist klein.", en:"The dog is small."},
+    {de:"Es ist kalt.", en:"It is cold."},
+    {de:"Das ist gut.", en:"That is good."}
+  ],
+  zahlen:[
+    {de:"Ich bin zehn Jahre alt.", en:"I am ten years old."},
+    {de:"Wir haben zwei Hunde.", en:"We have two dogs."},
+    {de:"Ich bin einundzwanzig.", en:"I am twenty-one."}
+  ],
+  zahlen100:[
+    {de:"Es ist zweihundert.", en:"It is two hundred."},
+    {de:"zweihundert", en:"two hundred"},
+    {de:"zweitausendvierundzwanzig", en:"two thousand and twenty-four"}
+  ],
+  familie:[
+    {de:"Das ist mein Vater.", en:"That is my father."},
+    {de:"Ich habe eine Schwester.", en:"I have a sister."},
+    {de:"Die Familie ist groß.", en:"The family is big."},
+    {de:"Meine Mutter heißt Anna.", en:"My mother is called Anna."}
+  ],
+  pronomen:[
+    {de:"Ich heiße Anna.", en:"My name is Anna."},
+    {de:"Du bist nett.", en:"You are nice."},
+    {de:"Er ist mein Bruder.", en:"He is my brother."},
+    {de:"Wir haben einen Hund.", en:"We have a dog."}
+  ],
+  verben:[
+    {de:"Ich wohne in Berlin.", en:"I live in Berlin."},
+    {de:"Woher kommst du?", en:"Where do you come from?"},
+    {de:"Ich komme aus Deutschland.", en:"I come from Germany."},
+    {de:"Wir wohnen in Hamburg.", en:"We live in Hamburg."}
+  ]
+};
+
+const RECAP={
+  farben:[
+    {q:'What does "sein" mean?', opts:['to have','to be','to come'], a:1, audio:'sein'},
+    {q:'"Ich ___ Anna." (I am Anna)', opts:['bin','habe','bist'], a:0},
+    {q:'"Wir ___ einen Hund." (We have a dog)', opts:['sind','haben','seid'], a:1}
+  ],
+  adjektive:[
+    {q:'What colour is "blau"?', opts:['Red','Blue','Green'], a:1, audio:'blau'},
+    {q:'"Schwarz" means...', opts:['White','Black','Brown'], a:1, audio:'Schwarz'},
+    {q:'How do you say "yellow"?', opts:['Gelb','Grün','Grau'], a:0}
+  ],
+  zahlen:[
+    {q:'Opposite of "groß"?', opts:['Klein','Alt','Schnell'], a:0, audio:'groß'},
+    {q:'"Kalt" means...', opts:['Hot','Cold','Fast'], a:1, audio:'Kalt'},
+    {q:'Opposite of "laut"?', opts:['Leise','Langsam','Klein'], a:0, audio:'laut'}
+  ],
+  zahlen100:[
+    {q:'What is "einundzwanzig"?', opts:['12','21','30'], a:1, audio:'einundzwanzig'},
+    {q:'How do you say 60?', opts:['sechzig','sechzehn','sechs'], a:0},
+    {q:'What number is "siebzehn"?', opts:['70','7','17'], a:2, audio:'siebzehn'}
+  ],
+  familie:[
+    {q:'How do you say 200?', opts:['zweihundert','zweitausend','zweizig'], a:0},
+    {q:'What number is "fünfhundert"?', opts:['50','500','5000'], a:1, audio:'fünfhundert'},
+    {q:'How do you say 1000?', opts:['tausend','hundert','zehnzig'], a:0}
+  ],
+  pronomen:[
+    {q:'"Die Schwester" means...', opts:['The brother','The sister','The mother'], a:1, audio:'die Schwester'},
+    {q:'How do you say "the parents"?', opts:['die Kinder','die Eltern','die Familie'], a:1},
+    {q:'"Die Tante" means...', opts:['The aunt','The uncle','The cousin'], a:0, audio:'die Tante'}
+  ],
+  verben:[
+    {q:'"___ bin zwölf Jahre alt." (I am 12)', opts:['Du','Ich','Er'], a:1},
+    {q:'Formal "you" is...', opts:['du','Sie','ihr'], a:1},
+    {q:'"Wir" means...', opts:['You (pl.)','We','They'], a:1, audio:'Wir'}
+  ],
+  lesen:[
+    {q:'"Du ___ aus Italien." (kommen)', opts:['kommst','kommt','komme'], a:0},
+    {q:'"Wir ___ in Hamburg." (we live)', opts:['wohnen','wohnt','wohne'], a:0},
+    {q:'What does "wohnen" mean?', opts:['to come','to live','to be'], a:1, audio:'wohnen'}
+  ]
+};
+
+const EAR_ITEMS={
+  'haben-sein':[
+    {say:'ich bin', opts:['I am','I have','you are'], a:0},
+    {say:'du hast', opts:['you are','you have','he has'], a:1},
+    {say:'er ist', opts:['he has','he is','we are'], a:1},
+    {say:'wir haben', opts:['we are','they have','we have'], a:2}
+  ],
+  farben:[
+    {say:'grün', opts:['green','grey','yellow'], a:0},
+    {say:'weiß', opts:['white','yellow','red'], a:0},
+    {say:'schwarz', opts:['brown','black','grey'], a:1}
+  ],
+  adjektive:[
+    {say:'klein', opts:['small','cold','short'], a:0},
+    {say:'heiß', opts:['hot','ugly','good'], a:0},
+    {say:'leise', opts:['loud','quiet','slow'], a:1}
+  ],
+  zahlen:[
+    {say:'fünfzig', opts:['15','50','5'], a:1},
+    {say:'siebzehn', opts:['70','7','17'], a:2},
+    {say:'einundzwanzig', opts:['12','21','30'], a:1}
+  ],
+  zahlen100:[
+    {say:'zweihundert', opts:['20','200','2000'], a:1},
+    {say:'tausend', opts:['100','1000','10'], a:1},
+    {say:'dreihundertfünfzig', opts:['35','305','350'], a:2}
+  ],
+  familie:[
+    {say:'der Vater', opts:['the father','the brother','the uncle'], a:0},
+    {say:'die Mutter', opts:['the aunt','the mother','the sister'], a:1},
+    {say:'die Kinder', opts:['the parents','the children','the family'], a:1}
+  ],
+  pronomen:[
+    {say:'ich', opts:['I','he','we'], a:0},
+    {say:'wir', opts:['you (plural)','we','they'], a:1},
+    {say:'Sie', opts:['she','they','polite you'], a:2}
+  ],
+  verben:[
+    {say:'ich wohne', opts:['I live','I come','I am'], a:0},
+    {say:'du kommst', opts:['you live','you come','he comes'], a:1},
+    {say:'wir wohnen', opts:['we come','you live','we live'], a:2}
+  ]
+};
+
+const WRITE_SENTENCES={
+  'haben-sein':[
+    {en:'I am Anna.', answer:'Ich bin Anna.'},
+    {en:'I have a dog.', answer:'Ich habe einen Hund.'},
+    {en:'We are in Berlin.', answer:'Wir sind in Berlin.'}
+  ],
+  farben:[
+    {en:'blue', answer:'blau'},
+    {en:'black', answer:'schwarz'},
+    {en:'My favourite colour is blue.', answer:'Meine Lieblingsfarbe ist blau.'}
+  ],
+  adjektive:[
+    {en:'small (opposite of groß)', answer:'klein'},
+    {en:'The house is big.', answer:'Das Haus ist groß.'}
+  ],
+  familie:[
+    {en:'the father', answer:'der Vater'},
+    {en:'I have a sister.', answer:'Ich habe eine Schwester.'}
+  ],
+  pronomen:[
+    {en:'I', answer:'ich'},
+    {en:'He is my brother.', answer:'Er ist mein Bruder.'}
+  ],
+  verben:[
+    {en:'I live in Berlin.', answer:'Ich wohne in Berlin.'},
+    {en:'I come from Germany.', answer:'Ich komme aus Deutschland.'}
+  ]
+};
+
+const ENGLISH_WORDS = new Set([
+  "i","he","she","it","we","they","you","red","blue","green","yellow","white","black","brown",
+  "purple","pink","grey","gray","orange","hot","cold","fast","slow","big","small","old","new",
+  "good","bad","long","short","loud","quiet","beautiful","ugly","and","the","a","an","to","of",
+  "from","for","not","all","one","two","what","how","who","where","which","this","that","with"
+]);
+
+/* ===================== AUDIO ===================== */
+let cachedVoices=[];
+let voicesReady=false;
+function refreshVoices(){
+  if(!window.speechSynthesis) return;
+  const v = window.speechSynthesis.getVoices();
+  if(v && v.length){ cachedVoices=v; voicesReady=true; }
+}
+refreshVoices();
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+}
+
+function pickGermanVoice(){
+  return cachedVoices.find(v=>v.lang==='de-DE')
+      || cachedVoices.find(v=>v.lang && v.lang.toLowerCase().startsWith('de'))
+      || null;
+}
+
+function speakNow(text, rate, onend){
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='de-DE';
+  u.rate = (rate != null ? rate : state.rate);
+  u.pitch=1;
+  const de = pickGermanVoice();
+  if(de) u.voice = de;
+  if(onend) u.onend = onend;
+  window.speechSynthesis.speak(u);
+}
+
+function speak(text, rate, onend){
+  try{
+    if(!window.speechSynthesis){ return; }
+    if(voicesReady && pickGermanVoice()){
+      speakNow(text, rate, onend);
+    } else {
+      refreshVoices();
+      if(pickGermanVoice()){ speakNow(text, rate, onend); return; }
+      let attempts=0;
+      const wait=setInterval(()=>{
+        refreshVoices();
+        attempts++;
+        if(pickGermanVoice() || attempts>10){
+          clearInterval(wait);
+          speakNow(text, rate, onend);
+        }
+      },150);
+    }
+  }catch(e){ console.warn('Speech not supported', e); }
+}
+
+document.addEventListener('click', (e)=>{
+  const b = e.target.closest('button.spk[data-say]');
+  if(!b) return;
+  e.preventDefault();
+  e.stopPropagation();
+  speak(b.getAttribute('data-say'));
+}, true);
+
+/* ===================== FIRST-USE GERMAN AUDIO ===================== */
+let heardThisModule = new Set();
+function resetHeard(){ heardThisModule = new Set(); }
+
+function wordKey(w){
+  return String(w||'').trim().replace(/[.,!?;:"„""''()]/g,'').toLowerCase();
+}
+
+function isFirstGerman(word){
+  const k = wordKey(word);
+  if(!k) return false;
+  if(heardThisModule.has(k)) return false;
+  heardThisModule.add(k);
+  return true;
+}
+
+function markHeard(word){
+  const k = wordKey(word);
+  if(k) heardThisModule.add(k);
+}
+
+function escapeAttr(s){
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+function firstSpeakHTML(word, speakAs){
+  const say = speakAs || String(word).replace(/[.,!?;:]+$/,'');
+  if(!isFirstGerman(say)) return '';
+  return `<button class="spk first-spk" type="button" data-say="${escapeAttr(say)}" title="Hear ${say}" aria-label="Hear ${say}">🔊</button>`;
+}
+
+function deHTML(word, speakAs, meaning){
+  const say = speakAs || String(word).replace(/[.,!?;:]+$/,'');
+  const first = isFirstGerman(say);
+  const btn = first
+    ? `<button class="spk first-spk" type="button" data-say="${escapeAttr(say)}" title="Hear ${say}" aria-label="Hear ${say}">🔊</button>`
+    : '';
+  const g = meaning ? ` <span class="gloss">(= ${meaning})</span>` : '';
+  return `<span class="deword"><strong class="de">${word}</strong>${btn}</span>${g}`;
+}
+
+function glossHTML(word, en, speakAs){
+  return deHTML(word, speakAs, en);
+}
+
+function decorateGermanPassage(text){
+  return text.replace(/[A-Za-zÄÖÜäöüß]+/g, (word)=>{
+    const en = PASSAGE_MEANINGS[wordKey(word)];
+    const already = heardThisModule.has(wordKey(word));
+    return deHTML(word, word, (!already && en) ? en : null);
+  });
+}
+
+function looksGerman(str){
+  const t = String(str||'').trim();
+  if(!t) return false;
+  if(/[ÄÖÜäöüß]/.test(t)) return true;
+  const parts = t.split(/[\s/]+/).filter(Boolean);
+  if(parts.some(p=>GERMAN_LEXICON.has(wordKey(p)))) return true;
+  if(ENGLISH_WORDS.has(wordKey(t))) return false;
+  return GERMAN_LEXICON.has(wordKey(t));
+}
+
+function decorateQuotedGerman(text){
+  return String(text).replace(/"([^"]+)"/g, (m, inner)=>{
+    const decorated = inner.replace(/[A-Za-zÄÖÜäöüß]+/g, (w)=>{
+      return looksGerman(w) ? deHTML(w) : w;
+    });
+    return '"' + decorated + '"';
+  });
+}
+
+const GERMAN_LEXICON = (()=>{
+  const s = new Set();
+  const add = (w)=>{ const k=wordKey(w); if(k) s.add(k); };
+  COLORS.forEach(([de])=>add(de));
+  ADJ_PAIRS.forEach(([a,,b])=>{ add(a); add(b); });
+  FAMILY.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); });
+  PRONOUNS.forEach(([de])=>add(de));
+  Object.values(CONJ).forEach(arr=>arr.forEach(add));
+  PRON_ROW.forEach(p=>p.split('/').forEach(add));
+  GLOSSARY.forEach(([w])=>{ add(w); w.split(/\s+/).forEach(add); });
+  ["haben","sein","wohnen","kommen","und","aus","in","nicht","sehr","aber","auch","einen",
+   "eine","ein","mein","meine","unser","jahre","alt","heiße","heißt","wohne","wohnt","familie",
+   "hund","haus","lieblingsfarbe","hallo","deutschland","italien","berlin","münchen","hamburg",
+   "spanien","anna","paul","mia","gegenteil","farben","adjektive","zahlen","pronomen","verben",
+   "lesen","prüfung","bin","bist","ist","sind","seid","habe","hast","hat","habt","der","die",
+   "das","wir","ihr","sie","ich","du","er","es","groß","klein","alt","neu","gut","schlecht",
+   "hundert","tausend","zwölf","elf","dreizehn","frage","richtig","eltern","kinder","vater",
+   "mutter","bruder","schwester","onkel","tante","sohn","tochter","großvater","großmutter",
+   "woher","welche","farbe","was","wie","wo","kommt","kommen","wohnen","net","nett","freunde",
+   "leise","laut","schön","hässlich","heiß","kalt","schnell","langsam","lang","kurz","weiß",
+   "schwarz","grau","gelb","grün","blau","rot","lila","rosa","braun","orange","paul","peter",
+   "max","elf","zwölf","dreizehn","einundzwanzig","fünfzig","siebzehn","sechzig","sechzehn",
+   "sechs","zweihundert","zweitausend","fünfhundert","dreihundertfünfzig"].forEach(add);
+  for(let i=0;i<=100;i++) add(numberWord(i));
+  return s;
+})();
+
+/* ===================== STATE ===================== */
+const MODULES=[
+  {id:'haben-sein', icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
+  {id:'farben', icon:'🎨', label:'Farben', en:'Colours'},
+  {id:'adjektive', icon:'⚖️', label:'Adjektive', en:'Adjectives'},
+  {id:'zahlen', icon:'🔢', label:'Zahlen', en:'Numbers'},
+  {id:'zahlen100', icon:'💯', label:'Zahlen 100+', en:'Numbers 100+'},
+  {id:'familie', icon:'👪', label:'Familie', en:'Family'},
+  {id:'pronomen', icon:'👤', label:'Pronomen', en:'Pronouns'},
+  {id:'verben', icon:'📖', label:'Verben', en:'Verbs'},
+  {id:'lesen', icon:'📄', label:'Lesetext', en:'Reading Text'},
+  {id:'exam', icon:'⏱️', label:'Prüfung', en:'Mock Exam'},
+  {id:'revision', icon:'🔁', label:'Wiederholen', en:'Revise'}
+];
+
+const state = {
+  current:'haben-sein',
+  done:new Set(),
+  rate:0.85,
+};
+
+function goTo(id){ state.current=id; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function markDone(id){ state.done.add(id); render(); }
+
+/* ===================== GENERIC UI HELPERS ===================== */
+function speakerBtn(text, extraClass){
+  const b=document.createElement('button');
+  b.className='spk'+(extraClass?' '+extraClass:''); b.type='button'; b.innerHTML='🔊';
+  b.title='Hear pronunciation';
+  b.setAttribute('aria-label','Hear '+text);
+  b.onclick=(e)=>{e.stopPropagation(); speak(text);};
+  return b;
+}
+
+function firstSpeakerBtn(text){
+  if(!isFirstGerman(text)) return null;
+  return speakerBtn(text, 'first-spk');
+}
+
+function makeTile(de, en, opts){
+  opts = opts || {};
+  const t=document.createElement('div');
+  t.className='tile'+(opts.swatch?' swatch':'');
+  if(opts.hex){
+    const dot=document.createElement('span');
+    dot.className='swatchdot';
+    dot.style.background=opts.hex;
+    t.appendChild(dot);
+  }
+  const deEl=document.createElement('span');
+  deEl.textContent=opts.lead != null ? opts.lead : de;
+  t.appendChild(deEl);
+  if(en){
+    const enEl=document.createElement('span');
+    enEl.className='en';
+    enEl.textContent=en;
+    t.appendChild(enEl);
+  }
+  const say = opts.say || de;
+  t.onclick=()=>speak(say, opts.rate);
+  t.appendChild(speakerBtn(say));
+  markHeard(de);
+  String(de).split(/[\s/]+/).forEach(markHeard);
+  return t;
+}
+
+function renderQuiz(container, questions, onComplete){
+  let idx=0, score=0;
+  const box=document.createElement('div'); box.className='qwrap';
+  container.appendChild(box);
+  function show(){
+    box.innerHTML='';
+    if(idx>=questions.length){
+      box.innerHTML=`<div class="qfeedback ok">${score===questions.length
+        ? 'Full marks! Otto is doing cartwheels (carefully). '+score+'/'+questions.length+' ✓'
+        : 'Quiz done — '+score+'/'+questions.length+' correct. Otto still likes you. 🎉'}</div>`;
+      onComplete && onComplete(score, questions.length);
+      return;
+    }
+    const item=questions[idx];
+    const prog=document.createElement('div'); prog.className='progressline';
+    prog.innerHTML=`Star ${idx+1} of ${questions.length} · ${glossHTML('Frage','question')}`;
+    box.appendChild(prog);
+    const p=document.createElement('div'); p.className='qprompt';
+    p.innerHTML = decorateQuotedGerman(item.q);
+    if(item.audio){
+      const qFirst = firstSpeakerBtn(item.audio);
+      if(qFirst) p.appendChild(qFirst);
+      else p.appendChild(speakerBtn(item.audio));
+    } else {
+      const quoted = String(item.q).match(/"([^"]+)"/);
+      if(quoted){
+        const say = quoted[1].replace(/_/g,' ').replace(/\s+/g,' ').trim();
+        p.appendChild(speakerBtn(say));
+      } else if(looksGerman(item.q)){
+        p.appendChild(speakerBtn(item.q));
+      }
+    }
+    box.appendChild(p);
+    const fb=document.createElement('div'); fb.className='qfeedback';
+    item.opts.forEach((opt,i)=>{
+      const b=document.createElement('button');
+      b.className='qopt';
+      const label=document.createElement('span'); label.textContent=opt;
+      b.appendChild(label);
+      if(looksGerman(opt)){
+        const first = firstSpeakerBtn(opt);
+        b.appendChild(first || speakerBtn(opt));
+      }
+      b.onclick=()=>{
+        [...box.querySelectorAll('.qopt')].forEach(x=>x.disabled=true);
+        if(i===item.a){ b.classList.add('correct'); fb.textContent=pickOne(OTTO_YES); fb.className='qfeedback ok'; score++; }
+        else{ b.classList.add('incorrect'); fb.textContent=pickOne(OTTO_NO)+item.opts[item.a]; fb.className='qfeedback bad';
+              [...box.querySelectorAll('.qopt')][item.a].classList.add('correct'); }
+        box.appendChild(fb);
+        setTimeout(()=>{ idx++; show(); }, 1100);
+      };
+      box.appendChild(b);
+    });
+  }
+  show();
+}
+
+function renderFillBlank(container, items){
+  const wrap=document.createElement('div');
+  items.forEach((it)=>{
+    const row=document.createElement('div'); row.className='fillrow';
+    const prefix=document.createElement('span');
+    const prefixWord = String(it.prefix||'').trim();
+    const PREFIX_EN={Ich:'I', Du:'you', Wir:'we', Er:'he', Ihr:'you (plural)'};
+    if(PREFIX_EN[prefixWord]){
+      prefix.innerHTML = glossHTML(prefixWord, PREFIX_EN[prefixWord]);
+    } else if(it.gloss){
+      const htmlPrefix = String(it.prefix).replace(/Gegenteil/g, ()=>deHTML('Gegenteil'));
+      prefix.innerHTML = `${htmlPrefix} <span class="gloss">(= ${it.gloss})</span>`;
+    } else if((!/\s/.test(prefixWord) && looksGerman(prefixWord))){
+      prefix.innerHTML = deHTML(prefixWord);
+    } else {
+      prefix.innerHTML = it.prefix;
+    }
+    row.appendChild(prefix);
+    const input=document.createElement('input'); input.placeholder='...'; input.autocomplete='off';
+    input.oninput=()=>{
+      const val=input.value.trim().toLowerCase();
+      if(val.length===0){ input.classList.remove('ok','bad'); return; }
+      if(val===it.answer.toLowerCase()){ input.classList.add('ok'); input.classList.remove('bad'); }
+      else{ input.classList.remove('ok'); input.classList.add('bad'); }
+    };
+    row.appendChild(input);
+    const rest=document.createElement('span'); rest.textContent=it.suffix||'';
+    row.appendChild(rest);
+    const sp=speakerBtn(it.audioHint || it.answer);
+    row.appendChild(sp);
+    wrap.appendChild(row);
+  });
+  container.appendChild(wrap);
+}
+
+function renderMatch(container, pairs){
+  const grid=document.createElement('div'); grid.className='matchgrid';
+  const leftCol=document.createElement('div'); leftCol.className='matchcol';
+  const rightCol=document.createElement('div'); rightCol.className='matchcol';
+  const shuffledRight=[...pairs].sort(()=>Math.random()-0.5);
+  let selLeft=null, pairedCount=0;
+  pairs.forEach((p,i)=>{
+    const le=document.createElement('div'); le.className='matchitem';
+    const txt=document.createElement('span'); txt.textContent=p[0];
+    le.appendChild(txt);
+    if(looksGerman(p[0])){
+      const first = firstSpeakerBtn(p[0]);
+      le.appendChild(first || speakerBtn(p[0]));
+    }
+    le.onclick=(e)=>{
+      if(e.target.closest('.spk')) return;
+      if(le.classList.contains('paired')) return;
+      [...leftCol.children].forEach(c=>c.classList.remove('sel'));
+      le.classList.add('sel'); selLeft={idx:i, el:le};
+    };
+    leftCol.appendChild(le);
+  });
+  shuffledRight.forEach((p)=>{
+    const re=document.createElement('div'); re.className='matchitem'; re.textContent=p[1];
+    re.onclick=()=>{
+      if(re.classList.contains('paired') || !selLeft) return;
+      const correctIdx = pairs.findIndex(pp=>pp[1]===p[1]);
+      if(correctIdx===selLeft.idx){
+        re.classList.add('paired'); selLeft.el.classList.add('paired'); selLeft.el.classList.remove('sel');
+        pairedCount++;
+        if(pairedCount===pairs.length){
+          const done=document.createElement('div'); done.className='qfeedback ok'; done.textContent='You matched them all! Otto wants a medal. (And a snack.) ✓';
+          grid.after(done);
+        }
+      } else {
+        re.classList.add('wrongflash'); selLeft.el.classList.add('wrongflash');
+        setTimeout(()=>{ re.classList.remove('wrongflash'); selLeft.el.classList.remove('wrongflash'); },500);
+      }
+      selLeft=null;
+    };
+    rightCol.appendChild(re);
+  });
+  grid.appendChild(leftCol); grid.appendChild(rightCol);
+  container.appendChild(grid);
+}
+
+function foldDe(s){
+  return String(s||'').toLowerCase()
+    .replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
+    .replace(/[.,!?;:"„""''¡¿]/g,'').replace(/\s+/g,' ').trim();
+}
+function heardMatches(heard, expected){
+  const h=foldDe(heard), e=foldDe(expected);
+  if(!h || !e) return false;
+  if(h===e) return true;
+  if(h.includes(e) || e.includes(h)) return true;
+  const strip=x=>x.replace(/^(der|die|das|ein|eine|einen|einem|mein|meine|mein|hallo)\s+/,'');
+  return strip(h)===strip(e);
+}
+function canListen(){
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+function startListen(expected, btn, fb){
+  const Rec=window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!Rec){
+    fb.textContent='Mic check is not available in this browser — tap “I said it” after you speak.';
+    fb.className='qfeedback';
+    return;
+  }
+  const r=new Rec();
+  r.lang='de-DE'; r.interimResults=false; r.maxAlternatives=4;
+  fb.textContent='Listening… say it now!'; fb.className='qfeedback';
+  btn.classList.add('listening');
+  r.onresult=(ev)=>{
+    btn.classList.remove('listening');
+    const alts=[];
+    for(let i=0;i<ev.results[0].length;i++) alts.push(ev.results[0][i].transcript);
+    const ok=alts.some(a=>heardMatches(a, expected));
+    fb.textContent = ok ? 'Great speaking! Otto’s ears approved. ✓  I heard: '+alts[0] : 'Almost — I heard “'+alts[0]+'”. Otto believes in second tries. Listen again.';
+    fb.className='qfeedback '+(ok?'ok':'bad');
+  };
+  r.onerror=()=>{
+    btn.classList.remove('listening');
+    fb.textContent='Could not hear that. Try again, or tap “I said it”.';
+    fb.className='qfeedback';
+  };
+  r.onend=()=>btn.classList.remove('listening');
+  try{ r.start(); }
+  catch(e){
+    btn.classList.remove('listening');
+    fb.textContent='Allow the microphone, or just repeat after the speaker and tap “I said it”.';
+  }
+}
+
+function renderSpeakAlong(card, phrases){
+  if(!phrases || !phrases.length) return;
+  sectionLabel(card,'Repeat after me');
+  const note=document.createElement('p'); note.className='note';
+  note.textContent='Listen first, then copy with your voice. Speaking is what makes the words stay. Use Slow at the top if it feels too fast. Chrome or Edge can listen and tell you if you were close.';
+  card.appendChild(note);
+  const list=document.createElement('div'); list.className='speaklist';
+  phrases.forEach((ph)=>{
+    const row=document.createElement('div'); row.className='speakrow';
+    const de=document.createElement('div'); de.className='line-de'; de.textContent=ph.de;
+    de.appendChild(speakerBtn(ph.de));
+    row.appendChild(de);
+    const en=document.createElement('div'); en.className='line-en'; en.textContent=ph.en;
+    row.appendChild(en);
+    const btns=document.createElement('div'); btns.className='btnrow'; btns.style.marginTop='0';
+    const hear=document.createElement('button'); hear.className='btn ghost'; hear.textContent='🔊 Hear';
+    hear.onclick=()=>speak(ph.de);
+    const slow=document.createElement('button'); slow.className='btn ghost'; slow.textContent='🐢 Slow';
+    slow.onclick=()=>speak(ph.de, 0.58);
+    const said=document.createElement('button'); said.className='btn ghost'; said.textContent='I said it ✓';
+    const mic=document.createElement('button'); mic.className='btn'; mic.textContent=canListen()?'🎤 I will say it':'🎤 Practise';
+    const fb=document.createElement('div'); fb.className='qfeedback';
+    said.onclick=()=>{ fb.textContent='Nice. Say it twice more — once in a silly voice, once like a newsreader. ✓'; fb.className='qfeedback ok'; };
+    mic.onclick=()=>startListen(ph.de, mic, fb);
+    btns.appendChild(hear); btns.appendChild(slow); btns.appendChild(mic); btns.appendChild(said);
+    row.appendChild(btns); row.appendChild(fb);
+    list.appendChild(row);
+  });
+  card.appendChild(list);
+}
+
+function renderEarPick(card, items){
+  if(!items || !items.length) return;
+  sectionLabel(card,'Listen and choose');
+  const note=document.createElement('p'); note.className='note';
+  note.textContent='Tap Play, listen, then choose the meaning. Do not peek at spellings yet — this is ears only.';
+  card.appendChild(note);
+  const box=document.createElement('div'); box.className='qwrap';
+  card.appendChild(box);
+  let idx=0, score=0;
+  function show(){
+    box.innerHTML='';
+    if(idx>=items.length){
+      box.innerHTML=`<div class="qfeedback ok">Ears: switched on. ${score}/${items.length} heard correctly. Otto is impressed (and a bit jealous). 👂</div>`;
+      return;
+    }
+    const item=items[idx];
+    const prog=document.createElement('div'); prog.className='progressline';
+    prog.textContent=`Listen ${idx+1} of ${items.length}`;
+    box.appendChild(prog);
+    const play=document.createElement('button'); play.className='btn'; play.textContent='🔊 Play';
+    play.onclick=()=>speak(item.say, Math.min(state.rate, 0.72));
+    box.appendChild(play);
+    const fb=document.createElement('div'); fb.className='qfeedback';
+    item.opts.forEach((opt,i)=>{
+      const b=document.createElement('button'); b.className='qopt';
+      const label=document.createElement('span'); label.textContent=opt;
+      b.appendChild(label);
+      b.onclick=()=>{
+        [...box.querySelectorAll('.qopt')].forEach(x=>x.disabled=true);
+        if(i===item.a){ b.classList.add('correct'); fb.textContent='Yes — that was '+item.say+' ✓ Otto’s ears did a wiggle.'; fb.className='qfeedback ok'; score++; }
+        else { b.classList.add('incorrect'); fb.textContent='It was '+item.say+' — sneaky, wasn’t it?'; fb.className='qfeedback bad';
+          [...box.querySelectorAll('.qopt')][item.a].classList.add('correct'); }
+        box.appendChild(fb);
+        setTimeout(()=>{ idx++; show(); }, 1100);
+      };
+      box.appendChild(b);
+    });
+  }
+  show();
+}
+
+function renderChant(card, parts, heading, help, meanings){
+  sectionLabel(card, heading || 'Say the pattern');
+  const note=document.createElement('p'); note.className='note';
+  note.textContent=help || 'Play the chant, then join in. Rhythm helps endings stick.';
+  card.appendChild(note);
+  const row=document.createElement('div'); row.className='btnrow';
+  const play=document.createElement('button'); play.className='btn'; play.textContent='🎵 Play chant — then join in (even if you feel silly)';
+  play.onclick=()=>{
+    let i=0;
+    const step=()=>{
+      if(i>=parts.length) return;
+      speak(parts[i], Math.min(state.rate, 0.68), ()=>setTimeout(()=>{ i++; step(); }, 220));
+    };
+    step();
+  };
+  const show=document.createElement('div'); show.className='tipbox'; show.style.marginTop='10px';
+  show.innerHTML=parts.map((p,i)=>deHTML(p, p, meanings && meanings[i])).join(' &nbsp;·&nbsp; ');
+  row.appendChild(play);
+  card.appendChild(row);
+  card.appendChild(show);
+}
+
+function renderRecap(root, moduleId){
+  const qs=RECAP[moduleId];
+  if(!qs) return;
+  const card=document.createElement('div'); card.className='card recapcard';
+  card.innerHTML=`<h2>Warm-up recap</h2><div class="tagline">A tiny look-back so earlier words stay in your head. Say the answers out loud if you can. Otto will pretend not to look.</div>`;
+  renderQuiz(card, qs, null);
+  root.appendChild(card);
+}
+
+function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const OTTO_YES=[
+  'Yes! Richtig (= correct)! Otto did a tiny fox dance. ✓',
+  'Spot on. Richtig (= correct). Your brain just high-fived itself. ✓',
+  'Correct! Richtig (= correct). Even the umlauts are smiling. ✓',
+  'Richtig (= correct)! Otto would give you a biscuit, but he ate them. ✓'
+];
+const OTTO_NO=[
+  'Oof — Otto blinked. The answer is ',
+  'Nearly! (Foxes are not perfect either.) It is ',
+  'Not that one. The winner is ',
+  'Close enough to high-five, not close enough to score. It is '
+];
+const OTTO_CHAT=[
+  'Hallo! Ich bin Otto.',
+  'Ich bin ein Fuchs.',
+  'Ich habe keinen Hund.',
+  'Meine Lieblingsfarbe ist orange.',
+  'Wir sind super!'
+];
+function ottoSays(card, text){
+  const d=document.createElement('div'); d.className='otto';
+  d.innerHTML=`<strong>Otto the fox:</strong> ${text}`;
+  card.appendChild(d);
+}
+
+function lsrwRail(card){
+  const d=document.createElement('div'); d.className='lsrw-rail';
+  d.innerHTML=`
+    <span class="lsrw-pill L">1 👂 Listen</span>
+    <span class="lsrw-pill S">2 🗣️ Speak</span>
+    <span class="lsrw-pill R">3 📖 Read</span>
+    <span class="lsrw-pill W">4 ✍️ Write</span>`;
+  card.appendChild(d);
+}
+
+function phase(card, skill, title, blurb){
+  const p=document.createElement('div');
+  p.className='phase '+skill;
+  p.innerHTML=`<div>${title}</div>${blurb?`<div class="phase-blurb">${blurb}</div>`:''}`;
+  card.appendChild(p);
+}
+
+function renderListenAll(card, words){
+  const row=document.createElement('div'); row.className='btnrow';
+  const b=document.createElement('button'); b.className='btn'; b.textContent='🔊 Play all — just listen (no peeking, honour system)';
+  b.onclick=()=>{
+    let i=0;
+    const step=()=>{
+      if(i>=words.length) return;
+      speak(words[i], Math.min(state.rate, 0.7), ()=>setTimeout(()=>{ i++; step(); }, 260));
+    };
+    step();
+  };
+  row.appendChild(b);
+  const tip=document.createElement('p'); tip.className='note';
+  tip.textContent='Close your eyes if you like. Hear the music of the words before you look at letters. (Peeking is for later. Otto is watching. Kindly.)';
+  card.appendChild(tip);
+  card.appendChild(row);
+}
+
+function renderWriteFromEnglish(card, items){
+  if(!items || !items.length) return;
+  sectionLabel(card,'Write the German');
+  const note=document.createElement('p'); note.className='note';
+  note.textContent='Type the German. Spelling counts — umlauts (ä ö ü) and ß matter. They are not decoration; they are the word in a hat. Tap the speaker only after you have tried.';
+  card.appendChild(note);
+  const wrap=document.createElement('div');
+  items.forEach((it)=>{
+    const row=document.createElement('div'); row.className='fillrow';
+    const lab=document.createElement('span'); lab.textContent=it.en+' →';
+    row.appendChild(lab);
+    const input=document.createElement('input');
+    input.placeholder='German'; input.autocomplete='off';
+    input.style.width='min(100%, 280px)';
+    input.oninput=()=>{
+      const val=foldDe(input.value);
+      const want=foldDe(it.answer);
+      if(!input.value.trim()){ input.classList.remove('ok','bad'); return; }
+      if(val===want){ input.classList.add('ok'); input.classList.remove('bad'); }
+      else { input.classList.remove('ok'); input.classList.add('bad'); }
+    };
+    row.appendChild(input);
+    row.appendChild(speakerBtn(it.answer));
+    wrap.appendChild(row);
+  });
+  card.appendChild(wrap);
+}
+
+/* ===================== MODULE RENDERERS ===================== */
+
+function moduleShell(title, tagline){
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML=`<h2>${title}</h2><div class="tagline">${tagline}</div>`;
+  return card;
+}
+
+function explainer(card, html){
+  const e=document.createElement('div'); e.className='explainer'; e.innerHTML=html;
+  card.appendChild(e); return e;
+}
+
+function sectionLabel(card, text){
+  const l=document.createElement('div'); l.className='section-label'; l.textContent=text; card.appendChild(l); return l;
+}
+
+function renderHabenSein(root){
+  const card=moduleShell(`${glossHTML('Haben','to have')} &amp; ${glossHTML('Sein','to be')}`,'The two most essential German verbs — “to have” and “to be”. Master these first. (Otto has been “being” a fox his whole life.)');
+  lsrwRail(card);
+  explainer(card, `<strong>LSRW:</strong> Listen first, then Speak, then Read, then Write. That order helps German stay in your ears and your mouth — not only on the page.<br><br><strong>What's a “verb”?</strong> A verb is an action or state word — like “am”, “have”, “run”. In German (and English), the verb changes its spelling depending on <em>who</em> is doing it — this is called <strong>conjugation</strong>. Compare: “I am” vs “she is” in English — same idea, just different endings.`);
+  ottoSays(card, 'If you can say <em>I am</em> and <em>I have</em>, you can introduce yourself <em>and</em> brag about your snacks. Priorities.');
+
+  const usage=document.createElement('div'); usage.className='tipbox';
+  usage.innerHTML=`<strong>So when do I use which one?</strong><br><br>
+  ${deHTML('sein')} (to be) — use it to say who or what someone/something <em>is</em>: their name, age, or a description.<br>
+  ${deHTML('haben')} (to have) — use it to say what someone <em>owns or has</em>: possessions, family members, pets.<br><br>
+  Quick check: if the sentence is describing <strong>what something IS</strong>, use ${deHTML('sein')}. If it's describing <strong>what someone OWNS</strong>, use ${deHTML('haben')}.`;
+  card.appendChild(usage);
+
+  phase(card,'L','1 👂 Listen','Hear the German. Choose the English meaning. No writing yet. (Otto’s ears are enormous. Use yours.)');
+  renderListenAll(card, ['ich bin','du bist','er ist','ich habe','du hast','er hat']);
+  renderEarPick(card, EAR_ITEMS['haben-sein']);
+
+  phase(card,'S','2 🗣️ Speak','Now your mouth. Repeat until it feels easy. Silly voices still count as practice.');
+  renderChant(card, ['ich bin','du bist','er ist','wir sind','ihr seid','sie sind'], 'Chant: sein (= to be)', 'Clap or tap the table and say it with the audio. ich bin — du bist — er ist…', ['I am','you are','he is','we are','you (pl.) are','they are']);
+  renderSpeakAlong(card, SPEAK_PHRASES['haben-sein']);
+
+  phase(card,'R','3 📖 Read','Look at the letters. Match what you already heard and said.');
+  sectionLabel(card,'Sein — to be');
+  const seinNote=document.createElement('p'); seinNote.className='note';
+  seinNote.innerHTML=`<strong>Yes — ${deHTML('bin')} (= am), ${deHTML('bist')} (= are), ${deHTML('ist')} (= is), ${deHTML('sind')} (= are), ${deHTML('seid')} (= are) are all forms of the same verb, ${deHTML('sein')}.</strong> They are not separate words to memorise individually — ${deHTML('sein')} is the verb's basic/dictionary form (like “to be” in English), and it changes shape depending on who is doing the “being”. This changing is exactly what “conjugation” means. So ${deHTML('bin')} simply is ${deHTML('sein')} in its ${glossHTML('ich','I')} form.`;
+  card.appendChild(seinNote);
+  const t1=document.createElement('table'); t1.className='conj';
+  const seinRows=[
+    ['ich','bin','I am'],['du','bist','you are'],['er/sie/es','ist','he/she/it is'],
+    ['wir','sind','we are'],['ihr','seid','you (plural) are'],['sie/Sie','sind','they / you (formal) are']
+  ];
+  t1.innerHTML=`<tr><th>${glossHTML('Pronomen','pronouns')}</th><th>${glossHTML('Sein','to be')}</th><th>English</th><th></th></tr>`+
+    seinRows.map(r=>`<tr><td class="pron">${r[0]}</td><td>${r[1]}</td><td class="en" style="color:var(--ink-soft);">${r[2]}</td><td class="audio-td"></td></tr>`).join('');
+  card.appendChild(t1);
+  [...t1.querySelectorAll('tr')].slice(1).forEach((tr,i)=>{
+    const td=tr.querySelector('.audio-td');
+    td.appendChild(speakerBtn(seinRows[i][0].split('/')[0]+' '+seinRows[i][1]));
+  });
+
+  sectionLabel(card,'Haben — to have');
+  const habenNote=document.createElement('p'); habenNote.className='note';
+  habenNote.innerHTML=`Same idea here: <strong>${deHTML('habe')} (= have), ${deHTML('hast')} (= have), ${deHTML('hat')} (= has), ${deHTML('haben')} (= have), ${deHTML('habt')} (= have) are all forms of the verb ${deHTML('haben')}</strong> — the dictionary form is ${deHTML('haben')}, and each pronoun (${glossHTML('ich','I')}, ${glossHTML('du','you')}, ${glossHTML('er','he')}...) gets its own matching form, just like “bin/bist/ist” did for ${deHTML('sein')} above.`;
+  card.appendChild(habenNote);
+  const t2=document.createElement('table'); t2.className='conj';
+  const habenRows=[
+    ['ich','habe','I have'],['du','hast','you have'],['er/sie/es','hat','he/she/it has'],
+    ['wir','haben','we have'],['ihr','habt','you (plural) have'],['sie/Sie','haben','they / you (formal) have']
+  ];
+  t2.innerHTML=`<tr><th>${glossHTML('Pronomen','pronouns')}</th><th>${glossHTML('Haben','to have')}</th><th>English</th><th></th></tr>`+
+    habenRows.map(r=>`<tr><td class="pron">${r[0]}</td><td>${r[1]}</td><td class="en" style="color:var(--ink-soft);">${r[2]}</td><td class="audio-td"></td></tr>`).join('');
+  card.appendChild(t2);
+  [...t2.querySelectorAll('tr')].slice(1).forEach((tr,i)=>{
+    const td=tr.querySelector('.audio-td');
+    td.appendChild(speakerBtn(habenRows[i][0].split('/')[0]+' '+habenRows[i][1]));
+  });
+
+  phase(card,'W','4 ✍️ Write','Now put it on paper. Spelling locks the word in. Messy handwriting is allowed. Messy verbs are not.');
+  sectionLabel(card,'Fill in the blank');
+  renderFillBlank(card,[
+    {prefix:'Ich', answer:'bin', suffix:'zwölf Jahre alt. (sein) — “I am twelve years old.”', audioHint:'ich bin'},
+    {prefix:'Du', answer:'hast', suffix:'einen Bruder. (haben) — “You have a brother.”', audioHint:'du hast'},
+    {prefix:'Wir', answer:'sind', suffix:'in Berlin. (sein) — “We are in Berlin.”', audioHint:'wir sind'},
+    {prefix:'Sie (they)', answer:'haben', suffix:'einen Hund. (haben) — “They have a dog.”', audioHint:'sie haben'},
+  ]);
+  renderWriteFromEnglish(card, WRITE_SENTENCES['haben-sein']);
+
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'"Er ___ zehn Jahre alt." (He is ten years old) — which verb form?', opts:['ist','hat','sind'], a:0},
+    {q:'"Wir ___ einen Hund." (We have a dog) — which verb form?', opts:['sind','haben','bin'], a:1},
+    {q:'What does "sein" mean?', opts:['to have','to be','to come'], a:1, audio:'sein'},
+    {q:'"Ich ___ Anna." (I am Anna)', opts:['bin','habe','bist'], a:0},
+  ], (score,total)=>{ if(score>=total-1) markDone('haben-sein'); });
+
+  root.appendChild(card);
+}
+
+function renderFarben(root){
+  renderRecap(root, 'farben');
+  const card=moduleShell(`${deHTML('Farben')} (Colours)`,'Colours — tap any swatch or speaker to hear it pronounced. Warning: orange is both a colour and a fruit. German does that too.');
+  lsrwRail(card);
+  explainer(card, `<strong>Easy topic to start with!</strong> Colour words in German mostly sound a little like English if you say them slowly (e.g. ${deHTML('rot')} ≈ “red”, ${deHTML('grün')} ≈ “green”). Follow Listen → Speak → Read → Write.`);
+  ottoSays(card, `If you forget ${glossHTML('rot','red')}, picture a tomato having a dramatic day. If you forget ${glossHTML('grün','green')}, picture Otto in a salad. He would not like that.`);
+
+  phase(card,'L','1 👂 Listen','Hear the colour. Pick the English. Eyes on the meaning, not the spelling yet.');
+  renderListenAll(card, COLORS.map(c=>c[0]));
+  renderEarPick(card, EAR_ITEMS.farben);
+
+  phase(card,'S','2 🗣️ Speak','Say the colour words and short sentences out loud.');
+  renderSpeakAlong(card, SPEAK_PHRASES.farben);
+
+  phase(card,'R','3 📖 Read','Now look at the German spellings and match them.');
+  sectionLabel(card,'Vocabulary');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  COLORS.forEach(([de,en,hex])=>{
+    tiles.appendChild(makeTile(de, en, {swatch:true, hex}));
+  });
+  card.appendChild(tiles);
+
+  sectionLabel(card,'Memory match');
+  renderMatch(card, COLORS.map(c=>[c[0],c[1]]));
+
+  phase(card,'W','4 ✍️ Write','Write the German colour words.');
+  renderWriteFromEnglish(card, WRITE_SENTENCES.farben);
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'What colour is "blau"?', opts:['Red','Blue','Green'], a:1, audio:'blau'},
+    {q:'How do you say "yellow" in German?', opts:['Gelb','Grün','Grau'], a:0},
+    {q:'"Schwarz" means...', opts:['White','Black','Brown'], a:1, audio:'Schwarz'},
+    {q:'How do you say "green"?', opts:['Grün','Grau','Gelb'], a:0},
+  ], (score,total)=>{ if(score>=total-1) markDone('farben'); });
+
+  root.appendChild(card);
+}
+
+function renderAdjektive(root){
+  renderRecap(root, 'adjektive');
+  const card=moduleShell(`${deHTML('Adjektive')} (Adjectives)`,'Common adjectives, taught as opposite pairs — easier to remember together. Hot/cold. Big/small. Otto/not a wolf.');
+  lsrwRail(card);
+  explainer(card, `<strong>What's an “adjective”?</strong> An adjective describes a noun — like “big”, “old”, “hot”. The German word for “opposite” is ${glossHTML('Gegenteil','opposite')} — you'll see this word used below. Learning words in opposite pairs (big/small, hot/cold) makes them much easier to remember than learning them one at a time.`);
+  ottoSays(card, `${glossHTML('groß','big')} and ${glossHTML('klein','small')} are opposites, like “one biscuit” and “the whole tin”. Otto supports the tin.`);
+
+  phase(card,'L','1 👂 Listen','Hear the describing word. Pick the English.');
+  renderListenAll(card, ADJ_PAIRS.flatMap(([a,,b])=>[a,b]));
+  renderEarPick(card, EAR_ITEMS.adjektive);
+
+  phase(card,'S','2 🗣️ Speak','Say the opposites in full sentences.');
+  renderSpeakAlong(card, SPEAK_PHRASES.adjektive);
+
+  phase(card,'R','3 📖 Read','Read the pairs. See how opposites sit together.');
+  sectionLabel(card,'Opposite pairs');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  ADJ_PAIRS.forEach(([a,ae,b,be])=>{
+    tiles.appendChild(makeTile(a, ae));
+    tiles.appendChild(makeTile(b, be));
+  });
+  card.appendChild(tiles);
+
+  phase(card,'W','4 ✍️ Write','Spell the opposite, then a full sentence.');
+  sectionLabel(card,'Fill in the blank — opposite');
+  renderFillBlank(card,[
+    {prefix:'Das Gegenteil von "groß" ist', gloss:'the opposite of “big” is', answer:'klein', suffix:'.', audioHint:'klein'},
+    {prefix:'Das Gegenteil von "alt" ist', gloss:'the opposite of “old” is', answer:'neu', suffix:'.', audioHint:'neu'},
+    {prefix:'Das Gegenteil von "heiß" ist', gloss:'the opposite of “hot” is', answer:'kalt', suffix:'.', audioHint:'kalt'},
+    {prefix:'Das Gegenteil von "schnell" ist', gloss:'the opposite of “fast” is', answer:'langsam', suffix:'.', audioHint:'langsam'},
+  ]);
+  renderWriteFromEnglish(card, WRITE_SENTENCES.adjektive);
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'What is the opposite of "gut" (good)?', opts:['Schlecht','Schön','Kurz'], a:0, audio:'gut'},
+    {q:'"Kurz" means...', opts:['Long','Short','Loud'], a:1, audio:'Kurz'},
+    {q:'What is the opposite of "laut" (loud)?', opts:['Leise','Langsam','Klein'], a:0, audio:'laut'},
+    {q:'"Hässlich" means...', opts:['Beautiful','Ugly','Old'], a:1, audio:'Hässlich'},
+  ], (score,total)=>{ if(score>=total-1) markDone('adjektive'); });
+
+  root.appendChild(card);
+}
+
+function renderZahlen(root){
+  renderRecap(root, 'zahlen');
+  const card=moduleShell(`${deHTML('Zahlen')} 0–100 (Numbers)`,'Numbers follow a clear pattern once you know 0–20 and the tens.');
+  lsrwRail(card);
+  explainer(card, `<strong>Don't try to memorise 100 numbers!</strong> You only need to learn two small lists: the numbers 0–20 (below), and the “tens” (20, 30, 40...100). Every other number is just those two lists combined — see the pattern box in Read.`);
+  ottoSays(card, 'German 21 is “one-and-twenty”. It is not lost. It is just walking backwards on purpose, like a very confident crab.');
+
+  phase(card,'L','1 👂 Listen','Hear the number. Pick what you heard. Do not type yet.');
+  renderListenAll(card, [0,3,7,11,12,17,21,50,70,100].map(n=>numberWord(n)));
+  renderEarPick(card, EAR_ITEMS.zahlen);
+
+  phase(card,'S','2 🗣️ Speak','Say ages and counts out loud.');
+  renderSpeakAlong(card, SPEAK_PHRASES.zahlen);
+
+  phase(card,'R','3 📖 Read','Now look at how German writes the numbers — including the “backwards” pattern.');
+  sectionLabel(card,'0 – 20');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  for(let i=0;i<=20;i++){
+    tiles.appendChild(makeTile(numberWord(i), numberWord(i), {lead:String(i), say:numberWord(i)}));
+  }
+  card.appendChild(tiles);
+
+  sectionLabel(card,'The tens (10–100)');
+  const tiles2=document.createElement('div'); tiles2.className='tiles';
+  [10,20,30,40,50,60,70,80,90,100].forEach(n=>{
+    tiles2.appendChild(makeTile(numberWord(n), numberWord(n), {lead:String(n), say:numberWord(n)}));
+  });
+  card.appendChild(tiles2);
+
+  const note=document.createElement('div'); note.className='tipbox';
+  note.innerHTML=`<strong>The pattern (this is the whole trick!):</strong> for any number between the tens, German says the small number first, then the word ${deHTML('und')} (meaning “and”), then the ten. So 21 is literally “one-and-twenty” = ${deHTML('einundzwanzig')}. And 45 is “five-and-forty” = ${deHTML('fünfundvierzig')}. It feels backwards compared to English at first — that's completely normal, just practise it a few times.`;
+  card.appendChild(note);
+
+  phase(card,'W','4 ✍️ Write','Type digits from dictation, and try any number yourself.');
+  sectionLabel(card,'Try any number');
+  const tryNote=document.createElement('p'); tryNote.className='note';
+  tryNote.textContent='Type any number from 0 to 100 to see how it’s written in German, then tap the speaker to hear it.';
+  card.appendChild(tryNote);
+
+  const tryRow=document.createElement('div'); tryRow.className='fillrow';
+  const tryInput=document.createElement('input');
+  tryInput.type='number'; tryInput.min='0'; tryInput.max='100'; tryInput.placeholder='e.g. 42'; tryInput.style.width='110px';
+  tryRow.appendChild(tryInput);
+  const tryArrow=document.createElement('span'); tryArrow.textContent='→'; tryArrow.style.cssText='color:var(--ink-soft);';
+  tryRow.appendChild(tryArrow);
+  const tryWord=document.createElement('span');
+  tryWord.style.cssText="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;color:var(--ink);min-width:140px;display:inline-block;";
+  tryWord.textContent='...';
+  tryRow.appendChild(tryWord);
+  const trySpk=document.createElement('button'); trySpk.className='spk'; trySpk.innerHTML='🔊'; trySpk.title='Hear pronunciation'; trySpk.disabled=true;
+  tryRow.appendChild(trySpk);
+  card.appendChild(tryRow);
+
+  function updateTryWord(){
+    const n=parseInt(tryInput.value,10);
+    if(isNaN(n) || n<0 || n>100){
+      tryWord.textContent = tryInput.value==='' ? '...' : 'Please enter 0–100';
+      tryWord.style.color = tryInput.value==='' ? 'var(--ink)' : 'var(--berry)';
+      trySpk.disabled=true;
+      return;
+    }
+    tryWord.textContent = numberWord(n);
+    tryWord.style.color='var(--ink)';
+    trySpk.disabled=false;
+  }
+  tryInput.oninput=updateTryWord;
+  trySpk.onclick=()=>{
+    const n=parseInt(tryInput.value,10);
+    if(!isNaN(n) && n>=0 && n<=100) speak(numberWord(n), 0.8);
+  };
+
+  sectionLabel(card,'Dictation — listen, then write');
+  const listenNote=document.createElement('p'); listenNote.className='note';
+  listenNote.textContent='Tap “Play number” to hear a random number spoken. Type the digits you heard, then press Check. The answer stays on screen until you tap “Next number” — take your time.';
+  card.appendChild(listenNote);
+
+  const listenWrap=document.createElement('div');
+  let target = Math.floor(Math.random()*100)+1;
+  function newRound(){
+    target = Math.floor(Math.random()*100)+1;
+    input.value='';
+    fb.textContent='';
+    input.classList.remove('ok','bad');
+    input.disabled=false;
+    checkBtn.disabled=false;
+    nextBtn.style.display='none';
+    input.focus();
+  }
+  const row=document.createElement('div'); row.className='fillrow';
+  const playBtn=document.createElement('button'); playBtn.className='btn ghost'; playBtn.textContent='🔊 Play number';
+  playBtn.onclick=()=>speak(numberWord(target), 0.72);
+  row.appendChild(playBtn);
+  const input=document.createElement('input'); input.placeholder='digits, e.g. 42'; input.style.width='140px';
+  row.appendChild(input);
+  const fb=document.createElement('span'); fb.style.cssText='font-weight:800;font-size:15px;';
+  row.appendChild(fb);
+  const checkBtn=document.createElement('button'); checkBtn.className='btn'; checkBtn.textContent='Check';
+  const nextBtn=document.createElement('button'); nextBtn.className='btn ghost'; nextBtn.textContent='Next number →';
+  nextBtn.style.display='none';
+  checkBtn.onclick=()=>{
+    if(parseInt(input.value,10)===target){ fb.textContent='Yes! Richtig (= correct) ✓  It was '+target+' ('+numberWord(target)+') — Otto counted on his toes and got confused.'; fb.style.color='#0f8f84'; }
+    else{ fb.textContent='Not quite — it was '+target+' ('+numberWord(target)+'). Numbers are slippery. Try the next one.'; fb.style.color='var(--berry)'; }
+    input.disabled=true;
+    checkBtn.disabled=true;
+    nextBtn.style.display='inline-block';
+  };
+  nextBtn.onclick=()=>{ newRound(); };
+  row.appendChild(checkBtn);
+  row.appendChild(nextBtn);
+  listenWrap.appendChild(row);
+  card.appendChild(listenWrap);
+
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'How do you say 21 in German?', opts:['zwanzigeins','einundzwanzig','zweiundzehn'], a:1},
+    {q:'What number is "fünfzig"?', opts:['15','50','5'], a:1, audio:'fünfzig'},
+    {q:'How do you say 100?', opts:['zehnzig','hundert','zehntausend'], a:1},
+    {q:'What number is "siebzehn"?', opts:['70','7','17'], a:2, audio:'siebzehn'},
+  ], (score,total)=>{ if(score>=total-1) markDone('zahlen'); });
+
+  root.appendChild(card);
+}
+
+function renderZahlen100(root){
+  renderRecap(root, 'zahlen100');
+  const card=moduleShell(`${deHTML('Zahlen')} 100+ (Numbers above 100)`,'Hundreds and thousands — building on the same pattern you already know.');
+  lsrwRail(card);
+  explainer(card, `<strong>Good news — no new rules to learn!</strong> Numbers above 100 just combine words you already know: ${deHTML('hundert')} (hundred) and ${deHTML('tausend')} (thousand), plus everything from the 0–100 module. German glues them together into one long word instead of using spaces — that's the only real difference from English.`);
+  ottoSays(card, `${deHTML('zweitausendvierundzwanzig')} looks like a password. It is just 2024 wearing a very long coat.`);
+
+  phase(card,'L','1 👂 Listen','Hear the big number. Choose the digits.');
+  renderListenAll(card, [100,200,500,1000,2024].map(n=>numberWordBig(n)));
+  renderEarPick(card, EAR_ITEMS.zahlen100);
+
+  phase(card,'S','2 🗣️ Speak','Say the long words slowly. They are just pieces glued together.');
+  renderSpeakAlong(card, SPEAK_PHRASES.zahlen100);
+
+  phase(card,'R','3 📖 Read','See how hundred and thousand join onto words you already know.');
+  sectionLabel(card,'Key round numbers');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  [100,200,300,400,500,600,700,800,900,1000,2000,5000,9000].forEach(n=>{
+    tiles.appendChild(makeTile(numberWordBig(n), numberWordBig(n), {lead:n.toLocaleString('en-US'), say:numberWordBig(n), rate:0.78}));
+  });
+  card.appendChild(tiles);
+
+  const note=document.createElement('div'); note.className='tipbox';
+  note.innerHTML=`<strong>The pattern:</strong> [number]+${deHTML('hundert')} for hundreds (${deHTML('zweihundert')} = 200), and [number]+${deHTML('tausend')} for thousands (${deHTML('fünftausend')} = 5000). Then just tack on the rest the same way as before — e.g. 250 = ${deHTML('zweihundertfünfzig')}, and 2024 = ${deHTML('zweitausendvierundzwanzig')}. For exactly 100 or 1000, German just says ${deHTML('hundert')} / ${deHTML('tausend')} on their own — no “ein” needed at the front.`;
+  card.appendChild(note);
+
+  phase(card,'W','4 ✍️ Write','Type a number and check the German spelling.');
+  sectionLabel(card,'Try any number (0–9999)');
+  const tryNote=document.createElement('p'); tryNote.className='note';
+  tryNote.textContent='Type any number up to 9999 to see it written out in German, then tap the speaker to hear it.';
+  card.appendChild(tryNote);
+
+  const tryRow=document.createElement('div'); tryRow.className='fillrow';
+  const tryInput=document.createElement('input');
+  tryInput.type='number'; tryInput.min='0'; tryInput.max='9999'; tryInput.placeholder='e.g. 1234'; tryInput.style.width='120px';
+  tryRow.appendChild(tryInput);
+  const tryArrow=document.createElement('span'); tryArrow.textContent='→'; tryArrow.style.cssText='color:var(--ink-soft);';
+  tryRow.appendChild(tryArrow);
+  const tryWord=document.createElement('span');
+  tryWord.style.cssText="font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;color:var(--ink);min-width:220px;display:inline-block;";
+  tryWord.textContent='...';
+  tryRow.appendChild(tryWord);
+  const trySpk=document.createElement('button'); trySpk.className='spk'; trySpk.innerHTML='🔊'; trySpk.title='Hear pronunciation'; trySpk.disabled=true;
+  tryRow.appendChild(trySpk);
+  card.appendChild(tryRow);
+
+  function updateTryWord(){
+    const n=parseInt(tryInput.value,10);
+    if(isNaN(n) || n<0 || n>9999){
+      tryWord.textContent = tryInput.value==='' ? '...' : 'Please enter 0–9999';
+      tryWord.style.color = tryInput.value==='' ? 'var(--ink)' : 'var(--berry)';
+      trySpk.disabled=true;
+      return;
+    }
+    tryWord.textContent = numberWordBig(n);
+    tryWord.style.color='var(--ink)';
+    trySpk.disabled=false;
+  }
+  tryInput.oninput=updateTryWord;
+  trySpk.onclick=()=>{
+    const n=parseInt(tryInput.value,10);
+    if(!isNaN(n) && n>=0 && n<=9999) speak(numberWordBig(n), 0.75);
+  };
+
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'How do you say 200 in German?', opts:['zweihundert','zweizig','zweitausend'], a:0},
+    {q:'What number is "fünfhundert"?', opts:['50','500','5000'], a:1, audio:'fünfhundert'},
+    {q:'How do you say 1000?', opts:['einshundert','tausend','hundertzig'], a:1},
+    {q:'How do you say 2024?', opts:['zweitausendvierundzwanzig','zweihundertvierundzwanzig','vierundzwanzigtausend'], a:0},
+    {q:'What number is "dreihundertfünfzig"?', opts:['35','305','350'], a:2, audio:'dreihundertfünfzig'},
+  ], (score,total)=>{ if(score>=total-1) markDone('zahlen100'); });
+
+  root.appendChild(card);
+}
+
+function renderFamilie(root){
+  renderRecap(root, 'familie');
+  const card=moduleShell(`${deHTML('Familienmitglieder')} (Family Members)`,'Family vocabulary — note the der/die gender markers.');
+  lsrwRail(card);
+  explainer(card, `<strong>What are ${deHTML('der')} and ${deHTML('die')}?</strong> Both just mean “the” in English — German just has more than one word for “the”. For family members, it's simple: ${deHTML('der')} is used for male people (${deHTML('der Vater')} = the father) and ${deHTML('die')} is used for female people (${deHTML('die Mutter')} = the mother). Just remember which one goes with each word below — you don't need to know the full rule yet.`);
+  ottoSays(card, `${glossHTML('der','the')} and ${glossHTML('die','the')} are both “the”. English has one “the”. German has extras, like bringing two sandwiches “just in case”.`);
+
+  phase(card,'L','1 👂 Listen','Hear the family word. Pick the English.');
+  renderListenAll(card, FAMILY.map(f=>f[0]));
+  renderEarPick(card, EAR_ITEMS.familie);
+
+  phase(card,'S','2 🗣️ Speak','Say who is in the family.');
+  renderSpeakAlong(card, SPEAK_PHRASES.familie);
+
+  phase(card,'R','3 📖 Read','Read der/die with each person. Match German to English.');
+  sectionLabel(card,'Vocabulary');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  FAMILY.forEach(([de,en])=>{
+    tiles.appendChild(makeTile(de, en));
+  });
+  card.appendChild(tiles);
+
+  sectionLabel(card,'Match German to English');
+  renderMatch(card, FAMILY.slice(0,8));
+
+  phase(card,'W','4 ✍️ Write','Write the German family words.');
+  renderWriteFromEnglish(card, WRITE_SENTENCES.familie);
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'What does "die Schwester" mean?', opts:['The brother','The sister','The mother'], a:1, audio:'die Schwester'},
+    {q:'What does "der Großvater" mean?', opts:['The grandfather','The father','The uncle'], a:0, audio:'der Großvater'},
+    {q:'How do you say "the parents"?', opts:['die Kinder','die Eltern','die Familie'], a:1},
+    {q:'What does "die Tante" mean?', opts:['The aunt','The uncle','The cousin'], a:0, audio:'die Tante'},
+  ], (score,total)=>{ if(score>=total-1) markDone('familie'); });
+
+  root.appendChild(card);
+}
+
+function renderPronomen(root){
+  renderRecap(root, 'pronomen');
+  const card=moduleShell(`${deHTML('Personalpronomen')} (Personal Pronouns)`,'Personal pronouns — who is doing the action.');
+  lsrwRail(card);
+  explainer(card, `<strong>What's a “pronoun”?</strong> A pronoun replaces a name — instead of “Anna is happy”, you can say “she is happy”. “She” is a pronoun. Below are all the German pronouns. You already know most of the ideas (I, you, he, she, we...) — you're just learning their German words.`);
+  ottoSays(card, `${glossHTML('sie','she / they')} can mean “she” or “they”. Context is your friend. Guessing wildly is Otto’s hobby, not a study skill.`);
+
+  phase(card,'L','1 👂 Listen','Hear ich, du, wir… Pick the English.');
+  renderListenAll(card, ['ich','du','er','sie','wir','ihr','Sie']);
+  renderEarPick(card, EAR_ITEMS.pronomen);
+
+  phase(card,'S','2 🗣️ Speak','Say the little sentences. These are the building blocks of talking.');
+  renderSpeakAlong(card, SPEAK_PHRASES.pronomen);
+
+  phase(card,'R','3 📖 Read','Now look at the spellings — especially sie vs Sie.');
+  sectionLabel(card,'The pronouns');
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  PRONOUNS.forEach(([de,en])=>{
+    tiles.appendChild(makeTile(de, en));
+  });
+  card.appendChild(tiles);
+
+  const note=document.createElement('div'); note.className='tipbox';
+  note.innerHTML=`<strong>The tricky one:</strong> ${deHTML('sie')} written with a small letter can mean either “she” <em>or</em> “they” — you work out which from context, the same way “it's raining” and “it's a dog” both use “it” in English. ${deHTML('Sie')} written with a capital letter is completely different — it's a polite way of saying “you”, used with teachers, shopkeepers, or adults you don't know well.`;
+  card.appendChild(note);
+
+  phase(card,'W','4 ✍️ Write','Choose and write the right pronoun.');
+  renderWriteFromEnglish(card, WRITE_SENTENCES.pronomen);
+  sectionLabel(card,'Choose the correct pronoun');
+  renderQuiz(card,[
+    {q:'"___ bin zwölf Jahre alt." (I am 12)', opts:['Du','Ich','Er'], a:1},
+    {q:'"___ ist mein Bruder." (He is my brother)', opts:['Er','Sie','Es'], a:0},
+    {q:'Talking to a teacher, which pronoun for "you"?', opts:['du','Sie','ihr'], a:1},
+    {q:'"___ haben einen Hund." (We have a dog)', opts:['Ihr','Wir','Sie'], a:1},
+    {q:'"___ sind meine Freunde." (They are my friends)', opts:['Sie','Es','Du'], a:0},
+  ], (score,total)=>{ if(score>=total-1) markDone('pronomen'); });
+
+  root.appendChild(card);
+}
+
+function renderVerben(root){
+  renderRecap(root, 'verben');
+  const card=moduleShell(`${glossHTML('Verben','verbs')}: ${glossHTML('sein','to be')}, ${glossHTML('wohnen','to live')}, ${glossHTML('kommen','to come')}`,'Three key regular-pattern verbs side by side — notice how wohnen and kommen share the same endings.');
+  lsrwRail(card);
+  explainer(card, `<strong>Good news — ${deHTML('wohnen')} and ${deHTML('kommen')} are predictable!</strong> Look at the last few letters of each word in the ${deHTML('wohnen')} and ${deHTML('kommen')} columns below: they always end in -e, -st, -t, -en, -t, -en for ich/du/er/wir/ihr/sie. Once you know this ending pattern, you can conjugate almost any regular German verb. ${deHTML('Sein')} (to be) is one of the few that breaks the pattern, so it just needs to be memorised separately — you already practised it in the Haben &amp; Sein module.`);
+  ottoSays(card, `${glossHTML('sein','to be')} is the rebel verb. It refuses to match the others. Every family has one.`);
+
+  phase(card,'L','1 👂 Listen','Hear who is living or coming. Pick the English.');
+  renderListenAll(card, ['ich wohne','du wohnst','ich komme','du kommst','wir wohnen']);
+  renderEarPick(card, EAR_ITEMS.verben);
+
+  phase(card,'S','2 🗣️ Speak','Chant the endings, then say real sentences.');
+  renderChant(card, ['ich wohne','du wohnst','er wohnt','wir wohnen','ihr wohnt','sie wohnen'], 'Chant: wohnen (= to live)', 'Same endings every time: -e, -st, -t, -en, -t, -en. Say it until it feels like a song.', ['I live','you live','he lives','we live','you (pl.) live','they live']);
+  renderSpeakAlong(card, SPEAK_PHRASES.verben);
+
+  phase(card,'R','3 📖 Read','Compare sein, wohnen and kommen side by side.');
+  const wrap=document.createElement('div'); wrap.style.overflowX='auto';
+  const t=document.createElement('table'); t.className='conj';
+  const engRow=['I','you','he/she/it','we','you (pl.)','they / you (formal)'];
+  t.innerHTML=`<tr><th>${glossHTML('Pronomen','pronouns')}</th><th>English</th><th>${glossHTML('sein','to be')}</th><th>${glossHTML('wohnen','to live')}</th><th>${glossHTML('kommen','to come')}</th><th></th></tr>`+
+    PRON_ROW.map((p,i)=>`<tr>
+      <td class="pron">${p}</td>
+      <td style="color:var(--ink-soft);">${engRow[i]}</td>
+      <td>${CONJ.sein[i]}</td>
+      <td>${CONJ.wohnen[i]}</td>
+      <td>${CONJ.kommen[i]}</td>
+      <td class="audio-td"></td>
+    </tr>`).join('');
+  wrap.appendChild(t);
+  card.appendChild(wrap);
+  [...t.querySelectorAll('tr')].slice(1).forEach((tr,i)=>{
+    const td=tr.querySelector('.audio-td');
+    const phrase = PRON_ROW[i].split('/')[0]+' '+CONJ.sein[i]+', '+CONJ.wohnen[i]+', '+CONJ.kommen[i];
+    td.appendChild(speakerBtn(phrase));
+  });
+
+  phase(card,'W','4 ✍️ Write','Fill the verb, then write a full sentence.');
+  sectionLabel(card,'Fill in the blank — mixed practice');
+  renderFillBlank(card,[
+    {prefix:'Ich', answer:'wohne', suffix:'in Berlin. (wohnen) — “I live in Berlin.”', audioHint:'ich wohne'},
+    {prefix:'Du', answer:'kommst', suffix:'aus Italien. (kommen) — “You come from Italy.”', audioHint:'du kommst'},
+    {prefix:'Er', answer:'ist', suffix:'zwölf Jahre alt. (sein) — “He is twelve years old.”', audioHint:'er ist'},
+    {prefix:'Wir', answer:'kommen', suffix:'aus Deutschland. (kommen) — “We come from Germany.”', audioHint:'wir kommen'},
+    {prefix:'Ihr', answer:'wohnt', suffix:'in München. (wohnen) — “You (plural) live in Munich.”', audioHint:'ihr wohnt'},
+  ]);
+  renderWriteFromEnglish(card, WRITE_SENTENCES.verben);
+
+  sectionLabel(card,'Quick quiz');
+  renderQuiz(card,[
+    {q:'"Sie ___ aus Spanien." (formal “you come”)', opts:['kommst','kommen','kommt'], a:1},
+    {q:'"Wir ___ in Hamburg." (we live)', opts:['wohnen','wohnt','wohne'], a:0},
+    {q:'"Ihr ___ sehr nett." (you all are)', opts:['seid','sind','ist'], a:0},
+    {q:'What does "wohnen" mean?', opts:['to come','to live','to be'], a:1, audio:'wohnen'},
+  ], (score,total)=>{ if(score>=total-1) markDone('verben'); });
+
+  root.appendChild(card);
+}
+
+function renderLesen(root){
+  renderRecap(root, 'lesen');
+  const card=moduleShell(`Unseen Passage — ${glossHTML('Lesetext','reading text')}`,'Practise reading comprehension the way it will appear in the exam.');
+  lsrwRail(card);
+  explainer(card, `<strong>Don't panic if you don't understand every word!</strong> This passage uses vocabulary you've already learned — colours, family words, numbers, and the verbs ${deHTML('sein')} / ${deHTML('haben')} / ${deHTML('wohnen')} / ${deHTML('kommen')}. Use LSRW: listen to the whole story first, speak the sentences, then read the text, then write the answers.`);
+  ottoSays(card, 'Anna has a brother, a sister, a dog, and a favourite colour. That is a whole soap opera in six sentences. You can do this.');
+
+  phase(card,'L','1 👂 Listen','Play the story. Look away from the screen if you can. Get the gist first. Pretend Otto is reading you a bedtime story, except it is about Berlin.');
+  const listenRow=document.createElement('div'); listenRow.className='btnrow';
+  const spkBtn=document.createElement('button'); spkBtn.className='btn'; spkBtn.textContent='🔊 Listen to the whole story';
+  spkBtn.onclick=()=>speak(PASSAGE, Math.min(state.rate, 0.78));
+  listenRow.appendChild(spkBtn);
+  card.appendChild(listenRow);
+
+  phase(card,'S','2 🗣️ Speak','Echo one sentence at a time. Shadow the voice.');
+  renderSpeakAlong(card, PASSAGE_LINES);
+
+  phase(card,'R','3 📖 Read','Now open your eyes on the words. Use the glossary if you need it.');
+  sectionLabel(card,'Passage');
+  const p=document.createElement('div'); p.className='passage';
+  p.innerHTML=decorateGermanPassage(PASSAGE);
+  card.appendChild(p);
+
+  const gbtn=document.createElement('button'); gbtn.className='glossbtn'; gbtn.textContent='Show glossary ▾';
+  const gloss=document.createElement('div'); gloss.className='glossary';
+  GLOSSARY.forEach(([w,m])=>{
+    const span=document.createElement('span');
+    const strong=document.createElement('strong'); strong.textContent=w;
+    span.appendChild(strong);
+    span.appendChild(document.createTextNode(' — '+m+' '));
+    const first = firstSpeakerBtn(w);
+    span.appendChild(first || speakerBtn(w));
+    gloss.appendChild(span);
+  });
+  gbtn.onclick=()=>{ gloss.classList.toggle('show'); gbtn.textContent = gloss.classList.contains('show') ? 'Hide glossary ▴' : 'Show glossary ▾'; };
+  card.appendChild(gbtn); card.appendChild(gloss);
+
+  phase(card,'W','4 ✍️ Write','Answer in your head, then tap. These are exam-style questions.');
+  sectionLabel(card,'Comprehension questions');
+  renderQuiz(card, PASSAGE_Q, (score,total)=>{ if(score>=total-1) markDone('lesen'); });
+
+  root.appendChild(card);
+}
+
+function renderExam(root){
+  const card=moduleShell(`Mock Exam Mode — ${glossHTML('Prüfung','exam')}`,'A 40-minute simulated Paper 1 — questions drawn from every topic plus the unseen passage. Otto will wait. Otto cannot sit the exam. He has paws.');
+  const startWrap=document.createElement('div');
+  const info=document.createElement('p'); info.className='note';
+  info.textContent='This mock exam is mainly Reading and Writing, timed at 40 minutes, like Paper 1. Use LSRW on the earlier topics first (Listen → Speak → Read → Write) so the German is already in your ears before you sit the test.';
+  startWrap.appendChild(info);
+  const startBtn=document.createElement('button'); startBtn.className='btn'; startBtn.textContent='Start Mock Exam (no fox helpers)';
+  startWrap.appendChild(startBtn);
+  card.appendChild(startWrap);
+  root.appendChild(card);
+
+  startBtn.onclick=()=>{
+    startWrap.remove();
+    runExam(card);
+  };
+}
+
+function runExam(card){
+  const timerEl=document.createElement('div'); timerEl.className='examtimer'; timerEl.style.marginBottom='16px';
+  card.appendChild(timerEl);
+  let seconds=40*60;
+  const timerId=setInterval(()=>{
+    seconds--;
+    const m=String(Math.floor(seconds/60)).padStart(2,'0'), s=String(seconds%60).padStart(2,'0');
+    timerEl.textContent=`⏱ ${m}:${s}`;
+    if(seconds<=60) timerEl.classList.add('low');
+    if(seconds<=0){ clearInterval(timerId); finishExam(); }
+  },1000);
+  const s0=Math.floor(seconds/60), s1=Math.floor(seconds%60);
+  timerEl.textContent=`⏱ ${String(s0).padStart(2,'0')}:${String(s1).padStart(2,'0')}`;
+
+  const examQs=[
+    {topic:'Haben & Sein', q:'"Ich ___ zehn Jahre alt."', opts:['bin','habe','bist'], a:0},
+    {topic:'Haben & Sein', q:'"Wir ___ einen Hund."', opts:['sind','haben','seid'], a:1},
+    {topic:'Farben', q:'"Blau" means...', opts:['Green','Blue','Yellow'], a:1, audio:'Blau'},
+    {topic:'Farben', q:'How do you say "black"?', opts:['Schwarz','Weiß','Grau'], a:0},
+    {topic:'Adjektive', q:'Opposite of "groß"?', opts:['Klein','Alt','Schnell'], a:0, audio:'groß'},
+    {topic:'Adjektive', q:'"Kalt" means...', opts:['Hot','Cold','Fast'], a:1, audio:'Kalt'},
+    {topic:'Zahlen', q:'What is "einundzwanzig"?', opts:['12','21','30'], a:1, audio:'einundzwanzig'},
+    {topic:'Zahlen', q:'How do you say 60?', opts:['sechzig','sechzehn','sechs'], a:0},
+    {topic:'Familie', q:'"Der Bruder" means...', opts:['The sister','The brother','The father'], a:1, audio:'Der Bruder'},
+    {topic:'Familie', q:'"Die Großmutter" means...', opts:['The grandmother','The aunt','The mother'], a:0, audio:'Die Großmutter'},
+    {topic:'Pronomen', q:'Polite "you" is...', opts:['du','Sie','ihr'], a:1},
+    {topic:'Pronomen', q:'"Wir" means...', opts:['You (group)','We','They'], a:1, audio:'Wir'},
+    {topic:'Verben', q:'"Du ___ aus Italien." (kommen)', opts:['kommst','kommt','komme'], a:0},
+    {topic:'Verben', q:'"Er ___ in Berlin." (wohnen)', opts:['wohnt','wohnst','wohnen'], a:0},
+    {topic:'Lesetext', q:'In the story, Anna is from...', opts:['Munich','Berlin','Hamburg'], a:1},
+  ];
+  const topicScores={};
+  const quizHost=document.createElement('div');
+  card.appendChild(quizHost);
+  quizHost.innerHTML='';
+  let idx=0, score=0;
+  examQs.forEach(e=>{ if(!(e.topic in topicScores)) topicScores[e.topic]={correct:0,total:0}; });
+  function showQ(){
+    quizHost.innerHTML='';
+    if(idx>=examQs.length){ clearInterval(timerId); finishExam(); return; }
+    const item=examQs[idx];
+    const box=document.createElement('div'); box.className='qwrap';
+    const prog=document.createElement('div'); prog.className='progressline'; prog.textContent=`Question ${idx+1} / ${examQs.length} — ${item.topic}`;
+    box.appendChild(prog);
+    const p=document.createElement('div'); p.className='qprompt';
+    p.innerHTML = decorateQuotedGerman(item.q);
+    if(item.audio) p.appendChild(speakerBtn(item.audio));
+    else {
+      const quoted = String(item.q).match(/"([^"]+)"/);
+      if(quoted) p.appendChild(speakerBtn(quoted[1].replace(/_/g,' ').trim()));
+    }
+    box.appendChild(p);
+    item.opts.forEach((opt,i)=>{
+      const b=document.createElement('button'); b.className='qopt';
+      const label=document.createElement('span'); label.textContent=opt; b.appendChild(label);
+      if(looksGerman(opt)) b.appendChild(speakerBtn(opt));
+      b.onclick=()=>{
+        [...box.querySelectorAll('.qopt')].forEach(x=>x.disabled=true);
+        topicScores[item.topic].total++;
+        if(i===item.a){ b.classList.add('correct'); score++; topicScores[item.topic].correct++; }
+        else{ b.classList.add('incorrect'); [...box.querySelectorAll('.qopt')][item.a].classList.add('correct'); }
+        setTimeout(()=>{ idx++; showQ(); },700);
+      };
+      box.appendChild(b);
+    });
+    quizHost.appendChild(box);
+  }
+  showQ();
+
+  function finishExam(){
+    quizHost.innerHTML='';
+    timerEl.textContent='⏱ Finished! Otto would clap, but: paws.';
+    const summary=document.createElement('div'); summary.className='summarybox';
+    let html=`<div style="font-family:'Fredoka',sans-serif;font-size:22px;margin-bottom:8px;">Score: ${score} / ${examQs.length}</div>`;
+    Object.entries(topicScores).forEach(([topic,{correct,total}])=>{
+      if(total===0) return;
+      const pct=Math.round(100*correct/total);
+      const cls = pct>=75?'strong':(pct<50?'weak':'');
+      html+=`<div class="summaryrow"><span>${topic}</span><span class="${cls}">${correct}/${total}</span></div>`;
+    });
+    summary.innerHTML=html;
+    card.appendChild(summary);
+    const weakTopics=Object.entries(topicScores).filter(([t,{correct,total}])=>total>0 && correct/total<0.5).map(([t])=>t);
+    if(weakTopics.length){
+      const w=document.createElement('p'); w.className='note'; w.style.marginTop='12px';
+      w.innerHTML=`<strong>Focus your revision on:</strong> ${weakTopics.join(', ')} — Otto’s homework list. (He will not do it for you.)`;
+      card.appendChild(w);
+    }
+    markDone('exam');
+  }
+}
+
+function renderRevision(root){
+  const card=moduleShell('Quick Revision — Flashcards','LSRW mix: hear, say, read, then check. Say the German out loud before you flip. Whispering still counts. Dramatic whispering counts extra.');
+  const allCards=[
+    ...COLORS.map(([de,en])=>({front:de,back:en,type:'Farben'})),
+    ...ADJ_PAIRS.flatMap(([a,ae,b,be])=>[{front:a,back:ae,type:'Adjektive'},{front:b,back:be,type:'Adjektive'}]),
+    ...FAMILY.map(([de,en])=>({front:de,back:en,type:'Familie'})),
+    ...PRONOUNS.map(([de,en])=>({front:de,back:en,type:'Pronomen'})),
+    ...[5,12,17,21,34,45,60,73,88,99].map(n=>({front:String(n),back:numberWord(n),type:'Zahlen'})),
+  ].sort(()=>Math.random()-0.5);
+
+  let i=0, flipped=false;
+  const cardEl=document.createElement('div'); cardEl.className='flashcard';
+  const spkHost=document.createElement('div');
+  function germanOf(c){ return c.type==='Zahlen' ? c.back : c.front; }
+  const TYPE_EN={Farben:'Colours', Adjektive:'Adjectives', Familie:'Family', Pronomen:'Pronouns', Zahlen:'Numbers'};
+  function draw(){
+    flipped=false;
+    const c=allCards[i];
+    const typeLabel = TYPE_EN[c.type] ? `${c.type} (= ${TYPE_EN[c.type]})` : c.type;
+    cardEl.innerHTML=`<div>${c.front}</div><div class="hint">${typeLabel} · say it like you mean it, then tap</div>`;
+    spkHost.innerHTML='';
+    const first = firstSpeakerBtn(germanOf(c));
+    spkHost.appendChild(first || speakerBtn(germanOf(c)));
+    counter.textContent=`${i+1} / ${allCards.length}`;
+  }
+  cardEl.onclick=()=>{
+    const c=allCards[i];
+    flipped=!flipped;
+    if(flipped){ cardEl.innerHTML=`<div>${c.back}</div><div class="hint">tap to flip back</div>`; speak(germanOf(c)); }
+    else draw();
+  };
+  const nav=document.createElement('div'); nav.className='flashnav';
+  const prevBtn=document.createElement('button'); prevBtn.className='btn ghost'; prevBtn.textContent='← Back';
+  prevBtn.onclick=()=>{ i=(i-1+allCards.length)%allCards.length; draw(); };
+  const counter=document.createElement('span');
+  const nextBtn=document.createElement('button'); nextBtn.className='btn ghost'; nextBtn.textContent='Next →';
+  nextBtn.onclick=()=>{ i=(i+1)%allCards.length; draw(); };
+  nav.appendChild(prevBtn); nav.appendChild(counter); nav.appendChild(nextBtn);
+
+  card.appendChild(cardEl);
+  const listenRow=document.createElement('div'); listenRow.style.cssText='display:flex;justify-content:center;margin-bottom:12px;';
+  listenRow.appendChild(spkHost);
+  card.appendChild(listenRow);
+  card.appendChild(nav);
+  draw();
+
+  root.appendChild(card);
+}
+
+/* ===================== RENDER SHELL ===================== */
+const RENDERERS={
+  'haben-sein':renderHabenSein,'farben':renderFarben,'adjektive':renderAdjektive,
+  'zahlen':renderZahlen,'zahlen100':renderZahlen100,'familie':renderFamilie,'pronomen':renderPronomen,
+  'verben':renderVerben,'lesen':renderLesen,'exam':renderExam,'revision':renderRevision
+};
+
+function render(){
+  const app=document.getElementById('app');
+  app.innerHTML='';
+  resetHeard();
+
+  const masthead=document.createElement('div'); masthead.className='masthead';
+  const left=document.createElement('div');
+  left.innerHTML=`
+      <div class="flagbar"><div class="b"></div><div class="r"></div><div class="g"></div></div>
+      <h1>Deutsch<span>reise</span></h1>
+      <div class="sub">${glossHTML('Deutschreise','German journey')} · Listen · Speak · Read · Write · Paper 1</div>
+  `;
+  left.querySelector('h1').appendChild(speakerBtn('Deutschreise'));
+  const tools=document.createElement('div');
+  tools.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:10px;';
+  const speed=document.createElement('div'); speed.className='speedbar';
+  const lbl=document.createElement('span'); lbl.className='lbl'; lbl.textContent='Speaking speed';
+  const slowBtn=document.createElement('button'); slowBtn.className='btn ghost'; slowBtn.type='button'; slowBtn.textContent='🐢 Slow';
+  const normBtn=document.createElement('button'); normBtn.className='btn'; normBtn.type='button'; normBtn.textContent='🚶 Normal';
+  function syncSpeed(){
+    const slow=state.rate<0.75;
+    slowBtn.className='btn'+(slow?'':' ghost');
+    normBtn.className='btn'+(slow?' ghost':'');
+  }
+  slowBtn.onclick=()=>{ state.rate=0.58; syncSpeed(); };
+  normBtn.onclick=()=>{ state.rate=0.85; syncSpeed(); };
+  syncSpeed();
+  speed.appendChild(lbl); speed.appendChild(slowBtn); speed.appendChild(normBtn);
+  const buddy=document.createElement('div'); buddy.className='buddy'; buddy.textContent='🦊';
+  buddy.title='Tap Otto — he only speaks German, and he knows about five sentences.';
+  buddy.onclick=()=>speak(pickOne(OTTO_CHAT));
+  tools.appendChild(speed); tools.appendChild(buddy);
+  masthead.appendChild(left); masthead.appendChild(tools);
+  app.appendChild(masthead);
+
+  const welcome=document.createElement('div'); welcome.className='welcomebox';
+  welcome.innerHTML=`<strong>We learn with LSRW.</strong> Every topic follows the same four steps: <strong>Listen</strong> (ears only) → <strong>Speak</strong> (your voice) → <strong>Read</strong> (letters) → <strong>Write</strong> (spelling). Do not skip ahead to writing — hearing and saying first is what makes German stick. Work through the stamps in order (start at Haben &amp; Sein). A glowing 🔊 marks a new German word. Use <strong>Slow</strong> at the top if speech feels fast. Later topics start with a short recap. Each topic ends with a quiz; scoring well stars it as mastered. You can revisit any topic as many times as you like.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (he has a very small vocabulary and a very big opinion).`;
+  app.appendChild(welcome);
+
+  const overall=document.createElement('div');
+  const coreModules=MODULES.filter(m=>m.id!=='revision');
+  const pct=Math.round(100*state.done.size/coreModules.length);
+  overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div><div class="progress-caption">⭐ ${state.done.size}/${coreModules.length} stops starred</div>`;
+  app.appendChild(overall);
+
+  const journey=document.createElement('div'); journey.className='journey';
+  MODULES.forEach(m=>{
+    const s=document.createElement('div');
+    s.className='stamp'+(m.id===state.current?' active':'')+(state.done.has(m.id)?' done':'');
+    s.innerHTML=`<div class="icon">${m.icon}</div><div>${m.label}</div><div class="stampen">${m.en}</div>`;
+    s.onclick=()=>goTo(m.id);
+    journey.appendChild(s);
+  });
+  app.appendChild(journey);
+
+  const moduleRoot=document.createElement('div');
+  RENDERERS[state.current](moduleRoot);
+  app.appendChild(moduleRoot);
+
+  if(state.done.has(state.current) && state.current!=='exam' && state.current!=='revision'){
+    const b=document.createElement('div'); b.className='badge'; b.innerHTML='★ You starred this stop! Otto is proud. (Quietly. He is a fox.)';
+    moduleRoot.appendChild(b);
+  }
+
+  const idx=MODULES.findIndex(m=>m.id===state.current);
+  const nav=document.createElement('div'); nav.className='btnrow';
+  if(idx>0){ const pb=document.createElement('button'); pb.className='btn ghost'; pb.textContent='← '+MODULES[idx-1].label+' ('+MODULES[idx-1].en+')'; pb.onclick=()=>goTo(MODULES[idx-1].id); nav.appendChild(pb); }
+  if(idx<MODULES.length-1){ const nb=document.createElement('button'); nb.className='btn'; nb.textContent=MODULES[idx+1].label+' ('+MODULES[idx+1].en+') →'; nb.onclick=()=>goTo(MODULES[idx+1].id); nav.appendChild(nb); }
+  app.appendChild(nav);
+}
+
+render();
+</script>
+</body>
+</html>
