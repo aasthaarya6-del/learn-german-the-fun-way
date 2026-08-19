@@ -896,6 +896,7 @@ const state = {
   justCleared:null,
   lockHint:null,
   confirmReset:false,
+  locksOn:true,
 };
 
 function loadProgress(){
@@ -911,15 +912,17 @@ function loadProgress(){
       const cur=d.current==='exam'?'challenge':d.current;
       if(LEVELS.some(m=>m.id===cur)) state.current=cur;
     }
+    if(typeof d.locksOn==='boolean') state.locksOn=d.locksOn;
   }catch(e){}
 }
 function saveProgress(){
   try{
-    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current}));
+    localStorage.setItem(SAVE_KEY, JSON.stringify({done:[...state.done], current:state.current, locksOn:state.locksOn}));
   }catch(e){}
 }
 function levelById(id){ return LEVELS.find(m=>m.id===id); }
 function isUnlocked(id){
+  if(!state.locksOn) return true;
   const m=levelById(id);
   if(!m) return false;
   if(m.extra) return state.done.has('hallo') || STORY_LEVELS.some(x=>state.done.has(x.id));
@@ -2245,7 +2248,10 @@ function render(){
   const app=document.getElementById('app');
   app.innerHTML='';
   resetHeard();
-  if(!isUnlocked(state.current)) state.current='hallo';
+  if(!isUnlocked(state.current)){
+    const playable=[...STORY_LEVELS].reverse().find(m=>isUnlocked(m.id));
+    state.current=playable?playable.id:'hallo';
+  }
 
   const masthead=document.createElement('div'); masthead.className='masthead';
   const left=document.createElement('div');
@@ -2280,8 +2286,8 @@ function render(){
   const welcome=document.createElement('div'); welcome.className='welcomebox';
   const mapDone=STORY_LEVELS.every(m=>state.done.has(m.id));
   welcome.innerHTML= mapDone
-    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, or tap <strong>Start again</strong> to wipe the stars and clear the whole map from Level 1. New levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
-    : `<strong>A beginner German adventure.</strong> Play one <strong>level</strong> at a time. Finish the level check ⭐ to unlock the next — that is how Otto knows you are ready. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Later we will add more levels as you get stronger. Tap <strong>Start again</strong> anytime to reset every star and reuse the module from Level 1.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
+    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, or tap <strong>Start again</strong> to wipe the stars and clear the whole map from Level 1. Use <strong>Free play</strong> if you want every level open, or <strong>Locked path</strong> to open them in order. New levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
+    : `<strong>A beginner German adventure.</strong> Choose <strong>Locked path</strong> to finish one level ⭐ before the next opens, or <strong>Free play</strong> to jump anywhere. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Tap <strong>Start again</strong> anytime to reset every star.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
   app.appendChild(welcome);
 
   const overall=document.createElement('div');
@@ -2297,6 +2303,24 @@ function render(){
   toolsRow.appendChild(cap); toolsRow.appendChild(resetBtn);
   overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div>`;
   overall.appendChild(toolsRow);
+
+  const modeRow=document.createElement('div'); modeRow.className='progress-tools'; modeRow.style.marginBottom='10px';
+  const modeLbl=document.createElement('div'); modeLbl.className='progress-caption';
+  modeLbl.textContent= state.locksOn ? 'Path: locked — finish a level to open the next' : 'Path: free play — every level is open';
+  const modeBtns=document.createElement('div'); modeBtns.style.cssText='display:flex;gap:8px;flex-wrap:wrap;';
+  const lockBtn=document.createElement('button'); lockBtn.type='button';
+  lockBtn.className='btn'+(state.locksOn?'':' ghost');
+  lockBtn.textContent='🔒 Locked path';
+  lockBtn.title='Open levels in order';
+  lockBtn.onclick=()=>{ state.locksOn=true; state.lockHint=null; saveProgress(); render(); };
+  const freeBtn=document.createElement('button'); freeBtn.type='button';
+  freeBtn.className='btn'+(!state.locksOn?'':' ghost');
+  freeBtn.textContent='🔓 Free play';
+  freeBtn.title='Open every level now';
+  freeBtn.onclick=()=>{ state.locksOn=false; state.lockHint=null; saveProgress(); render(); };
+  modeBtns.appendChild(lockBtn); modeBtns.appendChild(freeBtn);
+  modeRow.appendChild(modeLbl); modeRow.appendChild(modeBtns);
+  overall.appendChild(modeRow);
   app.appendChild(overall);
 
   if(state.lockHint){
