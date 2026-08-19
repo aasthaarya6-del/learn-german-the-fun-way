@@ -253,12 +253,32 @@ button.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 
 .passage{
   background:#fff;border:3px solid var(--sun);border-radius:20px;
-  padding:16px 18px;font-size:18px;line-height:1.85;margin-bottom:16px;font-weight:700;
+  padding:18px 20px;font-size:20px;line-height:1.7;margin-bottom:18px;font-weight:600;
 }
-.glossbtn{font-size:15px;text-decoration:none;cursor:pointer;color:var(--grape);background:none;border:none;font-family:'Nunito',sans-serif;font-weight:800;padding:0;margin-bottom:12px;}
-.glossary{background:#f4f0ff;border-radius:16px;padding:12px 14px;font-size:15px;margin-bottom:16px;display:none;font-weight:700;}
-.glossary.show{display:block;}
-.glossary span{display:inline-flex;align-items:center;margin-right:14px;margin-bottom:8px;}
+.passage .sent{
+  display:flex;align-items:flex-start;gap:8px;margin:0 0 12px;line-height:1.7;
+}
+.passage .sent:last-child{margin-bottom:0;}
+.passage .sent p{margin:0;flex:1;}
+.glossary-panel{
+  background:#f4f0ff;border:3px solid var(--ink);border-radius:20px;
+  padding:14px 16px;margin:0 0 16px;
+}
+.glossary-panel h3{
+  font-family:'Fredoka',sans-serif;font-size:18px;margin:0 0 4px;
+}
+.glossary-panel .hint{
+  font-size:14px;font-weight:700;color:var(--ink-soft);margin:0 0 12px;
+}
+.glossary-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 12px;
+}
+.glossary-item{
+  display:flex;align-items:center;gap:6px;background:#fff;border:2px solid #d8d0f5;
+  border-radius:12px;padding:8px 10px;font-size:15px;font-weight:700;
+}
+.glossary-item strong{color:var(--grape);}
+.glossary-item .en{color:var(--ink-soft);font-weight:700;}
 
 .badge{
   display:inline-flex;align-items:center;gap:6px;background:var(--grass);color:#fff;
@@ -451,17 +471,6 @@ const PRON_ROW=["ich","du","er/sie/es","wir","ihr","sie/Sie"];
 const PASSAGE = `Hallo! Ich heiße Anna und ich bin zwölf Jahre alt. Ich wohne in Berlin. Meine Familie ist groß. Ich habe einen Bruder und eine Schwester. Mein Bruder heißt Paul und meine Schwester heißt Mia. Wir haben auch einen Hund. Er ist braun und klein. Mein Vater kommt aus Deutschland und meine Mutter kommt aus Italien. Unser Haus ist nicht sehr groß, aber es ist schön. Meine Lieblingsfarbe ist blau.`;
 
 const GLOSSARY=[["Hallo","hello"],["heiße","am called"],["Jahre alt","years old"],["wohne","live"],["Familie","family"],["groß","big"],["auch","also"],["Hund","dog"],["braun","brown"],["klein","small"],["Haus","house"],["schön","beautiful"],["Lieblingsfarbe","favourite colour"],["und","and"],["Bruder","brother"],["Schwester","sister"],["heißt","is called"],["Vater","father"],["Mutter","mother"],["kommt","comes"],["aus","from"]];
-
-const PASSAGE_MEANINGS={
-  hallo:"hello", ich:"I", heiße:"am called", und:"and", bin:"am", zwölf:"twelve",
-  jahre:"years", alt:"old", wohne:"live", in:"in", berlin:"Berlin", meine:"my",
-  familie:"family", ist:"is", groß:"big", habe:"have", einen:"a", bruder:"brother",
-  eine:"a", schwester:"sister", mein:"my", heißt:"is called", wir:"we", haben:"have",
-  auch:"also", hund:"dog", er:"he", braun:"brown", klein:"small", vater:"father",
-  kommt:"comes", aus:"from", deutschland:"Germany", mutter:"mother", italien:"Italy",
-  unser:"our", haus:"house", nicht:"not", sehr:"very", aber:"but", es:"it",
-  schön:"beautiful", lieblingsfarbe:"favourite colour", blau:"blue"
-};
 
 const PASSAGE_Q=[
   {q:"Wie alt ist Anna?",opts:["Elf","Zwölf","Dreizehn"],a:1, audio:"Wie alt ist Anna?"},
@@ -808,14 +817,6 @@ function deHTML(word, speakAs, meaning){
 
 function glossHTML(word, en, speakAs){
   return deHTML(word, speakAs, en);
-}
-
-function decorateGermanPassage(text){
-  return text.replace(/[A-Za-zÄÖÜäöüß]+/g, (word)=>{
-    const en = PASSAGE_MEANINGS[wordKey(word)];
-    const already = heardThisModule.has(wordKey(word));
-    return deHTML(word, word, (!already && en) ? en : null);
-  });
 }
 
 function looksGerman(str){
@@ -2049,25 +2050,36 @@ function renderLesen(root){
   phase(card,'S','2 🗣️ Speak','Echo one sentence at a time. Shadow the voice.');
   renderSpeakAlong(card, PASSAGE_LINES);
 
-  phase(card,'R','3 📖 Read','Now open your eyes on the words. Use the glossary if you need it.');
-  sectionLabel(card,'Passage');
+  phase(card,'R','3 📖 Read','Read the story as a story. Meanings sit in the word-help box underneath — not inside the sentences.');
+  sectionLabel(card,'The story');
   const p=document.createElement('div'); p.className='passage';
-  p.innerHTML=decorateGermanPassage(PASSAGE);
-  card.appendChild(p);
-
-  const gbtn=document.createElement('button'); gbtn.className='glossbtn'; gbtn.textContent='Show glossary ▾';
-  const gloss=document.createElement('div'); gloss.className='glossary';
-  GLOSSARY.forEach(([w,m])=>{
-    const span=document.createElement('span');
-    const strong=document.createElement('strong'); strong.textContent=w;
-    span.appendChild(strong);
-    span.appendChild(document.createTextNode(' — '+m+' '));
-    const first = firstSpeakerBtn(w);
-    span.appendChild(first || speakerBtn(w));
-    gloss.appendChild(span);
+  PASSAGE_LINES.forEach((line)=>{
+    const row=document.createElement('div'); row.className='sent';
+    const t=document.createElement('p'); t.textContent=line.de;
+    row.appendChild(t);
+    row.appendChild(speakerBtn(line.de));
+    p.appendChild(row);
   });
-  gbtn.onclick=()=>{ gloss.classList.toggle('show'); gbtn.textContent = gloss.classList.contains('show') ? 'Hide glossary ▴' : 'Show glossary ▾'; };
-  card.appendChild(gbtn); card.appendChild(gloss);
+  card.appendChild(p);
+  const hearRow=document.createElement('div'); hearRow.className='btnrow'; hearRow.style.marginTop='-6px';
+  const hearAll=document.createElement('button'); hearAll.className='btn ghost'; hearAll.textContent='🔊 Hear the whole story';
+  hearAll.onclick=()=>speak(PASSAGE, Math.min(state.rate, 0.78));
+  hearRow.appendChild(hearAll);
+  card.appendChild(hearRow);
+
+  const panel=document.createElement('div'); panel.className='glossary-panel';
+  panel.innerHTML=`<h3>Word help</h3><p class="hint">Read the story first. Peek here only if a word is stuck.</p>`;
+  const grid=document.createElement('div'); grid.className='glossary-grid';
+  GLOSSARY.forEach(([w,m])=>{
+    const item=document.createElement('div'); item.className='glossary-item';
+    const strong=document.createElement('strong'); strong.textContent=w;
+    const en=document.createElement('span'); en.className='en'; en.textContent=' — '+m;
+    item.appendChild(strong); item.appendChild(en);
+    item.appendChild(speakerBtn(w));
+    grid.appendChild(item);
+  });
+  panel.appendChild(grid);
+  card.appendChild(panel);
 
   phase(card,'W','4 ✍️ Write','Answer in your head, then tap. These questions are about the story you just heard.');
   sectionLabel(card,'Comprehension questions');
