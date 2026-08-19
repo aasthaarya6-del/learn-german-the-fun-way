@@ -69,7 +69,12 @@ body{
 
 .overallbar{height:14px;background:#fff;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin-bottom:6px;}
 .overallbar>div{height:100%;background:linear-gradient(90deg,var(--berry),var(--sun),var(--grass));transition:width .4s ease;}
-.progress-caption{font-size:14px;color:var(--ink-soft);font-weight:800;margin-bottom:8px;}
+.progress-caption{font-size:14px;color:var(--ink-soft);font-weight:800;margin-bottom:0;}
+.progress-tools{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.progress-tools .btn{padding:7px 14px;font-size:13px;}
 
 .journey{display:flex;overflow-x:auto;gap:12px;padding:18px 4px 20px;margin-bottom:6px;scrollbar-width:thin;}
 .stamp{
@@ -819,6 +824,7 @@ const state = {
   rate:0.85,
   justCleared:null,
   lockHint:null,
+  confirmReset:false,
 };
 
 function loadProgress(){
@@ -879,6 +885,16 @@ function markDone(id){
     state.justCleared=id;
   }
   render();
+}
+function resetProgress(){
+  state.done=new Set();
+  state.current='hallo';
+  state.justCleared=null;
+  state.lockHint=null;
+  state.confirmReset=false;
+  saveProgress();
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 loadProgress();
 
@@ -2110,14 +2126,23 @@ function render(){
   const welcome=document.createElement('div'); welcome.className='welcomebox';
   const mapDone=STORY_LEVELS.every(m=>state.done.has(m.id));
   welcome.innerHTML= mapDone
-    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, and watch this space — new levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
-    : `<strong>A beginner German adventure.</strong> Play one <strong>level</strong> at a time. Finish the level check ⭐ to unlock the next — that is how Otto knows you are ready. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Later we will add more levels as you get stronger.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
+    ? `<strong>Beginner map complete!</strong> You cleared all ${STORY_LEVELS.length} levels. Replay any level, hang out in the Practice park, or tap <strong>Start again</strong> to wipe the stars and clear the whole map from Level 1. New levels will arrive as you grow.<br><br><strong>Otto the fox</strong> is still your travel buddy. Tap him. He has not learned any new sentences. He is proud anyway.`
+    : `<strong>A beginner German adventure.</strong> Play one <strong>level</strong> at a time. Finish the level check ⭐ to unlock the next — that is how Otto knows you are ready. Each level uses LSRW: <strong>Listen</strong> → <strong>Speak</strong> → <strong>Read</strong> → <strong>Write</strong>. A glowing 🔊 is a new German word. Use <strong>Slow</strong> if speech feels fast. Later we will add more levels as you get stronger. Tap <strong>Start again</strong> anytime to reset every star and reuse the module from Level 1.<br><br><strong>Otto the fox</strong> is your travel buddy. Tap him. He will say something German (tiny vocabulary, enormous opinions).`;
   app.appendChild(welcome);
 
   const overall=document.createElement('div');
   const cleared=STORY_LEVELS.filter(m=>state.done.has(m.id)).length;
   const pct=Math.round(100*cleared/STORY_LEVELS.length);
-  overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div><div class="progress-caption">${mapDone ? '🏆 Beginner map cleared!' : `⭐ Level ${Math.min(cleared+1, STORY_LEVELS.length)} of ${STORY_LEVELS.length} · ${cleared} cleared`}</div>`;
+  const toolsRow=document.createElement('div'); toolsRow.className='progress-tools';
+  const cap=document.createElement('div'); cap.className='progress-caption';
+  cap.textContent= mapDone ? '🏆 Beginner map cleared!' : `⭐ Level ${Math.min(cleared+1, STORY_LEVELS.length)} of ${STORY_LEVELS.length} · ${cleared} cleared`;
+  const resetBtn=document.createElement('button'); resetBtn.className='btn ghost'; resetBtn.type='button';
+  resetBtn.textContent='🔁 Start again';
+  resetBtn.title='Clear all stars and begin at Level 1';
+  resetBtn.onclick=()=>{ state.confirmReset=true; render(); };
+  toolsRow.appendChild(cap); toolsRow.appendChild(resetBtn);
+  overall.innerHTML=`<div class="overallbar"><div style="width:${pct}%"></div></div>`;
+  overall.appendChild(toolsRow);
   app.appendChild(overall);
 
   if(state.lockHint){
@@ -2197,11 +2222,32 @@ function render(){
       park.textContent='Visit Practice park →';
       park.onclick=()=>{ state.justCleared=null; goTo('revision'); };
       row.appendChild(park);
+      const again=document.createElement('button'); again.className='btn ghost';
+      again.textContent='🔁 Start again';
+      again.onclick=()=>{ state.justCleared=null; state.confirmReset=true; render(); };
+      row.appendChild(again);
     }
     box.appendChild(row);
     overlay.appendChild(box);
     app.appendChild(overlay);
     speak('Super!');
+  }
+
+  if(state.confirmReset){
+    const overlay=document.createElement('div'); overlay.className='level-up';
+    const box=document.createElement('div'); box.className='level-up-card';
+    box.innerHTML=`<div class="burst">🔁</div>
+      <h3>Start again?</h3>
+      <p>This clears every star and locks the later levels. You will begin at Level 1 — Hallo. Speaking speed stays as it is. Otto will pretend this is a brand-new journey.</p>`;
+    const row=document.createElement('div'); row.className='btnrow'; row.style.justifyContent='center';
+    const cancel=document.createElement('button'); cancel.className='btn ghost'; cancel.textContent='Keep my stars';
+    cancel.onclick=()=>{ state.confirmReset=false; overlay.remove(); };
+    const yes=document.createElement('button'); yes.className='btn'; yes.textContent='Yes, start again';
+    yes.onclick=()=>resetProgress();
+    row.appendChild(cancel); row.appendChild(yes);
+    box.appendChild(row);
+    overlay.appendChild(box);
+    app.appendChild(overlay);
   }
 }
 
