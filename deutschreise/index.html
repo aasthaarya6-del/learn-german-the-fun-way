@@ -373,6 +373,47 @@ const GREETINGS=[
   ["Ich bin","I am"]
 ];
 
+const INTRO_NAME=[
+  ["Ich heiße","my name is"],
+  ["Mein Name ist","my name is"]
+];
+const INTRO_AGE=[
+  ["Jahre alt","years old"],
+  ["zehn","ten"],
+  ["elf","eleven"],
+  ["zwölf","twelve"],
+  ["dreizehn","thirteen"]
+];
+const INTRO_CLASS=[
+  ["die Klasse","class / grade"],
+  ["die fünfte Klasse","class 5"],
+  ["die sechste Klasse","class 6"],
+  ["die siebte Klasse","class 7"],
+  ["die achte Klasse","class 8"]
+];
+const INTRO_RELIGION=[
+  ["die Religion","religion"],
+  ["Hindu","Hindu"],
+  ["Muslim","Muslim"],
+  ["Christ","Christian"],
+  ["Sikh","Sikh"],
+  ["Buddhist","Buddhist"]
+];
+const INTRO_HOBBIES=[
+  ["das Hobby","hobby"],
+  ["lesen","reading"],
+  ["malen","drawing"],
+  ["tanzen","dancing"],
+  ["singen","singing"],
+  ["Fußball","football"],
+  ["Cricket","cricket"],
+  ["schwimmen","swimming"]
+];
+const INTRO_EXTRA=[
+  ["Ich komme aus Indien.","I come from India."],
+  ["Ich mag…","I like…"]
+];
+
 const COLORS=[
   ["rot","red","#c1272d"],["blau","blue","#2856a8"],["grün","green","#3a7d5c"],
   ["gelb","yellow","#e0b23a"],["orange","orange","#e07a2c"],["lila","purple","#7a4fa3"],
@@ -458,6 +499,14 @@ const SPEAK_PHRASES={
     {de:"Ich habe einen Hund.", en:"I have a dog."},
     {de:"Wir sind in Berlin.", en:"We are in Berlin."}
   ],
+  vorstellen:[
+    {de:"Ich heiße Anna.", en:"My name is Anna."},
+    {de:"Ich bin zwölf Jahre alt.", en:"I am twelve years old."},
+    {de:"Ich bin in der sechsten Klasse.", en:"I am in class 6."},
+    {de:"Ich bin Hindu.", en:"I am Hindu."},
+    {de:"Mein Hobby ist Lesen.", en:"My hobby is reading."},
+    {de:"Ich komme aus Indien.", en:"I come from India."}
+  ],
   farben:[
     {de:"Meine Lieblingsfarbe ist blau.", en:"My favourite colour is blue."},
     {de:"Der Hund ist braun.", en:"The dog is brown."},
@@ -506,10 +555,15 @@ const RECAP={
     {q:'How do you say "thank you"?', opts:['Bitte','Danke','Tschüss'], a:1, audio:'Danke'},
     {q:'"Ich heiße Anna" means...', opts:['I am Anna.','My name is Anna.','I have Anna.'], a:1, audio:'Ich heiße Anna'}
   ],
-  farben:[
+  vorstellen:[
     {q:'What does "sein" mean?', opts:['to have','to be','to come'], a:1, audio:'sein'},
     {q:'"Ich ___ Anna." (I am Anna)', opts:['bin','habe','bist'], a:0},
     {q:'"Wir ___ einen Hund." (We have a dog)', opts:['sind','haben','seid'], a:1}
+  ],
+  farben:[
+    {q:'"Ich heiße Anna" means...', opts:['I am Anna.','My name is Anna.','I have Anna.'], a:1, audio:'Ich heiße Anna'},
+    {q:'"Ich bin zwölf Jahre alt" means...', opts:['I am in class 12.','I am twelve years old.','I have twelve hobbies.'], a:1, audio:'Ich bin zwölf Jahre alt'},
+    {q:'"Mein Hobby ist Lesen" means...', opts:['My hobby is reading.','My class is reading.','My name is Lesen.'], a:0, audio:'Mein Hobby ist Lesen'}
   ],
   adjektive:[
     {q:'What colour is "blau"?', opts:['Red','Blue','Green'], a:1, audio:'blau'},
@@ -561,6 +615,12 @@ const EAR_ITEMS={
     {say:'er ist', opts:['he has','he is','we are'], a:1},
     {say:'wir haben', opts:['we are','they have','we have'], a:2}
   ],
+  vorstellen:[
+    {say:'Ich heiße Anna', opts:['I am Anna','My name is Anna','I have Anna'], a:1},
+    {say:'Ich bin zwölf Jahre alt', opts:['I am twelve years old','I am in class 12','I have twelve hobbies'], a:0},
+    {say:'Ich bin in der sechsten Klasse', opts:['I am six years old','I am in class 6','My hobby is class'], a:1},
+    {say:'Mein Hobby ist Lesen', opts:['My name is Lesen','My hobby is reading','My religion is reading'], a:1}
+  ],
   farben:[
     {say:'grün', opts:['green','grey','yellow'], a:0},
     {say:'weiß', opts:['white','yellow','red'], a:0},
@@ -608,6 +668,12 @@ const WRITE_SENTENCES={
     {en:'I am Anna.', answer:'Ich bin Anna.'},
     {en:'I have a dog.', answer:'Ich habe einen Hund.'},
     {en:'We are in Berlin.', answer:'Wir sind in Berlin.'}
+  ],
+  vorstellen:[
+    {en:'My name is Anna.', answer:'Ich heiße Anna.'},
+    {en:'I am twelve years old.', answer:'Ich bin zwölf Jahre alt.'},
+    {en:'I am in class 6.', answer:'Ich bin in der sechsten Klasse.'},
+    {en:'My hobby is reading.', answer:'Mein Hobby ist Lesen.'}
   ],
   farben:[
     {en:'blue', answer:'blau'},
@@ -775,6 +841,7 @@ const GERMAN_LEXICON = (()=>{
   const s = new Set();
   const add = (w)=>{ const k=wordKey(w); if(k) s.add(k); };
   GREETINGS.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); });
+  [INTRO_NAME,INTRO_AGE,INTRO_CLASS,INTRO_RELIGION,INTRO_HOBBIES,INTRO_EXTRA].forEach(arr=>arr.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); }));
   COLORS.forEach(([de])=>add(de));
   ADJ_PAIRS.forEach(([a,,b])=>{ add(a); add(b); });
   FAMILY.forEach(([de])=>{ add(de); de.split(/\s+/).forEach(add); });
@@ -788,6 +855,9 @@ const GERMAN_LEXICON = (()=>{
    "spanien","anna","paul","mia","gegenteil","farben","adjektive","zahlen","pronomen","verben",
    "lesen","prüfung","bin","bist","ist","sind","seid","habe","hast","hat","habt","der","die",
    "das","wir","ihr","sie","ich","du","er","es","groß","klein","alt","neu","gut","schlecht",
+   "klasse","hobby","religion","hindu","muslim","christ","sikh","buddhist","indien","malen",
+   "tanzen","singen","fußball","cricket","schwimmen","fünften","sechsten","siebten","achten",
+   "gerne","name","jahre","alt","schüler","schülerin","mag",
    "hundert","tausend","zwölf","elf","dreizehn","frage","richtig","eltern","kinder","vater",
    "mutter","bruder","schwester","onkel","tante","sohn","tochter","großvater","großmutter",
    "woher","welche","farbe","was","wie","wo","kommt","kommen","wohnen","net","nett","freunde",
@@ -803,15 +873,16 @@ const GERMAN_LEXICON = (()=>{
 const LEVELS=[
   {id:'hallo', level:1, icon:'👋', label:'Hallo', en:'Hello, I am…'},
   {id:'haben-sein', level:2, icon:'🗣️', label:'Haben & Sein', en:'Have & Be'},
-  {id:'farben', level:3, icon:'🎨', label:'Farben', en:'Colours'},
-  {id:'adjektive', level:4, icon:'⚖️', label:'Adjektive', en:'Adjectives'},
-  {id:'zahlen', level:5, icon:'🔢', label:'Zahlen', en:'Numbers'},
-  {id:'zahlen100', level:6, icon:'💯', label:'Zahlen 100+', en:'Bigger numbers'},
-  {id:'familie', level:7, icon:'👪', label:'Familie', en:'Family'},
-  {id:'pronomen', level:8, icon:'👤', label:'Pronomen', en:'Pronouns'},
-  {id:'verben', level:9, icon:'📖', label:'Verben', en:'Verbs'},
-  {id:'lesen', level:10, icon:'📄', label:'Lesetext', en:'A little story'},
-  {id:'challenge', level:11, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
+  {id:'vorstellen', level:3, icon:'🪪', label:'Ich bin…', en:'This is me'},
+  {id:'farben', level:4, icon:'🎨', label:'Farben', en:'Colours'},
+  {id:'adjektive', level:5, icon:'⚖️', label:'Adjektive', en:'Adjectives'},
+  {id:'zahlen', level:6, icon:'🔢', label:'Zahlen', en:'Numbers'},
+  {id:'zahlen100', level:7, icon:'💯', label:'Zahlen 100+', en:'Bigger numbers'},
+  {id:'familie', level:8, icon:'👪', label:'Familie', en:'Family'},
+  {id:'pronomen', level:9, icon:'👤', label:'Pronomen', en:'Pronouns'},
+  {id:'verben', level:10, icon:'📖', label:'Verben', en:'Verbs'},
+  {id:'lesen', level:11, icon:'📄', label:'Lesetext', en:'A little story'},
+  {id:'challenge', level:12, icon:'🏆', label:'Otto-Cup', en:'Boss level'},
   {id:'revision', extra:true, icon:'🎮', label:'Spielplatz', en:'Practice park'}
 ];
 const MODULES=LEVELS;
@@ -851,10 +922,12 @@ function levelById(id){ return LEVELS.find(m=>m.id===id); }
 function isUnlocked(id){
   const m=levelById(id);
   if(!m) return false;
-  if(m.extra) return state.done.has('hallo');
+  if(m.extra) return state.done.has('hallo') || STORY_LEVELS.some(x=>state.done.has(x.id));
   if(m.level===1) return true;
+  if(state.done.has(id)) return true;
   const prev=LEVELS.find(x=>x.level===m.level-1);
-  return !!(prev && state.done.has(prev.id));
+  if(prev && state.done.has(prev.id)) return true;
+  return STORY_LEVELS.some(x=>x.level>m.level && state.done.has(x.id));
 }
 function nextStoryLevel(id){
   const m=levelById(id);
@@ -1464,6 +1537,81 @@ function renderHabenSein(root){
   root.appendChild(card);
 }
 
+function renderVorstellen(root){
+  renderRecap(root, 'vorstellen');
+  const card=moduleShell(`${glossHTML('Ich bin','I am')}… — this is me`,'A real introduction: name, age, class, religion, hobbies. Copy Anna first. Then swap in your own facts. Otto will still be a fox.');
+  lsrwRail(card);
+  explainer(card, `<strong>This is how you introduce yourself.</strong> You already know ${deHTML('Ich heiße')} and ${deHTML('Ich bin')}. Now stack little sentences into one “this is me” talk.<br><br>
+  ${deHTML('Ich heiße')} Anna. — name<br>
+  ${deHTML('Ich bin')} zwölf Jahre alt. — age<br>
+  ${deHTML('Ich bin in der sechsten Klasse.')} — class<br>
+  ${deHTML('Ich bin Hindu.')} — religion (use the word that is true for you)<br>
+  ${deHTML('Mein Hobby ist Lesen.')} — hobby`);
+  ottoSays(card, 'Religion and hobbies are personal. Learn the sentence pattern, then tell the truth about <em>you</em>. Otto’s hobby is snacks. His class is “fox”. His age is a secret.');
+
+  phase(card,'L','1 👂 Listen','Hear a whole introduction. Then pick meanings. No writing yet.');
+  renderListenAll(card, [
+    'Ich heiße Anna','Ich bin zwölf Jahre alt','Ich bin in der sechsten Klasse',
+    'Ich bin Hindu','Mein Hobby ist Lesen','Ich komme aus Indien'
+  ]);
+  renderEarPick(card, EAR_ITEMS.vorstellen);
+
+  phase(card,'S','2 🗣️ Speak','Say Anna’s introduction. Next time, change the name, age, class, and hobby to yours.');
+  renderChant(card, ['Ich heiße','Ich bin … Jahre alt','Ich bin in der … Klasse','Mein Hobby ist'], 'Chant: this is me', 'Point to yourself and say it. Name — age — class — hobby.', ['my name is','I am … years old','I am in class …','my hobby is']);
+  renderSpeakAlong(card, SPEAK_PHRASES.vorstellen);
+
+  phase(card,'R','3 📖 Read','Look at the building blocks. Tap any tile to hear it.');
+  const groups=[
+    ['Name', INTRO_NAME],
+    ['Age', INTRO_AGE],
+    ['Class', INTRO_CLASS],
+    ['Religion', INTRO_RELIGION],
+    ['Hobbies', INTRO_HOBBIES]
+  ];
+  groups.forEach(([title, rows])=>{
+    sectionLabel(card, title);
+    const tiles=document.createElement('div'); tiles.className='tiles';
+    rows.forEach(([de,en])=>tiles.appendChild(makeTile(de, en)));
+    card.appendChild(tiles);
+  });
+
+  const relNote=document.createElement('div'); relNote.className='tipbox';
+  relNote.innerHTML=`<strong>Religion — pick your own sentence.</strong> The pattern is ${deHTML('Ich bin')} + the word. Examples: ${deHTML('Ich bin Hindu.')} ${deHTML('Ich bin Muslim.')} ${deHTML('Ich bin Christ.')} ${deHTML('Ich bin Sikh.')} ${deHTML('Ich bin Buddhist.')} You do not have to say this out loud if you do not want to. The German still stays in your ears.`;
+  card.appendChild(relNote);
+
+  sectionLabel(card,'Also useful');
+  const extra=document.createElement('div'); extra.className='tiles';
+  INTRO_EXTRA.forEach(([de,en])=>extra.appendChild(makeTile(de, en)));
+  card.appendChild(extra);
+
+  sectionLabel(card,'Memory match');
+  renderMatch(card, [
+    ['Ich heiße','my name is'],
+    ['Jahre alt','years old'],
+    ['die Klasse','class'],
+    ['das Hobby','hobby']
+  ]);
+
+  phase(card,'W','4 ✍️ Write','Write the sentences. Then say your own version to the wall. Walls are excellent listeners.');
+  renderFillBlank(card,[
+    {prefix:'Ich', answer:'heiße', suffix:'Anna. — “My name is Anna.”', audioHint:'Ich heiße Anna'},
+    {prefix:'Ich bin zwölf', answer:'Jahre', suffix:'alt. — “I am twelve years old.”', audioHint:'Ich bin zwölf Jahre alt'},
+    {prefix:'Ich bin in der sechsten', answer:'Klasse', suffix:'. — “I am in class 6.”', audioHint:'Ich bin in der sechsten Klasse'},
+    {prefix:'Mein', answer:'Hobby', suffix:'ist Lesen. — “My hobby is reading.”', audioHint:'Mein Hobby ist Lesen'},
+  ]);
+  renderWriteFromEnglish(card, WRITE_SENTENCES.vorstellen);
+
+  sectionLabel(card,'Level check ⭐');
+  renderQuiz(card,[
+    {q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
+    {q:'"Ich bin zwölf Jahre alt" means...', opts:['I am in class 12.','I am twelve years old.','I have twelve hobbies.'], a:1, audio:'Ich bin zwölf Jahre alt'},
+    {q:'"Ich bin in der sechsten Klasse" means...', opts:['I am six years old.','I am in class 6.','My hobby is class.'], a:1, audio:'Ich bin in der sechsten Klasse'},
+    {q:'"Mein Hobby ist Lesen" means...', opts:['My hobby is reading.','My name is Lesen.','My religion is reading.'], a:0, audio:'Mein Hobby ist Lesen'},
+  ], (score,total)=>{ if(score>=total-1) markDone('vorstellen'); });
+
+  root.appendChild(card);
+}
+
 function renderFarben(root){
   renderRecap(root, 'farben');
   const card=moduleShell(`${deHTML('Farben')} (Colours)`,'Colours — tap any swatch or speaker to hear it pronounced. Warning: orange is both a colour and a fruit. German does that too.');
@@ -1947,6 +2095,8 @@ function runChallenge(card){
     {topic:'Hallo', q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
     {topic:'Haben & Sein', q:'"Ich ___ zehn Jahre alt."', opts:['bin','habe','bist'], a:0},
     {topic:'Haben & Sein', q:'"Wir ___ einen Hund."', opts:['sind','haben','seid'], a:1},
+    {topic:'This is me', q:'How do you say "My name is Anna"?', opts:['Ich bin Anna.','Ich heiße Anna.','Ich habe Anna.'], a:1, audio:'Ich heiße Anna'},
+    {topic:'This is me', q:'"Ich bin in der sechsten Klasse" means...', opts:['I am six.','I am in class 6.','I have six hobbies.'], a:1, audio:'Ich bin in der sechsten Klasse'},
     {topic:'Farben', q:'"Blau" means...', opts:['Green','Blue','Yellow'], a:1, audio:'Blau'},
     {topic:'Farben', q:'How do you say "black"?', opts:['Schwarz','Weiß','Grau'], a:0},
     {topic:'Adjektive', q:'Opposite of "groß"?', opts:['Klein','Alt','Schnell'], a:0, audio:'groß'},
@@ -2037,6 +2187,7 @@ function renderRevision(root){
   const card=moduleShell('Practice park — Flashcards','A playground, not a test. Hear, say, read, then check. Say the German out loud before you flip. Whispering still counts. Dramatic whispering counts extra.');
   const allCards=[
     ...GREETINGS.map(([de,en])=>({front:de,back:en,type:'Hallo'})),
+    ...INTRO_NAME.concat(INTRO_CLASS,INTRO_RELIGION,INTRO_HOBBIES).map(([de,en])=>({front:de,back:en,type:'Ich bin…'})),
     ...COLORS.map(([de,en])=>({front:de,back:en,type:'Farben'})),
     ...ADJ_PAIRS.flatMap(([a,ae,b,be])=>[{front:a,back:ae,type:'Adjektive'},{front:b,back:be,type:'Adjektive'}]),
     ...FAMILY.map(([de,en])=>({front:de,back:en,type:'Familie'})),
@@ -2048,7 +2199,7 @@ function renderRevision(root){
   const cardEl=document.createElement('div'); cardEl.className='flashcard';
   const spkHost=document.createElement('div');
   function germanOf(c){ return c.type==='Zahlen' ? c.back : c.front; }
-  const TYPE_EN={Hallo:'Hello', Farben:'Colours', Adjektive:'Adjectives', Familie:'Family', Pronomen:'Pronouns', Zahlen:'Numbers'};
+  const TYPE_EN={Hallo:'Hello', 'Ich bin…':'This is me', Farben:'Colours', Adjektive:'Adjectives', Familie:'Family', Pronomen:'Pronouns', Zahlen:'Numbers'};
   function draw(){
     flipped=false;
     const c=allCards[i];
@@ -2085,7 +2236,7 @@ function renderRevision(root){
 
 /* ===================== RENDER SHELL ===================== */
 const RENDERERS={
-  'hallo':renderHallo,'haben-sein':renderHabenSein,'farben':renderFarben,'adjektive':renderAdjektive,
+  'hallo':renderHallo,'haben-sein':renderHabenSein,'vorstellen':renderVorstellen,'farben':renderFarben,'adjektive':renderAdjektive,
   'zahlen':renderZahlen,'zahlen100':renderZahlen100,'familie':renderFamilie,'pronomen':renderPronomen,
   'verben':renderVerben,'lesen':renderLesen,'challenge':renderChallenge,'revision':renderRevision
 };
