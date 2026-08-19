@@ -1936,10 +1936,11 @@ function heardMatches(heard, expected, expectedEn){
 function canListen(){
   return !!(window.isSecureContext && (window.SpeechRecognition || window.webkitSpeechRecognition));
 }
-const Listen={rec:null, timer:null, active:false, btn:null};
+const Listen={rec:null, timer:null, snap:null, active:false, btn:null};
 function stopListen(){
   Listen.active=false;
   if(Listen.timer){ clearTimeout(Listen.timer); Listen.timer=null; }
+  if(Listen.snap){ clearTimeout(Listen.snap); Listen.snap=null; }
   if(Listen.btn){ Listen.btn.classList.remove('listening'); Listen.btn=null; }
   if(Listen.rec){
     const r=Listen.rec; Listen.rec=null;
@@ -1972,13 +1973,13 @@ function startListen(expected, expectedEn, btn, fb){
   const alts=[];
   let won=false;
   let restarts=0;
-  const langs=['de-DE','de-DE','en-IN','en-GB'];
   const shortLine=foldDe(expected).split(' ').filter(Boolean).length<=2;
   const finish=()=>{
     if(!Listen.active) return;
     const rec=Listen.rec;
     Listen.active=false;
     if(Listen.timer){ clearTimeout(Listen.timer); Listen.timer=null; }
+    if(Listen.snap){ clearTimeout(Listen.snap); Listen.snap=null; }
     if(rec){
       rec.onresult=rec.onerror=rec.onend=null;
       try{ rec.stop(); }catch(e){}
@@ -2006,14 +2007,35 @@ function startListen(expected, expectedEn, btn, fb){
     finish();
     playSfx('ok');
   };
+  const scoreNow=()=>{
+    if(!Listen.active || won) return;
+    const hit=alts.find(a=>heardMatches(a, expected, expectedEn));
+    if(hit) succeed(hit);
+    else finish();
+  };
   const bootRec=(lang)=>{
     if(!Listen.active || won) return;
+    if(Listen.rec){
+      const old=Listen.rec;
+      old.onresult=old.onerror=old.onend=null;
+      try{ old.abort(); }catch(e){}
+      Listen.rec=null;
+    }
     const r=new Rec();
     Listen.rec=r;
     r.lang=lang||'de-DE';
     r.interimResults=true;
-    r.continuous=!shortLine;
+    r.continuous=false;
     r.maxAlternatives=8;
+    try{
+      const GL=window.SpeechGrammarList||window.webkitSpeechGrammarList;
+      if(GL && cue){
+        const g=new GL();
+        const bits=[cue, 'tschüss', 'tschuess', 'tschuss', 'hallo', 'danke'].map(w=>w.replace(/[()|;<>]/g,'')).join(' | ');
+        g.addFromString('#JSGF V1.0; grammar word; public <word> = '+bits+' ;', 1);
+        r.grammars=g;
+      }
+    }catch(e){}
     r.onresult=(ev)=>{
       if(!Listen.active || won) return;
       for(let i=ev.resultIndex;i<ev.results.length;i++){
@@ -2021,11 +2043,16 @@ function startListen(expected, expectedEn, btn, fb){
           const t=ev.results[i][j].transcript;
           if(t && alts.indexOf(t)<0) alts.push(t);
         }
-        const live=ev.results[i][0] && ev.results[i][0].transcript;
-        if(live) { fb.textContent='Hearing: “'+live+'” …'; fb.className='qfeedback'; }
       }
       const hit=alts.find(a=>heardMatches(a, expected, expectedEn));
-      if(hit) succeed(hit);
+      if(hit){ succeed(hit); return; }
+      if(shortLine && alts.length && !Listen.snap){
+        Listen.snap=setTimeout(()=>{
+          Listen.snap=null;
+          try{ if(Listen.rec) Listen.rec.stop(); }catch(e){}
+          scoreNow();
+        }, 220);
+      }
     };
     r.onerror=(ev)=>{
       if(!Listen.active || won) return;
@@ -2049,9 +2076,20 @@ function startListen(expected, expectedEn, btn, fb){
       if(!Listen.active || won) return;
       const hit=alts.find(a=>heardMatches(a, expected, expectedEn));
       if(hit){ succeed(hit); return; }
-      if(restarts<3){
+      if(Listen.snap) return;
+      if(shortLine){
+        if(alts.length){ finish(); return; }
+        if(restarts<1){
+          restarts++;
+          bootRec('de-DE');
+          return;
+        }
+        finish();
+        return;
+      }
+      if(restarts<1){
         restarts++;
-        bootRec(langs[Math.min(restarts, langs.length-1)]);
+        bootRec('de-DE');
         return;
       }
       finish();
@@ -2063,11 +2101,8 @@ function startListen(expected, expectedEn, btn, fb){
       finish();
     }
   };
-  Listen.timer=setTimeout(finish, 12000);
-  setTimeout(()=>{
-    if(!Listen.active || won) return;
-    bootRec('de-DE');
-  }, 400);
+  Listen.timer=setTimeout(scoreNow, shortLine?3000:7000);
+  bootRec('de-DE');
 }
 
 function renderSpeakAlong(card, phrases){
