@@ -1407,20 +1407,82 @@ function playSfx(kind){
   });
 }
 
-function speakNow(text, rate, onend){
-  window.speechSynthesis.cancel();
-  Music.speechOn=true;
-  duckBand(true);
-  const u = new SpeechSynthesisUtterance(text);
+const Speak={queue:[], holding:null, timer:null, onend:null, rate:0.85, token:0};
+function stopSpeaking(){
+  Speak.token++;
+  Speak.queue=[];
+  Speak.holding=null;
+  Speak.onend=null;
+  if(Speak.timer){ clearTimeout(Speak.timer); Speak.timer=null; }
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  Music.speechOn=false;
+  applyBgGain();
+}
+function chunkSpeech(text){
+  const t=String(text||'').replace(/\s+/g,' ').trim();
+  if(!t) return [];
+  const sentences=[];
+  let buf='';
+  for(let i=0;i<t.length;i++){
+    buf+=t[i];
+    const ch=t[i];
+    const nxt=t[i+1]||'';
+    if(/[.!?…]/.test(ch) && (!nxt || /[\s"”']/.test(nxt))){
+      const s=buf.trim();
+      if(s) sentences.push(s);
+      buf='';
+    }
+  }
+  if(buf.trim()) sentences.push(buf.trim());
+  const out=[];
+  sentences.forEach((s)=>{
+    if(s.length<=160){ out.push(s); return; }
+    let piece='';
+    s.split(/,\s*/).forEach((bit,idx,arr)=>{
+      const next=idx<arr.length-1 ? bit+',' : bit;
+      if(piece && (piece+' '+next).length>160){ out.push(piece.trim()); piece=next; }
+      else piece=piece?piece+' '+next:next;
+    });
+    if(piece.trim()) out.push(piece.trim());
+  });
+  return out.length?out:[t];
+}
+function pumpSpeak(my){
+  if(Speak.token!==my) return;
+  try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
+  if(!Speak.queue.length){
+    Music.speechOn=false;
+    applyBgGain();
+    Speak.holding=null;
+    const cb=Speak.onend; Speak.onend=null;
+    if(cb) cb();
+    return;
+  }
+  const u=new SpeechSynthesisUtterance(Speak.queue.shift());
   u.lang='de-DE';
-  u.rate = (rate != null ? rate : state.rate);
+  u.rate=Speak.rate;
   u.pitch=1;
-  const de = pickGermanVoice();
-  if(de) u.voice = de;
-  const done=()=>{ Music.speechOn=false; duckBand(false); if(onend) onend(); };
-  u.onend = done;
-  u.onerror = done;
-  window.speechSynthesis.speak(u);
+  const de=pickGermanVoice();
+  if(de) u.voice=de;
+  Speak.holding=u;
+  u.onend=()=>pumpSpeak(my);
+  u.onerror=()=>pumpSpeak(my);
+  try{ window.speechSynthesis.speak(u); }
+  catch(e){ pumpSpeak(my); }
+}
+function speakNow(text, rate, onend){
+  stopSpeaking();
+  const my=Speak.token;
+  Speak.rate=(rate!=null?rate:state.rate);
+  Speak.onend=onend||null;
+  Speak.queue=chunkSpeech(text);
+  if(!Speak.queue.length){
+    if(onend) onend();
+    return;
+  }
+  Music.speechOn=true;
+  applyBgGain();
+  Speak.timer=setTimeout(()=>pumpSpeak(my), 60);
 }
 
 function speak(text, rate, onend){
@@ -1958,7 +2020,7 @@ function startListen(expected, expectedEn, btn, fb){
     return;
   }
   stopListen();
-  try{ window.speechSynthesis.cancel(); }catch(e){}
+  stopSpeaking();
   Music.speechOn=false;
   Music.micMute=true;
   applyBgGain();
@@ -2962,6 +3024,7 @@ function renderLesen(root){
     b.className='story-card'+(s.id===story.id?' on':'');
     b.innerHTML=`<span class="st">${s.id===story.id?'📖 ':''}${s.title}</span><span class="sb">${s.blurb}</span>`;
     b.onclick=()=>{
+      stopSpeaking();
       state.storyId=s.id;
       if(asShelf) state.current='stories';
       render();
@@ -2977,7 +3040,23 @@ function renderLesen(root){
   const blurb=document.createElement('p'); blurb.className='note'; blurb.textContent=story.blurb;
   card.appendChild(blurb);
 
-  const speakStory=()=>speak(story.text.replace(/\s+/g,' ').trim(), Math.min(state.rate, 0.78));
+  const speakStory=()=>{
+    const playing=Speak.queue.length>0 || (window.speechSynthesis && window.speechSynthesis.speaking);
+    if(playing){
+      stopSpeaking();
+      spkBtn.textContent='🔊 Listen to the whole story';
+      if(hearAll) hearAll.textContent='🔊 Hear the whole story';
+      return;
+    }
+    const done=()=>{
+      spkBtn.textContent='🔊 Listen to the whole story';
+      if(hearAll) hearAll.textContent='🔊 Hear the whole story';
+    };
+    spkBtn.textContent='⏹ Stop the story';
+    if(hearAll) hearAll.textContent='⏹ Stop the story';
+    speak(story.text.replace(/\s+/g,' ').trim(), Math.min(state.rate, 0.78), done);
+  };
+  let hearAll=null;
   phase(card,'L','1 👂 Listen','Play the whole passage. Look away if you like. Get the gist first.');
   const listenRow=document.createElement('div'); listenRow.className='btnrow';
   const spkBtn=document.createElement('button'); spkBtn.className='btn'; spkBtn.textContent='🔊 Listen to the whole story';
@@ -3014,7 +3093,7 @@ function renderLesen(root){
   });
   card.appendChild(p);
   const hearRow=document.createElement('div'); hearRow.className='btnrow';
-  const hearAll=document.createElement('button'); hearAll.className='btn ghost'; hearAll.textContent='🔊 Hear the whole story';
+  hearAll=document.createElement('button'); hearAll.className='btn ghost'; hearAll.textContent='🔊 Hear the whole story';
   hearAll.onclick=speakStory;
   hearRow.appendChild(hearAll);
   card.appendChild(hearRow);
