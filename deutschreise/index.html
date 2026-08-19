@@ -955,7 +955,10 @@ function renderQuiz(container, questions, onComplete){
     }
     const item=questions[idx];
     const prog=document.createElement('div'); prog.className='progressline';
-    prog.innerHTML=`Check ${idx+1} of ${questions.length} · ${glossHTML('Frage','question')}`;
+    const frageLabel=document.createElement('span');
+    frageLabel.innerHTML=`Check ${idx+1} of ${questions.length} · <span class="deword"><strong class="de">Frage</strong></span> <span class="gloss">(= question)</span>`;
+    prog.appendChild(frageLabel);
+    prog.appendChild(speakerBtn('Frage'));
     box.appendChild(prog);
     const p=document.createElement('div'); p.className='qprompt';
     p.innerHTML = decorateQuotedGerman(item.q);
